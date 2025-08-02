@@ -4,93 +4,132 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-console.log('🔧 Nature Harvest Admin - Build Debug Script');
-console.log('============================================\n');
+console.log('🔍 React Build Debug Script');
+console.log('============================\n');
+
+// Check Node.js and npm versions
+try {
+  const nodeVersion = execSync('node --version', { encoding: 'utf8' }).trim();
+  const npmVersion = execSync('npm --version', { encoding: 'utf8' }).trim();
+  console.log(`✅ Node.js version: ${nodeVersion}`);
+  console.log(`✅ npm version: ${npmVersion}\n`);
+} catch (error) {
+  console.log('❌ Error checking Node.js/npm versions:', error.message);
+}
 
 // Check if we're in the right directory
-if (!fs.existsSync('package.json')) {
-  console.log('❌ Error: package.json not found. Please run this script from the client directory.');
-  process.exit(1);
-}
+const currentDir = process.cwd();
+console.log(`📁 Current directory: ${currentDir}`);
 
-// Check Node.js version
-const nodeVersion = process.version;
-console.log(`📦 Node.js version: ${nodeVersion}`);
+// Check for critical files
+const criticalFiles = [
+  'package.json',
+  'src',
+  'public',
+  'public/index.html',
+  'src/index.tsx',
+  'src/App.tsx'
+];
 
-// Check npm version
-try {
-  const npmVersion = execSync('npm --version', { encoding: 'utf8' }).trim();
-  console.log(`📦 npm version: ${npmVersion}`);
-} catch (error) {
-  console.log('❌ Error checking npm version:', error.message);
-}
+console.log('\n📋 Checking critical files:');
+criticalFiles.forEach(file => {
+  const filePath = path.join(currentDir, file);
+  if (fs.existsSync(filePath)) {
+    console.log(`✅ ${file}`);
+  } else {
+    console.log(`❌ ${file} - MISSING!`);
+  }
+});
 
-// Check if src directory exists
-if (!fs.existsSync('src')) {
-  console.log('❌ Error: src directory not found');
-  process.exit(1);
-}
-
-// Check if public directory exists
-if (!fs.existsSync('public')) {
-  console.log('❌ Error: public directory not found');
-  process.exit(1);
-}
-
-// Check if index.html exists
-if (!fs.existsSync('public/index.html')) {
-  console.log('❌ Error: public/index.html not found');
-  process.exit(1);
-}
-
-console.log('✅ Basic file structure check passed\n');
-
-// Check for common build issues
-console.log('🔍 Checking for common build issues...');
-
-// Check TypeScript configuration
-if (fs.existsSync('tsconfig.json')) {
-  console.log('✅ TypeScript configuration found');
-} else {
-  console.log('⚠️  TypeScript configuration not found');
-}
-
-// Check for missing dependencies
-console.log('\n📦 Checking dependencies...');
+// Check package.json
+console.log('\n📦 Checking package.json:');
 try {
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-  const dependencies = Object.keys(packageJson.dependencies || {});
-  const devDependencies = Object.keys(packageJson.devDependencies || {});
+  console.log(`✅ Name: ${packageJson.name}`);
+  console.log(`✅ Version: ${packageJson.version}`);
+  console.log(`✅ Build script: ${packageJson.scripts?.build || 'NOT FOUND'}`);
   
-  console.log(`✅ Dependencies: ${dependencies.length}`);
-  console.log(`✅ Dev Dependencies: ${devDependencies.length}`);
+  if (packageJson.dependencies) {
+    console.log(`✅ Dependencies count: ${Object.keys(packageJson.dependencies).length}`);
+  }
+  
+  if (packageJson.devDependencies) {
+    console.log(`✅ Dev dependencies count: ${Object.keys(packageJson.devDependencies).length}`);
+  }
 } catch (error) {
-  console.log('❌ Error reading package.json:', error.message);
+  console.log(`❌ Error reading package.json: ${error.message}`);
+}
+
+// Check for node_modules
+console.log('\n📦 Checking node_modules:');
+const nodeModulesPath = path.join(currentDir, 'node_modules');
+if (fs.existsSync(nodeModulesPath)) {
+  console.log('✅ node_modules exists');
+  
+  // Check for react-scripts
+  const reactScriptsPath = path.join(nodeModulesPath, 'react-scripts');
+  if (fs.existsSync(reactScriptsPath)) {
+    console.log('✅ react-scripts found');
+  } else {
+    console.log('❌ react-scripts NOT FOUND - this will cause build failure');
+  }
+} else {
+  console.log('❌ node_modules does not exist - dependencies not installed');
 }
 
 // Try to install dependencies
-console.log('\n📦 Installing dependencies...');
+console.log('\n🔧 Attempting to install dependencies...');
 try {
-  execSync('npm ci --legacy-peer-deps', { stdio: 'inherit' });
+  console.log('Running: npm ci --legacy-peer-deps');
+  const installOutput = execSync('npm ci --legacy-peer-deps', { 
+    encoding: 'utf8',
+    stdio: 'pipe'
+  });
   console.log('✅ Dependencies installed successfully');
 } catch (error) {
-  console.log('❌ Error installing dependencies:', error.message);
-  process.exit(1);
+  console.log('❌ Failed to install dependencies:');
+  console.log(error.stdout || error.message);
+  console.log('\n💡 Try running: npm install --legacy-peer-deps');
 }
 
-// Try to build
-console.log('\n🔨 Attempting build...');
+// Try the build
+console.log('\n🏗️  Attempting build...');
 try {
-  execSync('CI=false GENERATE_SOURCEMAP=false npm run build', { stdio: 'inherit' });
+  console.log('Running: CI=false GENERATE_SOURCEMAP=false npm run build');
+  const buildOutput = execSync('CI=false GENERATE_SOURCEMAP=false npm run build', { 
+    encoding: 'utf8',
+    stdio: 'pipe'
+  });
   console.log('✅ Build completed successfully!');
+  console.log('\n📊 Build output summary:');
+  console.log(buildOutput.slice(-500)); // Show last 500 characters
 } catch (error) {
-  console.log('❌ Build failed:', error.message);
-  console.log('\n🔧 Troubleshooting tips:');
-  console.log('1. Check for TypeScript errors in your source files');
-  console.log('2. Ensure all imports are correct');
-  console.log('3. Check for missing dependencies');
-  console.log('4. Verify that all required files exist');
-  process.exit(1);
+  console.log('❌ Build failed:');
+  console.log(error.stdout || error.message);
+  
+  // Try to get more detailed error info
+  if (error.stderr) {
+    console.log('\n🔍 Detailed error output:');
+    console.log(error.stderr);
+  }
 }
 
-console.log('\n🎉 Build debug completed successfully!'); 
+// Check if build directory was created
+console.log('\n📁 Checking build output:');
+const buildPath = path.join(currentDir, 'build');
+if (fs.existsSync(buildPath)) {
+  console.log('✅ Build directory exists');
+  const buildFiles = fs.readdirSync(buildPath);
+  console.log(`✅ Build files count: ${buildFiles.length}`);
+  
+  if (buildFiles.includes('index.html')) {
+    console.log('✅ index.html found in build');
+  } else {
+    console.log('❌ index.html NOT found in build');
+  }
+} else {
+  console.log('❌ Build directory does not exist');
+}
+
+console.log('\n🎯 Debug complete!');
+console.log('If build failed, check the error messages above for specific issues.'); 

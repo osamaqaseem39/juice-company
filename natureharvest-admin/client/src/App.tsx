@@ -18,8 +18,6 @@ import ServiceList from './pages/Services/ServiceList';
 import ServiceForm from './pages/Services/ServiceForm';
 import ServiceDetail from './pages/Services/ServiceDetail';
 import MessageList from "./pages/Messages/MessageList";
-import SupplierList from './pages/Suppliers/SupplierList';
-import SupplierDetail from './pages/Suppliers/SupplierDetail';
 import BrandList from './pages/Brands/BrandList';
 import BrandForm from './pages/Brands/BrandForm';
 import CategoryList from './pages/Categories/CategoryList';
@@ -60,10 +58,6 @@ export default function App() {
             <Route path="/services/add" element={<ServiceForm />} />
             <Route path="/services/:id" element={<ServiceDetail />} />
             <Route path="/services/:id/edit" element={<ServiceForm />} />
-
-            {/* Supplier Routes */}
-            <Route path="/suppliers" element={<SupplierList />} />
-            <Route path="/suppliers/:id" element={<SupplierDetail />} />
 
             {/* Brand Routes */}
             <Route path="/brands" element={<BrandList />} />

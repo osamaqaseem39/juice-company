@@ -13,11 +13,29 @@ cd natureharvest-admin
 npm run build:debug
 ```
 
+Or run the shell script:
+```bash
+cd natureharvest-admin
+chmod +x debug-build.sh
+./debug-build.sh
+```
+
 This will:
 - Check your Node.js and npm versions
 - Verify file structure
 - Install dependencies with legacy peer deps
 - Attempt the build with detailed error reporting
+
+### 🔍 **Step 2: Check TypeScript Errors**
+
+Run the TypeScript type check:
+
+```bash
+cd natureharvest-admin/client
+node type-check.js
+```
+
+This will identify any TypeScript compilation errors that might be causing the build to fail.
 
 ### 🔍 **Step 2: Common Build Issues & Solutions**
 
