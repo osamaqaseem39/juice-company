@@ -7,7 +7,6 @@ const blogTypes = require('./types/blog');
 const productTypes = require('./types/product');
 const brandTypes = require('./types/brand');
 const categoryTypes = require('./types/category');
-const supplierTypes = require('./types/supplier');
 const quoteTypes = require('./types/quote');
 const serviceTypes = require('./types/service');
 const companyTypes = require('./types/company');
@@ -19,7 +18,6 @@ const blogResolvers = require('./resolvers/blog');
 const productResolvers = require('./resolvers/product');
 const brandResolvers = require('./resolvers/brand');
 const categoryResolvers = require('./resolvers/category');
-const supplierResolvers = require('./resolvers/supplier');
 const quoteResolvers = require('./resolvers/quote');
 const serviceResolvers = require('./resolvers/service');
 const companyResolvers = require('./resolvers/company');
@@ -48,7 +46,6 @@ const typeDefs = [
   productTypes,
   brandTypes,
   categoryTypes,
-  supplierTypes,
   quoteTypes,
   serviceTypes,
   companyTypes,
@@ -62,7 +59,6 @@ const resolvers = [
   productResolvers,
   brandResolvers,
   categoryResolvers,
-  supplierResolvers,
   quoteResolvers,
   serviceResolvers,
   companyResolvers,

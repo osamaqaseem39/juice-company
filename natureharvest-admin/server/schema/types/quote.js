@@ -6,17 +6,19 @@ const quoteTypes = gql`
     name: String!
     email: String!
     phone: String!
-    message: String!
+    details: String!
+    image: String
     status: String!
     createdAt: String!
-    updatedAt: String!
+    updatedAt: String
   }
 
   input QuoteInput {
     name: String!
     email: String!
     phone: String!
-    message: String!
+    details: String!
+    image: String
     status: String
   }
 
@@ -24,7 +26,8 @@ const quoteTypes = gql`
     name: String
     email: String
     phone: String
-    message: String
+    details: String
+    image: String
     status: String
   }
 

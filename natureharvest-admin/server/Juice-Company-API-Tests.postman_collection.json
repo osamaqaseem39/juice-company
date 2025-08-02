@@ -629,112 +629,7 @@
         }
       ]
     },
-    {
-      "name": "Suppliers",
-      "item": [
-        {
-          "name": "Get All Suppliers",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/suppliers",
-              "host": ["{{base_url}}"],
-              "path": ["api", "suppliers"]
-            },
-            "description": "Get all suppliers"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Supplier by ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/suppliers/{{supplier_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "suppliers", "{{supplier_id}}"]
-            },
-            "description": "Get a specific supplier by ID"
-          },
-          "response": []
-        },
-        {
-          "name": "Create Supplier",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "x-auth-token",
-                "value": "{{auth_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Fresh Fruits Co.\",\n    \"email\": \"contact@freshfruits.com\",\n    \"phone\": \"+1-555-0123\",\n    \"address\": \"123 Fruit Street, Orchard City, CA 90210\",\n    \"products\": [\"apples\", \"oranges\", \"berries\"]\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/suppliers",
-              "host": ["{{base_url}}"],
-              "path": ["api", "suppliers"]
-            },
-            "description": "Create a new supplier"
-          },
-          "response": []
-        },
-        {
-          "name": "Update Supplier",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "x-auth-token",
-                "value": "{{auth_token}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Fresh Fruits Co. Premium\",\n    \"email\": \"premium@freshfruits.com\",\n    \"phone\": \"+1-555-0124\",\n    \"address\": \"456 Premium Street, Orchard City, CA 90210\",\n    \"products\": [\"organic apples\", \"organic oranges\", \"organic berries\"]\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/suppliers/{{supplier_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "suppliers", "{{supplier_id}}"]
-            },
-            "description": "Update an existing supplier"
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Supplier",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "x-auth-token",
-                "value": "{{auth_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/suppliers/{{supplier_id}}",
-              "host": ["{{base_url}}"],
-              "path": ["api", "suppliers", "{{supplier_id}}"]
-            },
-            "description": "Delete a supplier"
-          },
-          "response": []
-        }
-      ]
-    },
+
     {
       "name": "Services",
       "item": [
@@ -880,22 +775,18 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "x-auth-token",
-                "value": "{{auth_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"customerName\": \"John Doe\",\n    \"customerEmail\": \"john@example.com\",\n    \"customerPhone\": \"+1-555-0123\",\n    \"description\": \"Custom juice blend for corporate event\",\n    \"estimatedPrice\": \"500.00\",\n    \"status\": \"pending\"\n}"
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"phone\": \"+1-555-0123\",\n    \"details\": \"Custom juice blend for corporate event - 100 people\",\n    \"image\": \"quote-image.jpg\",\n    \"status\": \"pending\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/quotes",
               "host": ["{{base_url}}"],
               "path": ["api", "quotes"]
             },
-            "description": "Create a new quote request"
+            "description": "Create a new quote request with email notification"
           },
           "response": []
         },
@@ -915,7 +806,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"customerName\": \"John Doe\",\n    \"customerEmail\": \"john@example.com\",\n    \"customerPhone\": \"+1-555-0123\",\n    \"description\": \"Custom juice blend for corporate event - Updated\",\n    \"estimatedPrice\": \"600.00\",\n    \"status\": \"approved\"\n}"
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"phone\": \"+1-555-0123\",\n    \"details\": \"Custom juice blend for corporate event - Updated with 150 people\",\n    \"image\": \"updated-quote-image.jpg\",\n    \"status\": \"approved\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/quotes/{{quote_id}}",
@@ -1177,11 +1068,7 @@
       "value": "brand_id_here",
       "type": "string"
     },
-    {
-      "key": "supplier_id",
-      "value": "supplier_id_here",
-      "type": "string"
-    },
+
     {
       "key": "service_id",
       "value": "service_id_here",

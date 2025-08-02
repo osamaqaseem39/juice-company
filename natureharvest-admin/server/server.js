@@ -207,7 +207,7 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/subcategories', require('./routes/subcategories'));
 app.use('/api/brands', require('./routes/brands'));
-app.use('/api/suppliers', require('./routes/suppliers'));
+
 app.use('/api/services', require('./routes/services'));
 app.use('/api/quotes', require('./routes/quotes'));
 app.use('/api/blogs', require('./routes/blogs'));
@@ -297,7 +297,7 @@ const startServer = async () => {
           Brand: require('./models/Brand'),
           Category: require('./models/Category'),
           SubCategory: require('./models/SubCategory'),
-          Supplier: require('./models/SupplierRequest'),
+
           Quote: require('./models/Quote'),
           Service: require('./models/Service'),
           Company: require('./models/Company'),

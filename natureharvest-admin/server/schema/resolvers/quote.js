@@ -33,17 +33,22 @@ const quoteResolvers = {
   Mutation: {
     createQuote: async (_, { input }) => {
       try {
-        const { name, email, phone, message, status = 'pending' } = input;
+        const { name, email, phone, details, image, status = 'pending' } = input;
 
         const quote = new Quote({
           name,
           email,
           phone,
-          message,
+          details,
+          image,
           status
         });
 
         await quote.save();
+        
+        // TODO: Send email notification here
+        // You can integrate with nodemailer or any email service
+        
         return quote;
       } catch (error) {
         throw new Error(error.message);
@@ -55,13 +60,14 @@ const quoteResolvers = {
           throw new Error('Not authenticated');
         }
 
-        const { name, email, phone, message, status } = input;
+        const { name, email, phone, details, image, status } = input;
         const updateData = {};
 
         if (name) updateData.name = name;
         if (email) updateData.email = email;
         if (phone) updateData.phone = phone;
-        if (message) updateData.message = message;
+        if (details) updateData.details = details;
+        if (image) updateData.image = image;
         if (status) updateData.status = status;
 
         const quote = await Quote.findByIdAndUpdate(
