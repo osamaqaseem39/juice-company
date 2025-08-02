@@ -1,0 +1,1206 @@
+{
+  "info": {
+    "name": "Juice Company API - Complete Test Collection",
+    "description": "Comprehensive test collection for the Juice Company API including authentication, products, blogs, categories, brands, suppliers, services, and quotes endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Server Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Check server health and MongoDB connection status"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Register a new user account"
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login with existing user credentials"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Get current user profile information"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Get all products"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "{{product_id}}"]
+            },
+            "description": "Get a specific product by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/category/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "category", "{{category_id}}"]
+            },
+            "description": "Get products filtered by category"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products by Subcategory",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/subcategory/{{subcategory_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "subcategory", "{{subcategory_id}}"]
+            },
+            "description": "Get products filtered by subcategory"
+          },
+          "response": []
+        },
+        {
+          "name": "Query Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/products/query?search=juice&category=fruits&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "query"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "juice"
+                },
+                {
+                  "key": "category",
+                  "value": "fruits"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Search and filter products with query parameters"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Organic Apple Juice",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Fresh organic apple juice made from premium apples",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "12.99",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{category_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "subcategory",
+                  "value": "{{subcategory_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "brand",
+                  "value": "{{brand_id}}",
+                  "type": "text"
+                },
+                {
+                  "key": "featuredImage",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "gallery",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Create a new product with image upload"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Organic Apple Juice",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "Updated description for organic apple juice",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "14.99",
+                  "type": "text"
+                },
+                {
+                  "key": "featuredImage",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "{{product_id}}"]
+            },
+            "description": "Update an existing product"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "{{product_id}}"]
+            },
+            "description": "Delete a product"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories"]
+            },
+            "description": "Get all categories"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories", "{{category_id}}"]
+            },
+            "description": "Get a specific category by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Fruit Juices\",\n    \"description\": \"Fresh fruit juices and smoothies\",\n    \"image\": \"fruit-juices.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories"]
+            },
+            "description": "Create a new category"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Premium Fruit Juices\",\n    \"description\": \"Premium organic fruit juices and smoothies\",\n    \"image\": \"premium-fruit-juices.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories", "{{category_id}}"]
+            },
+            "description": "Update an existing category"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories", "{{category_id}}"]
+            },
+            "description": "Delete a category"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subcategories",
+      "item": [
+        {
+          "name": "Get All Subcategories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/subcategories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "subcategories"]
+            },
+            "description": "Get all subcategories"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subcategory by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/subcategories/{{subcategory_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "subcategories", "{{subcategory_id}}"]
+            },
+            "description": "Get a specific subcategory by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Subcategory",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Apple Juices\",\n    \"description\": \"Various types of apple juices\",\n    \"category\": \"{{category_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/subcategories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "subcategories"]
+            },
+            "description": "Create a new subcategory"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Subcategory",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Premium Apple Juices\",\n    \"description\": \"Premium organic apple juices\",\n    \"category\": \"{{category_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/subcategories/{{subcategory_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "subcategories", "{{subcategory_id}}"]
+            },
+            "description": "Update an existing subcategory"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Subcategory",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/subcategories/{{subcategory_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "subcategories", "{{subcategory_id}}"]
+            },
+            "description": "Delete a subcategory"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Brands",
+      "item": [
+        {
+          "name": "Get All Brands",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/brands",
+              "host": ["{{base_url}}"],
+              "path": ["api", "brands"]
+            },
+            "description": "Get all brands"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Brand by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/brands/{{brand_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "brands", "{{brand_id}}"]
+            },
+            "description": "Get a specific brand by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Brand",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Nature Harvest\",\n    \"description\": \"Premium organic juice brand\",\n    \"logo\": \"nature-harvest-logo.png\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/brands",
+              "host": ["{{base_url}}"],
+              "path": ["api", "brands"]
+            },
+            "description": "Create a new brand"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Brand",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Nature Harvest Premium\",\n    \"description\": \"Premium organic juice brand with enhanced quality\",\n    \"logo\": \"nature-harvest-premium-logo.png\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/brands/{{brand_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "brands", "{{brand_id}}"]
+            },
+            "description": "Update an existing brand"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Brand",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/brands/{{brand_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "brands", "{{brand_id}}"]
+            },
+            "description": "Delete a brand"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Suppliers",
+      "item": [
+        {
+          "name": "Get All Suppliers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers"]
+            },
+            "description": "Get all suppliers"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Supplier by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers/{{supplier_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers", "{{supplier_id}}"]
+            },
+            "description": "Get a specific supplier by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Supplier",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Fresh Fruits Co.\",\n    \"email\": \"contact@freshfruits.com\",\n    \"phone\": \"+1-555-0123\",\n    \"address\": \"123 Fruit Street, Orchard City, CA 90210\",\n    \"products\": [\"apples\", \"oranges\", \"berries\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/suppliers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers"]
+            },
+            "description": "Create a new supplier"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Supplier",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Fresh Fruits Co. Premium\",\n    \"email\": \"premium@freshfruits.com\",\n    \"phone\": \"+1-555-0124\",\n    \"address\": \"456 Premium Street, Orchard City, CA 90210\",\n    \"products\": [\"organic apples\", \"organic oranges\", \"organic berries\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/suppliers/{{supplier_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers", "{{supplier_id}}"]
+            },
+            "description": "Update an existing supplier"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Supplier",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers/{{supplier_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers", "{{supplier_id}}"]
+            },
+            "description": "Delete a supplier"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/services",
+              "host": ["{{base_url}}"],
+              "path": ["api", "services"]
+            },
+            "description": "Get all services"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Service by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/services/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "services", "{{service_id}}"]
+            },
+            "description": "Get a specific service by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Custom Juice Blending\",\n    \"description\": \"Custom juice blending service for events and catering\",\n    \"price\": \"150.00\",\n    \"duration\": \"2 hours\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/services",
+              "host": ["{{base_url}}"],
+              "path": ["api", "services"]
+            },
+            "description": "Create a new service"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Service",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Premium Custom Juice Blending\",\n    \"description\": \"Premium custom juice blending service for events and catering\",\n    \"price\": \"200.00\",\n    \"duration\": \"3 hours\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/services/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "services", "{{service_id}}"]
+            },
+            "description": "Update an existing service"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Service",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/services/{{service_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "services", "{{service_id}}"]
+            },
+            "description": "Delete a service"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Quotes",
+      "item": [
+        {
+          "name": "Get All Quotes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/quotes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "quotes"]
+            },
+            "description": "Get all quotes"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Quote by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/quotes/{{quote_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "quotes", "{{quote_id}}"]
+            },
+            "description": "Get a specific quote by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Quote",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"customerName\": \"John Doe\",\n    \"customerEmail\": \"john@example.com\",\n    \"customerPhone\": \"+1-555-0123\",\n    \"description\": \"Custom juice blend for corporate event\",\n    \"estimatedPrice\": \"500.00\",\n    \"status\": \"pending\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/quotes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "quotes"]
+            },
+            "description": "Create a new quote request"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Quote",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"customerName\": \"John Doe\",\n    \"customerEmail\": \"john@example.com\",\n    \"customerPhone\": \"+1-555-0123\",\n    \"description\": \"Custom juice blend for corporate event - Updated\",\n    \"estimatedPrice\": \"600.00\",\n    \"status\": \"approved\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/quotes/{{quote_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "quotes", "{{quote_id}}"]
+            },
+            "description": "Update an existing quote"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Quote",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/quotes/{{quote_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "quotes", "{{quote_id}}"]
+            },
+            "description": "Delete a quote"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Blogs",
+      "item": [
+        {
+          "name": "Get All Blogs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/blogs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "blogs"]
+            },
+            "description": "Get all blog posts"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Blog by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/blogs/id/{{blog_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "blogs", "id", "{{blog_id}}"]
+            },
+            "description": "Get a specific blog post by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Blog by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/blogs/{{blog_slug}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "blogs", "{{blog_slug}}"]
+            },
+            "description": "Get a specific blog post by slug"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Blog",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Benefits of Organic Juices\",\n    \"content\": \"Organic juices provide numerous health benefits including...\",\n    \"tags\": [\"health\", \"organic\", \"juices\"],\n    \"status\": \"draft\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/blogs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "blogs"]
+            },
+            "description": "Create a new blog post"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Blog",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Updated Benefits of Organic Juices\",\n    \"content\": \"Updated content about organic juices and their health benefits...\",\n    \"tags\": [\"health\", \"organic\", \"juices\", \"nutrition\"],\n    \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/blogs/{{blog_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "blogs", "{{blog_id}}"]
+            },
+            "description": "Update an existing blog post"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Blog",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/blogs/{{blog_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "blogs", "{{blog_id}}"]
+            },
+            "description": "Delete a blog post"
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Blog Exists",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Benefits of Organic Juices\",\n    \"slug\": \"benefits-of-organic-juices\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/blogs/verify",
+              "host": ["{{base_url}}"],
+              "path": ["api", "blogs", "verify"]
+            },
+            "description": "Check if a blog post exists by title or slug"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GraphQL",
+      "item": [
+        {
+          "name": "GraphQL Query",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query {\\n  products {\\n    _id\\n    name\\n    description\\n    price\\n    category {\\n      name\\n    }\\n  }\\n}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "host": ["{{base_url}}"],
+              "path": ["graphql"]
+            },
+            "description": "Execute a GraphQL query to get products"
+          },
+          "response": []
+        },
+        {
+          "name": "GraphQL Mutation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-auth-token",
+                "value": "{{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation {\\n  createProduct(input: {\\n    name: \\\"Test Product\\\"\\n    description: \\\"Test Description\\\"\\n    price: 10.99\\n  }) {\\n    _id\\n    name\\n    description\\n    price\\n  }\\n}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/graphql",
+              "host": ["{{base_url}}"],
+              "path": ["graphql"]
+            },
+            "description": "Execute a GraphQL mutation to create a product"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "your_jwt_token_here",
+      "type": "string"
+    },
+    {
+      "key": "product_id",
+      "value": "product_id_here",
+      "type": "string"
+    },
+    {
+      "key": "category_id",
+      "value": "category_id_here",
+      "type": "string"
+    },
+    {
+      "key": "subcategory_id",
+      "value": "subcategory_id_here",
+      "type": "string"
+    },
+    {
+      "key": "brand_id",
+      "value": "brand_id_here",
+      "type": "string"
+    },
+    {
+      "key": "supplier_id",
+      "value": "supplier_id_here",
+      "type": "string"
+    },
+    {
+      "key": "service_id",
+      "value": "service_id_here",
+      "type": "string"
+    },
+    {
+      "key": "quote_id",
+      "value": "quote_id_here",
+      "type": "string"
+    },
+    {
+      "key": "blog_id",
+      "value": "blog_id_here",
+      "type": "string"
+    },
+    {
+      "key": "blog_slug",
+      "value": "blog-slug-here",
+      "type": "string"
+    }
+  ]
+} 

@@ -195,6 +195,17 @@ app.use('/uploads/products', express.static(path.join(__dirname, '../uploads/pro
 app.use('/uploads/brochures', express.static(path.join(__dirname, '../uploads/brochures')));
 app.use('/uploads/brand-category', express.static(path.join(__dirname, '../uploads/brand-category')));
 
+// API Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/products', require('./routes/products'));
+app.use('/api/categories', require('./routes/categories'));
+app.use('/api/subcategories', require('./routes/subcategories'));
+app.use('/api/brands', require('./routes/brands'));
+app.use('/api/suppliers', require('./routes/suppliers'));
+app.use('/api/services', require('./routes/services'));
+app.use('/api/quotes', require('./routes/quotes'));
+app.use('/api/blogs', require('./routes/blogs'));
+
 // Root route for API health check
 app.get('/', (req, res) => {
   const mongoStatus = {
