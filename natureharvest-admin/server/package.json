@@ -1,7 +1,7 @@
 {
-  "name": "punjab ac",
+  "name": "natureharvest-admin-server",
   "version": "1.0.0",
-  "description": "Backend for blog management application",
+  "description": "Backend for Nature Harvest Juice Company Admin Dashboard",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

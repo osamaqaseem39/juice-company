@@ -64,6 +64,8 @@ NODE_ENV=production
 - Ensure all dependencies are installed
 - Check that `index.html` exists in `client/public/`
 - Verify Node.js version compatibility
+- **Package Name Conflicts**: Ensure client and server packages have unique names
+- **Workspace Issues**: Check that workspace names don't conflict
 
 #### API Issues
 - Confirm MongoDB connection string is correct
