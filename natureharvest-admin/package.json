@@ -14,6 +14,7 @@
     "build": "npm run build:client",
     "build:client": "cd client && npm run build",
     "build:server": "cd server && npm install",
+    "build:debug": "cd client && node build-debug.js",
     "start": "cd server && npm start",
     "install:all": "npm install && cd client && npm install && cd ../server && npm install"
   },
