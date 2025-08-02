@@ -1,0 +1,47 @@
+const { gql } = require('graphql-tag');
+
+const blogTypes = gql`
+  type Blog {
+    _id: ID!
+    title: String!
+    content: String!
+    author: String!
+    image: String
+    tags: [String!]
+    status: String!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  input BlogInput {
+    title: String!
+    content: String!
+    author: String!
+    image: String
+    tags: [String!]
+    status: String
+  }
+
+  input BlogUpdateInput {
+    title: String
+    content: String
+    author: String
+    image: String
+    tags: [String!]
+    status: String
+  }
+
+  extend type Query {
+    blogs: [Blog!]!
+    blog(id: ID!): Blog
+    blogsByStatus(status: String!): [Blog!]!
+  }
+
+  extend type Mutation {
+    createBlog(input: BlogInput!): Blog!
+    updateBlog(id: ID!, input: BlogUpdateInput!): Blog!
+    deleteBlog(id: ID!): Boolean!
+  }
+`;
+
+module.exports = blogTypes; 
