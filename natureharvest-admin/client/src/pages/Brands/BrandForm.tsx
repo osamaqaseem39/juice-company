@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { brandApi, Brand } from '../../services/api';
+import { brandApi } from '../../services/api';
 
 const initialState = {
   name: '',
@@ -43,10 +43,8 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
     description: string;
     image: string | File | null;
   }>(initialState);
-  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isEdit = mode === 'edit' || !!id;
 
@@ -60,7 +58,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
             description: res.data.description || '',
             image: null,
           });
-          setPreview(res.data.image ? `/${res.data.image.replace('uploads', 'uploads')}` : null);
+
         })
         .catch(() => setError('Failed to load brand'))
         .finally(() => setLoading(false));
@@ -72,13 +70,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setForm(prev => ({ ...prev, image: file }));
-      setPreview(URL.createObjectURL(file));
-    }
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,7 +123,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
                 if (e.target.files && e.target.files[0]) {
                   const url = await uploadBrandImage(e.target.files[0]);
                   setForm(prev => ({ ...prev, image: url }));
-                  setPreview(url);
+
                 }
               }}
               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition"

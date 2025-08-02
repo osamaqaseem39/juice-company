@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { productApi, Product, brandApi, Brand } from '../../services/api';
+import { productApi, Product, brandApi } from '../../services/api';
 import { Modal } from '../../components/ui/modal';
 
 const ProductList: React.FC = () => {
@@ -11,7 +11,7 @@ const ProductList: React.FC = () => {
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState<'title' | 'brand' | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
-  const [brands, setBrands] = useState<Brand[]>([]);
+
   const [brandMap, setBrandMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -26,7 +26,6 @@ const ProductList: React.FC = () => {
     // Fetch brands
     brandApi.getAll()
       .then(res => {
-        setBrands(Array.isArray(res.data) ? res.data : []);
         setBrandMap(
           (Array.isArray(res.data) ? res.data : []).reduce((acc, b) => {
             acc[b._id] = b.name;
@@ -34,7 +33,7 @@ const ProductList: React.FC = () => {
           }, {} as Record<string, string>)
         );
       })
-      .catch(() => setBrands([]));
+      .catch(() => {});
   }, []);
 
   const handleDelete = async (id: string) => {

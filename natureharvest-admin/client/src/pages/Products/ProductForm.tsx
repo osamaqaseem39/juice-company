@@ -55,7 +55,7 @@ const ProductForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+
   const [subcategories, setSubcategories] = useState<SubCategory[]>([]);
 
   const descriptionTextareaRef = useRef<HTMLTextAreaElement>(null);
@@ -85,7 +85,7 @@ const ProductForm: React.FC = () => {
   useEffect(() => {
     brandApi.getAll().then(res => setBrands(res.data)).catch(() => setBrands([]));
     categoryApi.getAll().then(res => setCategories(res.data)).catch(() => setCategories([]));
-    productApi.getAll().then(res => setAllProducts(res.data)).catch(() => setAllProducts([]));
+
     subcategoryApi.getAll().then(res => setSubcategories(res.data)).catch(() => setSubcategories([]));
   }, []);
 

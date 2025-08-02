@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { serviceApi, Service, CreateServiceInput, UpdateServiceInput } from '../../services/api';
+import { serviceApi, CreateServiceInput, UpdateServiceInput } from '../../services/api';
 
 
 // Upload a file to cPanel server and return the public URL
@@ -79,12 +79,7 @@ const ServiceForm: React.FC = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleFeaturedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFeaturedImageFile(e.target.files[0]);
-      setPreviewFeatured(URL.createObjectURL(e.target.files[0]));
-    }
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

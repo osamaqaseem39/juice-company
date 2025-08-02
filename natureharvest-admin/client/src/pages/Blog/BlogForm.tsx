@@ -159,14 +159,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
     }));
   };
 
-  const handleFeaturedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFeaturedImageFile(e.target.files[0]);
-      setPreviewFeatured(URL.createObjectURL(e.target.files[0]));
-      // Clear the previous featuredImage in formData so it doesn't get sent accidentally
-      setFormData(prev => ({ ...prev, featuredImage: '' }));
-    }
-  };
+
 
   const insertFormatting = (format: string) => {
     const textarea = document.getElementById('content-textarea') as HTMLTextAreaElement;

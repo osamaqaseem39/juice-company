@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { categoryApi, Category } from '../../services/api';
 
@@ -20,19 +20,14 @@ const CategoryForm: React.FC<{ mode?: CategoryFormMode }> = ({ mode }) => {
     image: string | File | null;
     parent: string;
   }>(initialState);
-  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isEdit = mode === 'edit' || !!id;
 
   useEffect(() => {
-    categoryApi.getAll()
-      .then(res => setAllCategories(Array.isArray(res.data) ? res.data : []));
     if (isEdit && id) {
       setLoading(true);
       categoryApi.getById(id)
@@ -43,7 +38,7 @@ const CategoryForm: React.FC<{ mode?: CategoryFormMode }> = ({ mode }) => {
             image: res.data.image || '',
             parent: res.data.parent && typeof res.data.parent === 'object' ? (res.data.parent as Category)._id : (res.data.parent || ''),
           });
-          setPreview(res.data.image ? `/${res.data.image.replace('uploads', 'uploads')}` : null);
+
         })
         .catch(() => setError('Failed to load category'))
         .finally(() => setLoading(false));
@@ -55,23 +50,7 @@ const CategoryForm: React.FC<{ mode?: CategoryFormMode }> = ({ mode }) => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-      setUploading(true);
-      setUploadProgress(0);
-      try {
-        const imageUrl = await uploadCategoryImage(file);
-        setForm(prev => ({ ...prev, image: imageUrl }));
-      } catch (err) {
-        setError('Image upload failed');
-      } finally {
-        setUploading(false);
-        setUploadProgress(0);
-      }
-    }
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,7 +101,7 @@ const CategoryForm: React.FC<{ mode?: CategoryFormMode }> = ({ mode }) => {
         if (xhr.status === 200) {
           const data = JSON.parse(xhr.responseText);
           if (data.url) {
-            setPreview(data.url);
+
             setForm(prev => ({ ...prev, image: data.url }));
             resolve(data.url);
           } else {

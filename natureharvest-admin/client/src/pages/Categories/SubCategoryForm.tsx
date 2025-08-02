@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { categoryApi, subcategoryApi, Category } from '../../services/api';
 
@@ -20,13 +20,11 @@ const SubCategoryForm: React.FC<{ mode?: SubCategoryFormMode }> = ({ mode }) => 
     image: string | File | null;
     parent: string;
   }>(initialState);
-  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isEdit = mode === 'edit' || !!id;
 
@@ -43,7 +41,7 @@ const SubCategoryForm: React.FC<{ mode?: SubCategoryFormMode }> = ({ mode }) => 
             image: res.data.image || '',
             parent: res.data.parent && typeof res.data.parent === 'object' ? (res.data.parent as Category)._id : (res.data.parent || ''),
           });
-          setPreview(res.data.image ? res.data.image : null);
+
         })
         .catch(() => setError('Failed to load subcategory'))
         .finally(() => setLoading(false));
@@ -109,7 +107,7 @@ const SubCategoryForm: React.FC<{ mode?: SubCategoryFormMode }> = ({ mode }) => 
         if (xhr.status === 200) {
           const data = JSON.parse(xhr.responseText);
           if (data.url) {
-            setPreview(data.url);
+
             setForm(prev => ({ ...prev, image: data.url }));
             resolve(data.url);
           } else {
