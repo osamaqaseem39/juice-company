@@ -95,6 +95,12 @@ if (process.env.NODE_ENV !== 'production') {
 const connectDB = async () => {
   try {
     const mongoURI = process.env.MONGODB_URI;
+    
+    if (!mongoURI) {
+      console.error('❌ MONGODB_URI environment variable is not set');
+      return false;
+    }
+    
     console.log('Attempting to connect to MongoDB...');
     console.log('MongoDB URI:', mongoURI.replace(/\/\/[^:]+:[^@]+@/, '//****:****@')); // Hide credentials in logs
 
@@ -264,7 +270,15 @@ const startServer = async () => {
 
   if (!connected) {
     console.error('Failed to connect to MongoDB after multiple attempts');
-    process.exit(1);
+    console.error('Please check your MONGODB_URI environment variable');
+    console.error('For Vercel deployment, set MONGODB_URI in your project settings');
+    
+    // In production, we might want to start the server anyway for health checks
+    if (process.env.NODE_ENV === 'production') {
+      console.log('Starting server in degraded mode (no database connection)');
+    } else {
+      process.exit(1);
+    }
   }
 
   // Start Apollo Server
