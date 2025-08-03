@@ -6,13 +6,8 @@
       "use": "@vercel/node"
     },
     {
-      "src": "client/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build",
-        "installCommand": "npm ci --legacy-peer-deps",
-        "buildCommand": "CI=false GENERATE_SOURCEMAP=false npm run build"
-      }
+      "src": "client",
+      "use": "@vercel/static-build"
     }
   ],
   "routes": [
@@ -30,12 +25,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "client/build/$1"
+      "dest": "client/$1"
     }
-  ],
-  "functions": {
-    "server/server.js": {
-      "maxDuration": 30
-    }
-  }
+  ]
 } 
