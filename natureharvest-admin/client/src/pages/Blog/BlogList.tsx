@@ -1,43 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Blog, blogApi } from '../../services/api';
+import { Blog, useBlogs, useDeleteBlog } from '../../services/api';
 import { Modal } from '../../components/ui/modal';
 
 const BlogList: React.FC = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, loading, error, refetch } = useBlogs();
+  const [deleteBlog] = useDeleteBlog();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState<'title' | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
-
-  const fetchBlogs = async () => {
-    try {
-      const response = await blogApi.getAll();
-      setBlogs(response.data);
-      setError(null);
-    } catch (err) {
-      setError('Failed to fetch blogs. Please try again later.');
-      console.error('Error fetching blogs:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const blogs = data?.blogs || [];
 
   const handleDelete = async (_id: string) => {
     if (window.confirm('Are you sure you want to delete this blog?')) {
       try {
-        await blogApi.delete(_id);
-        setBlogs(blogs.filter(blog => blog._id !== _id));
-        setError(null);
+        await deleteBlog({ variables: { id: _id } });
+        refetch(); // Refetch the data after deletion
       } catch (err) {
-        setError('Failed to delete blog. Please try again later.');
         console.error('Error deleting blog:', err);
       }
     }
@@ -79,6 +61,14 @@ const BlogList: React.FC = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-red-500">Error: {error.message}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full p-4">
       <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
@@ -101,73 +91,115 @@ const BlogList: React.FC = () => {
             </Link>
           </div>
         </div>
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" style={{ color: '#062373' }}>
-            {error}
-          </div>
-        )}
-        {sorted.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full w-full border border-gray-200 rounded-lg text-[#062373]">
-              <thead className="text-[#062373]">
-                <tr className="bg-gray-100">
-                  <th className="px-4 py-2 border">Image</th>
-                  <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort('title')}>
-                    Title {sortKey === 'title' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
-                  </th>
-                  <th className="px-4 py-2 border">Date</th>
-                  <th className="px-4 py-2 border">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="text-[#062373]">
-                {sorted.map((blog) => (
-                  <tr key={blog._id} className="border-t">
-                    <td className="px-4 py-2 border">
-                      {blog.featuredImage && (
-                        <img
-                          src={blog.featuredImage.replace('server/', '')}
-                          alt={blog.title}
-                          className="w-16 h-16 object-cover rounded cursor-pointer"
-                          onClick={() => openModal(blog.featuredImage!)}
-                        />
-                      )}
-                    </td>
-                    <td className="px-4 py-2 border font-medium">{blog.title}</td>
-                    <td className="px-4 py-2 border text-xs text-gray-500">{new Date(blog.createdAt).toLocaleDateString()}</td>
-                    <td className="px-4 py-2 border">
+
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Image
+                </th>
+                <th 
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleSort('title')}
+                >
+                  Title
+                  {sortKey === 'title' && (
+                    <span className="ml-1">{sortDir === 'asc' ? '↑' : '↓'}</span>
+                  )}
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Created
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {sorted.map((blog) => (
+                <tr key={blog._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {blog.featuredImage ? (
+                      <img
+                        src={blog.featuredImage}
+                        alt={blog.title}
+                        className="h-12 w-12 object-cover rounded cursor-pointer"
+                        onClick={() => openModal(blog.featuredImage!)}
+                      />
+                    ) : (
+                      <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">No Image</span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{blog.title}</div>
+                    <div className="text-sm text-gray-500">{blog.slug}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                      blog.status === 'published' 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {blog.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(blog.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <div className="flex space-x-2">
                       <Link
                         to={`/blog/${blog.slug}`}
-                        className="px-3 py-1 rounded font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition mr-2"
+                        className="text-indigo-600 hover:text-indigo-900"
                       >
                         View
                       </Link>
                       <Link
                         to={`/blog/edit/${blog._id}`}
-                        className="px-3 py-1 rounded font-semibold bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition mr-2"
+                        className="text-green-600 hover:text-green-900"
                       >
                         Edit
                       </Link>
                       <button
                         onClick={() => handleDelete(blog._id)}
-                        className="px-3 py-1 rounded font-semibold bg-red-100 text-red-700 hover:bg-red-200 transition"
+                        className="text-red-600 hover:text-red-900"
                       >
                         Delete
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {sorted.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            No blogs found.
           </div>
-        ) : (
-          <div className="flex justify-center items-center h-64" style={{ color: '#062373' }}>No blog posts found.</div>
         )}
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} isFullscreen={false}>
-          {modalImg && (
-            <img src={modalImg} alt="Preview" className="max-h-[80vh] max-w-full rounded-lg mx-auto" />
-          )}
-        </Modal>
       </div>
+
+      {/* Image Modal */}
+      {modalOpen && modalImg && (
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+          <div className="p-4">
+            <img
+              src={modalImg}
+              alt="Blog featured image"
+              className="max-w-full max-h-96 object-contain"
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

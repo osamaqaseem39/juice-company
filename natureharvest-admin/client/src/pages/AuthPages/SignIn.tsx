@@ -9,7 +9,7 @@ import Label from "../../components/form/Label";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Button from "../../components/ui/button/Button";
 import PageMeta from "../../components/common/PageMeta";
-import { authApi } from "../../services/api";
+import { useLogin } from "../../services/api";
 
 interface LocationState {
   from?: {
@@ -22,6 +22,7 @@ export default function SignIn() {
   const location = useLocation();
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state: RootState) => state.auth);
+  const [loginMutation, { loading: mutationLoading }] = useLogin();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -41,18 +42,24 @@ export default function SignIn() {
     dispatch(loginStart());
 
     try {
-      const response = await authApi.login(formData);
-      dispatch(loginSuccess(response.data));
+      const response = await loginMutation({ variables: formData });
+      const authData = response.data?.login;
       
-      // Redirect to the page user tried to visit or home
-      const state = location.state as LocationState;
-      const from = state?.from?.pathname || "/";
-      navigate(from, { replace: true });
+      if (authData) {
+        dispatch(loginSuccess(authData));
+        
+        // Redirect to the page user tried to visit or home
+        const state = location.state as LocationState;
+        const from = state?.from?.pathname || "/";
+        navigate(from, { replace: true });
+      }
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Login failed';
+      const errorMessage = err.message || 'Login failed';
       dispatch(loginFailure(errorMessage));
     }
   };
+
+  const isLoading = loading || mutationLoading;
 
   return (
     <>
@@ -102,109 +109,66 @@ export default function SignIn() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit}>
-              <div className="space-y-5">
-                {/* Email */}
-                <div>
-                  <Label>
-                    Email<span className="text-error-500">*</span>
-                  </Label>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
                   <Input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="Enter your email"
                     required
                   />
-                </div>
-
-                {/* Password */}
-                <div>
-                  <Label>
-                    Password<span className="text-error-500">*</span>
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      placeholder="Enter your password"
-                      required
-                    />
-                    <span
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
-                    >
-                      {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
-                      ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
-                      )}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between">
-                  <Link
-                    to="/forgot-password"
-                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
                   >
-                    Forgot Password?
-                  </Link>
+                    {showPassword ? <EyeCloseIcon /> : <EyeIcon />}
+                  </button>
                 </div>
-
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={loading}
-                >
-                  {loading ? "Signing in..." : "Sign In"}
-                </Button>
               </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full"
+              >
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
             </form>
 
-            <div className="mt-5">
-              <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
                 Don't have an account?{" "}
                 <Link
                   to="/signup"
-                  className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  Sign Up
+                  Sign up
                 </Link>
               </p>
             </div>
           </div>
         </div>
 
-        <div className="relative items-center justify-center flex-1 hidden p-8 z-1 bg-brand-950 dark:bg-white/5 lg:flex">
-          <GridShape />
-          <div className="flex flex-col items-center max-w-xs">
-            <Link to="/" className="block mb-4">
-              <img
-                src="/images/logo/logo.png"
-                alt="Wingz Impex Logo"
-                className="dark:hidden"
-              />
-              <img
-                src="/images/logo/logo.png"
-                alt="Wingz Impex Logo"
-                className="hidden dark:block"
-              />
-            </Link>
-
-            <h2 className="mb-3 text-2xl font-semibold text-white dark:text-gray-900">
-              Welcome to Wingz Impex
-            </h2>
-            <p className="text-base text-center text-white/70 dark:text-gray-600">
-              Empowering global trade with Wingz Impex's innovative solutions
-            </p>
-          </div>
-        </div>
+        <GridShape />
       </div>
     </>
   );

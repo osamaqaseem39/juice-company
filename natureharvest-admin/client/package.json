@@ -2,6 +2,7 @@
   "name": "punjab-ac",
   "version": "2.0.0",
   "dependencies": {
+    "@apollo/client": "^3.13.9",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fullcalendar/core": "^6.1.15",
@@ -32,6 +33,7 @@
     "clsx": "^2.1.1",
     "flatpickr": "^4.6.13",
     "formik": "^2.4.6",
+    "graphql": "^16.11.0",
     "postcss": "^8.4.49",
     "react": "^18.2.0",
     "react-apexcharts": "^1.6.0",

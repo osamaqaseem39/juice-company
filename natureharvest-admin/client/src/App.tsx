@@ -1,6 +1,8 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Provider } from 'react-redux';
+import { ApolloProvider } from '@apollo/client';
 import { store } from './redux/store';
+import { client } from './services/graphqlClient';
 import AppLayout from "./layout/AppLayout";
 import AuthLayout from "./layout/AuthLayout";
 import SignIn from "./pages/AuthPages/SignIn";
@@ -27,60 +29,62 @@ import SubCategoryForm from './pages/Categories/SubCategoryForm';
 
 export default function App() {
   return (
-    <Provider store={store}>
-      <Router>
-        <Routes>
-          {/* Auth Layout - Public Routes */}
-          <Route element={<AuthLayout />}>
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-          </Route>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <Router>
+          <Routes>
+            {/* Auth Layout - Public Routes */}
+            <Route element={<AuthLayout />}>
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+            </Route>
 
-          {/* Protected Dashboard Layout */}
-          <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-            {/* Main Dashboard */}
-            <Route index element={<Ecommerce />} />
+            {/* Protected Dashboard Layout */}
+            <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+              {/* Main Dashboard */}
+              <Route index element={<Ecommerce />} />
 
-            {/* Blog Routes */}
-            <Route path="/blog" element={<BlogList />} />
-            <Route path="/blog/add" element={<BlogForm mode='add' />} />
-            <Route path="/blog/edit/:id" element={<BlogForm mode='edit' />} />
-            <Route path="/blog/:slug" element={<BlogDetail />} />
+              {/* Blog Routes */}
+              <Route path="/blog" element={<BlogList />} />
+              <Route path="/blog/add" element={<BlogForm mode='add' />} />
+              <Route path="/blog/edit/:id" element={<BlogForm mode='edit' />} />
+              <Route path="/blog/:slug" element={<BlogDetail />} />
 
-            {/* Products Routes */}
-            <Route path="/products" element={<ProductList />} />
-            <Route path="/products/add" element={<ProductForm />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/products/:id/edit" element={<ProductForm />} />
+              {/* Products Routes */}
+              <Route path="/products" element={<ProductList />} />
+              <Route path="/products/add" element={<ProductForm />} />
+              <Route path="/products/:id" element={<ProductDetail />} />
+              <Route path="/products/:id/edit" element={<ProductForm />} />
 
-            {/* Services Routes */}
-            <Route path="/services" element={<ServiceList />} />
-            <Route path="/services/add" element={<ServiceForm />} />
-            <Route path="/services/:id" element={<ServiceDetail />} />
-            <Route path="/services/:id/edit" element={<ServiceForm />} />
+              {/* Services Routes */}
+              <Route path="/services" element={<ServiceList />} />
+              <Route path="/services/add" element={<ServiceForm />} />
+              <Route path="/services/:id" element={<ServiceDetail />} />
+              <Route path="/services/:id/edit" element={<ServiceForm />} />
 
-            {/* Brand Routes */}
-            <Route path="/brands" element={<BrandList />} />
-            <Route path="/brands/add" element={<BrandForm mode='add' />} />
-            <Route path="/brands/:id/edit" element={<BrandForm mode='edit' />} />
+              {/* Brand Routes */}
+              <Route path="/brands" element={<BrandList />} />
+              <Route path="/brands/add" element={<BrandForm mode='add' />} />
+              <Route path="/brands/:id/edit" element={<BrandForm mode='edit' />} />
 
-            {/* Category Routes */}
-            <Route path="/categories" element={<CategoryList />} />
-            <Route path="/categories/add" element={<CategoryForm mode='add' />} />
-            <Route path="/categories/:id/edit" element={<CategoryForm mode='edit' />} />
+              {/* Category Routes */}
+              <Route path="/categories" element={<CategoryList />} />
+              <Route path="/categories/add" element={<CategoryForm mode='add' />} />
+              <Route path="/categories/:id/edit" element={<CategoryForm mode='edit' />} />
 
-            {/* Subcategory Routes */}
-            <Route path="/subcategories" element={<CategoryList isSubcategoryList={true} />} />
-            <Route path="/subcategories/add" element={<SubCategoryForm mode='add' />} />
-            <Route path="/subcategories/:id/edit" element={<SubCategoryForm mode='edit' />} />
+              {/* Subcategory Routes */}
+              <Route path="/subcategories" element={<CategoryList isSubcategoryList={true} />} />
+              <Route path="/subcategories/add" element={<SubCategoryForm mode='add' />} />
+              <Route path="/subcategories/:id/edit" element={<SubCategoryForm mode='edit' />} />
 
-            <Route path="/messages" element={<MessageList/>}/>
-          </Route>
+              <Route path="/messages" element={<MessageList/>}/>
+            </Route>
 
-          {/* Fallback Route */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-    </Provider>
+            {/* Fallback Route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </Provider>
+    </ApolloProvider>
   );
 }
