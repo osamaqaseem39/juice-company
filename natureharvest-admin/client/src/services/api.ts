@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://adminserver.wingzimpex.com/api';
+const BASE_URL = 'https://juice-company-server.vercel.app//api';
 
 // Add auth token to requests if it exists
 axios.interceptors.request.use((config) => {

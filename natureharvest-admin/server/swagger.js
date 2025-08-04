@@ -13,7 +13,7 @@ const options = {
     },
     servers: [
       {
-        url: 'https://adminserver.wingzimpex.com',
+        url: 'https://juice-company-server.vercel.app/',
         description: 'Production Server',
       },
       {
