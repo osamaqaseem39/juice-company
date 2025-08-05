@@ -11,8 +11,8 @@ const companyTypes = gql`
     contactPhone: String
     address: Address
     status: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
     brands: [Brand!]
   }
 
@@ -20,7 +20,7 @@ const companyTypes = gql`
     street: String
     city: String
     state: String
-    zipCode: String
+    zip: String
     country: String
   }
 
@@ -39,7 +39,7 @@ const companyTypes = gql`
     street: String
     city: String
     state: String
-    zipCode: String
+    zip: String
     country: String
   }
 

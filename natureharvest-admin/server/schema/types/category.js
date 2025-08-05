@@ -7,8 +7,8 @@ const categoryTypes = gql`
     description: String!
     image: String
     status: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
     subcategories: [SubCategory!]
   }
 
@@ -18,8 +18,8 @@ const categoryTypes = gql`
     description: String!
     category: Category!
     status: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
   }
 
   input CategoryInput {

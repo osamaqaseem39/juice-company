@@ -14,8 +14,8 @@ const brandTypes = gql`
     allergens: [String!]
     certifications: [String!]
     status: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
     company: Company
     flavors: [Flavor!]
   }

@@ -7,8 +7,8 @@ const userTypes = gql`
     email: String!
     password: String!
     role: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
   }
 
   type AuthPayload {

@@ -284,8 +284,22 @@ const startServer = async () => {
   // Start Apollo Server
   await server.start();
 
-  // Apply Apollo Server middleware
-  app.use('/graphql', expressMiddleware(server, {
+  // Apply Apollo Server middleware with CORS
+  app.use('/graphql', cors({
+    origin: '*',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-auth-token',
+      'Access-Control-Allow-Headers',
+      'Access-Control-Allow-Origin',
+      'Access-Control-Allow-Methods',
+      'Access-Control-Allow-Credentials',
+      'X-Requested-With'
+    ]
+  }), expressMiddleware(server, {
     context: async ({ req }) => {
       const auth = await graphqlAuth(req);
       return {

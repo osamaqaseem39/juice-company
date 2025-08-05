@@ -10,8 +10,8 @@ const blogTypes = gql`
     slug: String
     tags: [String!]
     status: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
   }
 
   input BlogInput {

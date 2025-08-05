@@ -32,7 +32,7 @@ const companySchema = new mongoose.Schema({
     street: String,
     city: String,
     state: String,
-    zipCode: String,
+    zip: String,
     country: String
   },
   status: {
