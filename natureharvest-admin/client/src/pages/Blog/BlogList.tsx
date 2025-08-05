@@ -31,10 +31,10 @@ const BlogList: React.FC = () => {
   };
 
   // Search and sort logic
-  const filtered = blogs.filter(b =>
+  const filtered = blogs.filter((b: Blog) =>
     b.title.toLowerCase().includes(search.toLowerCase())
   );
-  const sorted = [...filtered].sort((a, b) => {
+  const sorted = [...filtered].sort((a: Blog, b: Blog) => {
     if (!sortKey) return 0;
     const aVal = a[sortKey] || '';
     const bVal = b[sortKey] || '';
