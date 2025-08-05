@@ -40,14 +40,16 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
     status: 'draft'
   });
 
-  const generateSlug = (title: string): string => {
+  // Generate slug from title
+  const generateSlug = (title: string) => {
     return title
       .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '') // Remove special characters
-      .replace(/\s+/g, '-') // Replace spaces with dashes
-      .replace(/-+/g, '-'); // Replace multiple dashes with single dash
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-{2,}/g, '-');
   };
+
+
 
   const formatText = (text: string) => {
     // Replace headings

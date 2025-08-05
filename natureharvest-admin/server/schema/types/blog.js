@@ -5,8 +5,9 @@ const blogTypes = gql`
     _id: ID!
     title: String!
     content: String!
-    author: String!
-    image: String
+    author: String
+    featuredImage: String
+    slug: String
     tags: [String!]
     status: String!
     createdAt: String!
@@ -16,8 +17,8 @@ const blogTypes = gql`
   input BlogInput {
     title: String!
     content: String!
-    author: String!
-    image: String
+    author: String
+    featuredImage: String
     tags: [String!]
     status: String
   }
@@ -26,7 +27,7 @@ const blogTypes = gql`
     title: String
     content: String
     author: String
-    image: String
+    featuredImage: String
     tags: [String!]
     status: String
   }

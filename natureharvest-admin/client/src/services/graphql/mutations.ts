@@ -908,4 +908,59 @@ export const DELETE_SUBCATEGORY = gql`
   mutation DeleteSubcategory($id: ID!) {
     deleteCategory(id: $id)
   }
+`;
+
+// Company Mutations
+export const CREATE_COMPANY = gql`
+  mutation CreateCompany($input: CompanyInput!) {
+    createCompany(input: $input) {
+      _id
+      name
+      description
+      logoUrl
+      website
+      contactEmail
+      contactPhone
+      address {
+        street
+        city
+        state
+        zip
+        country
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_COMPANY = gql`
+  mutation UpdateCompany($id: ID!, $input: CompanyInput!) {
+    updateCompany(id: $id, input: $input) {
+      _id
+      name
+      description
+      logoUrl
+      website
+      contactEmail
+      contactPhone
+      address {
+        street
+        city
+        state
+        zip
+        country
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_COMPANY = gql`
+  mutation DeleteCompany($id: ID!) {
+    deleteCompany(id: $id)
+  }
 `; 

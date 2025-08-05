@@ -57,10 +57,7 @@ const ProductForm: React.FC = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState<Partial<Product>>({ name: '', description: '', images: [] });
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
-  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [previewFeatured, setPreviewFeatured] = useState<string | null>(null);
-  const [previewGallery, setPreviewGallery] = useState<string[]>([]);
-  const [existingGallery, setExistingGallery] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -86,10 +83,7 @@ const ProductForm: React.FC = () => {
     } else {
       setProduct({ name: '', description: '', images: [] });
       setFeaturedImageFile(null);
-      setGalleryFiles([]);
       setPreviewFeatured(null);
-      setPreviewGallery([]);
-      setExistingGallery([]);
     }
   }, [id]);
 
@@ -214,28 +208,7 @@ const ProductForm: React.FC = () => {
     }
   };
 
-  const handleGalleryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setGalleryFiles(prev => [...prev, ...files]);
-    
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreviewGallery(prev => [...prev, e.target?.result as string]);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
 
-  const removeGalleryImage = (index: number) => {
-    setGalleryFiles(prev => prev.filter((_, i) => i !== index));
-    setPreviewGallery(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const removeExistingGalleryImage = (index: number) => {
-    setExistingGallery(prev => prev.filter((_, i) => i !== index));
-    setPreviewGallery(prev => prev.filter((_, i) => i !== index));
-  };
 
   if (loading) {
     return (
@@ -373,44 +346,7 @@ const ProductForm: React.FC = () => {
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Gallery Images</label>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleGalleryChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              {(previewGallery.length > 0 || existingGallery.length > 0) && (
-                <div className="mt-2 grid grid-cols-4 gap-2">
-                  {existingGallery.map((url, index) => (
-                    <div key={`existing-${index}`} className="relative">
-                      <img src={url} alt={`Gallery ${index}`} className="w-32 h-32 object-cover rounded" />
-                      <button
-                        type="button"
-                        onClick={() => removeExistingGalleryImage(index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                  {previewGallery.map((url, index) => (
-                    <div key={`new-${index}`} className="relative">
-                      <img src={url} alt={`Gallery ${index}`} className="w-32 h-32 object-cover rounded" />
-                      <button
-                        type="button"
-                        onClick={() => removeGalleryImage(index)}
-                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+
 
             <div className="flex justify-end space-x-4">
               <Link
