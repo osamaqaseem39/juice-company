@@ -159,7 +159,7 @@ const ServiceList: React.FC = () => {
             <div className="p-4">
               <img
                 src={modalImg}
-                alt="Service image"
+                alt="Service"
                 className="max-w-full max-h-96 object-contain"
               />
             </div>

@@ -192,11 +192,11 @@ const BlogList: React.FC = () => {
       {modalOpen && modalImg && (
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
           <div className="p-4">
-            <img
-              src={modalImg}
-              alt="Blog featured image"
-              className="max-w-full max-h-96 object-contain"
-            />
+                         <img
+               src={modalImg}
+               alt="Featured"
+               className="max-w-full max-h-96 object-contain"
+             />
           </div>
         </Modal>
       )}

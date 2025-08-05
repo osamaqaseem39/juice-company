@@ -1,5 +1,5 @@
 import { client } from './graphqlClient';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import * as Queries from './graphql/queries';
 import * as Mutations from './graphql/mutations';
 

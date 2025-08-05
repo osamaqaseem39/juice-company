@@ -170,7 +170,7 @@ const ProductList: React.FC = () => {
             <div className="p-4">
               <img
                 src={modalImg}
-                alt="Product image"
+                alt="Product"
                 className="max-w-full max-h-96 object-contain"
               />
             </div>

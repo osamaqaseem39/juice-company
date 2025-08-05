@@ -1,10 +1,7 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 
 const AppSidebar: React.FC = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
 
   const menuItems = [
