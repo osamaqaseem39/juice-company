@@ -22,6 +22,7 @@ export interface CreateBlogInput {
   content: string;
   author?: string;
   featuredImage?: string;
+  slug?: string;
   tags?: string[];
   status?: string;
 }

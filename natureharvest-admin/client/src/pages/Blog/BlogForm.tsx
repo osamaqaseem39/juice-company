@@ -117,8 +117,8 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
       if (featuredImageFile instanceof File) {
         featuredImageUrl = await uploadBlogImage(featuredImageFile);
       }
-      // Generate slug from title if not provided
-      const slug = formData.slug || generateSlug(formData.title);
+      // Generate slug from title
+      const slug = generateSlug(formData.title);
       // Always set featuredImage, even if empty
       const payload = {
         ...formData,
