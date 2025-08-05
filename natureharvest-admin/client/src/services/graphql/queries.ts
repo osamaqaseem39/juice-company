@@ -7,7 +7,7 @@ export const GET_ALL_BLOGS = gql`
       title
       content
       author
-      image
+      featuredImage
       tags
       status
       createdAt
@@ -23,7 +23,7 @@ export const GET_BLOG_BY_ID = gql`
       title
       content
       author
-      image
+      featuredImage
       tags
       status
       createdAt
@@ -39,7 +39,7 @@ export const GET_BLOG_BY_SLUG = gql`
       title
       content
       author
-      image
+      featuredImage
       tags
       status
       createdAt
@@ -52,12 +52,17 @@ export const GET_ALL_PRODUCTS = gql`
   query GetAllProducts {
     products {
       _id
-      title
+      name
       description
-      image
-      brand
-      category
-      subCategory
+      images
+      brand {
+        _id
+        name
+      }
+      category {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -68,12 +73,17 @@ export const GET_PRODUCT_BY_ID = gql`
   query GetProductById($id: ID!) {
     product(id: $id) {
       _id
-      title
+      name
       description
-      image
-      brand
-      category
-      subCategory
+      images
+      brand {
+        _id
+        name
+      }
+      category {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -84,9 +94,11 @@ export const GET_ALL_SERVICES = gql`
   query GetAllServices {
     services {
       _id
-      title
+      name
       description
-      image
+      price
+      duration
+      status
       createdAt
       updatedAt
     }
@@ -97,9 +109,11 @@ export const GET_SERVICE_BY_ID = gql`
   query GetServiceById($id: ID!) {
     service(id: $id) {
       _id
-      title
+      name
       description
-      image
+      price
+      duration
+      status
       createdAt
       updatedAt
     }
@@ -111,8 +125,10 @@ export const GET_ALL_BRANDS = gql`
     brands {
       _id
       name
-      image
+      logoUrl
       description
+      category
+      status
       createdAt
       updatedAt
     }
@@ -124,8 +140,10 @@ export const GET_BRAND_BY_ID = gql`
     brand(id: $id) {
       _id
       name
-      image
+      logoUrl
       description
+      category
+      status
       createdAt
       updatedAt
     }
@@ -139,7 +157,7 @@ export const GET_ALL_CATEGORIES = gql`
       name
       image
       description
-      parent
+      status
       createdAt
       updatedAt
     }
@@ -153,7 +171,7 @@ export const GET_CATEGORY_BY_ID = gql`
       name
       image
       description
-      parent
+      status
       createdAt
       updatedAt
     }
@@ -167,7 +185,11 @@ export const GET_ALL_SUBCATEGORIES = gql`
       name
       image
       description
-      parent
+      category {
+        _id
+        name
+      }
+      status
       createdAt
       updatedAt
     }
@@ -181,7 +203,11 @@ export const GET_SUBCATEGORY_BY_ID = gql`
       name
       image
       description
-      parent
+      category {
+        _id
+        name
+      }
+      status
       createdAt
       updatedAt
     }
