@@ -8,26 +8,30 @@ export interface Blog {
   _id: string;
   title: string;
   content: string;
-  status: 'draft' | 'published';
-  slug: string;
+  author: string;
+  image?: string;
+  tags?: string[];
+  status: string;
   createdAt: string;
   updatedAt: string;
-  featuredImage?: string;
 }
 
 export interface CreateBlogInput {
   title: string;
   content: string;
-  status: 'draft' | 'published';
-  slug: string;
-  featuredImage?: string;
+  author: string;
+  image?: string;
+  tags?: string[];
+  status?: string;
 }
 
 export interface UpdateBlogInput {
-  title: string;
-  content: string;
-  status: 'draft' | 'published';
-  featuredImage?: string;
+  title?: string;
+  content?: string;
+  author?: string;
+  image?: string;
+  tags?: string[];
+  status?: string;
 }
 
 export interface LoginInput {
@@ -52,18 +56,18 @@ export interface Product {
   _id: string;
   title: string;
   description: string;
-  featuredImage?: string;
-  gallery?: string[];
+  image?: string;
   brand?: string;
   category?: string;
   subCategory?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateProductInput {
   title: string;
   description: string;
-  featuredImage?: File;
-  gallery?: File[];
+  image?: string;
   brand?: string;
   category?: string;
   subCategory?: string;
@@ -72,8 +76,7 @@ export interface CreateProductInput {
 export interface UpdateProductInput {
   title?: string;
   description?: string;
-  featuredImage?: File;
-  gallery?: File[];
+  image?: string;
   brand?: string;
   category?: string;
   subCategory?: string;
@@ -83,19 +86,21 @@ export interface Service {
   _id: string;
   title: string;
   description: string;
-  featuredImage?: string;
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateServiceInput {
   title: string;
   description: string;
-  featuredImage?: string;
+  image?: string;
 }
 
 export interface UpdateServiceInput {
   title?: string;
   description?: string;
-  featuredImage?: string;
+  image?: string;
 }
 
 export interface Quote {
@@ -107,6 +112,7 @@ export interface Quote {
   image?: string;
   status: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface SupplierRequest {
@@ -130,6 +136,7 @@ export interface SupplierRequest {
   message?: string;
   newsletterSubscribed?: boolean;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface Brand {
@@ -138,6 +145,7 @@ export interface Brand {
   image?: string;
   description?: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface Category {
@@ -147,6 +155,7 @@ export interface Category {
   description?: string;
   parent?: Category | string | null;
   createdAt: string;
+  updatedAt: string;
 }
 
 export interface SubCategory extends Category {}

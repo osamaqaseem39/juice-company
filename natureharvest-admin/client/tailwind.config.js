@@ -6,6 +6,13 @@ module.exports = {
   theme: {
     fontFamily: {
       outfit: ["Outfit", "sans-serif"],
+      poppins: ["Poppins", "sans-serif"],
+      nunito: ["Nunito", "sans-serif"],
+      playfair: ["Playfair Display", "serif"],
+      gazpacho: ["Gazpacho", "sans-serif"],
+      montserrat: ["Montserrat", "sans-serif"],
+      geist: ["Geist", "sans-serif"],
+      lilita: ["Lilita One", "cursive"],
     },
     screens: {
       "2xsm": "375px",
@@ -29,6 +36,92 @@ module.exports = {
         transparent: "transparent",
         white: "#FFFFFF",
         black: "#101828",
+        // Nature Harvest Logo Colors
+        logo: {
+          red: "#ee2123",
+          black: "#000000",
+          green: "#1aa64f",
+          sun: {
+            yellow: "#FFD700",
+            green: "#2DBD30",
+            orange: "#F7941D",
+          },
+          leaf: {
+            dark: "#007A3D",
+            light: "#66BB44",
+          },
+        },
+        // Primary brand colors
+        primary: {
+          50: "#fef2f2",
+          100: "#fee2e2",
+          200: "#fecaca",
+          300: "#fca5a5",
+          400: "#f87171",
+          500: "#E11B22",
+          600: "#dc2626",
+          700: "#b91c1c",
+          800: "#991b1b",
+          900: "#7f1d1d",
+        },
+        // Secondary green colors
+        secondary: {
+          50: "#f0fdf4",
+          100: "#dcfce7",
+          200: "#bbf7d0",
+          300: "#86efac",
+          400: "#4ade80",
+          500: "#2DBD30",
+          600: "#16a34a",
+          700: "#15803d",
+          800: "#166534",
+          900: "#14532d",
+        },
+        // Leaf colors
+        leaf: {
+          dark: "#007A3D",
+          light: "#66BB44",
+          50: "#f0fdf4",
+          100: "#dcfce7",
+          200: "#bbf7d0",
+          300: "#86efac",
+          400: "#4ade80",
+          500: "#66BB44",
+          600: "#16a34a",
+          700: "#15803d",
+          800: "#166534",
+          900: "#14532d",
+        },
+        // Sun colors
+        sun: {
+          yellow: "#FFD700",
+          green: "#2DBD30",
+          orange: "#F7941D",
+          50: "#fefce8",
+          100: "#fef9c3",
+          200: "#fef08a",
+          300: "#fde047",
+          400: "#facc15",
+          500: "#FFD700",
+          600: "#ca8a04",
+          700: "#a16207",
+          800: "#854d0e",
+          900: "#713f12",
+        },
+        // Natural earth tones
+        natural: {
+          50: "#fafaf9",
+          100: "#f5f5f4",
+          200: "#e7e5e4",
+          300: "#d6d3d1",
+          400: "#a8a29e",
+          500: "#78716c",
+          600: "#57534e",
+          700: "#44403c",
+          800: "#292524",
+          900: "#1c1917",
+        },
+        // Original brand colors (keeping for compatibility)
         brand: {
           25: "#F2F7FF",
           50: "#ECF3FF",
