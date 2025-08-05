@@ -56,7 +56,6 @@ const ServiceForm: React.FC = () => {
         .finally(() => setLoading(false));
     } else {
       setForm({ title: '', description: '', featuredImage: '' });
-      setFeaturedImageFile(null);
       setPreviewFeatured(null);
     }
   }, [isEdit, id]);
@@ -72,8 +71,13 @@ const ServiceForm: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
+      let featuredImageUrl = form.featuredImage;
+      if (featuredImageFile instanceof File) {
+        featuredImageUrl = await uploadServiceImage(featuredImageFile);
+      }
       const payload = {
         ...form,
+        featuredImage: featuredImageUrl,
       };
       // Debug log
       console.log('Submitting service:', payload);
@@ -127,8 +131,9 @@ const ServiceForm: React.FC = () => {
             accept="image/*"
             onChange={async (e) => {
               if (e.target.files && e.target.files[0]) {
-                const url = await uploadServiceImage(e.target.files[0]);
-                setFeaturedImageFile(null);
+                const file = e.target.files[0];
+                setFeaturedImageFile(file);
+                const url = await uploadServiceImage(file);
                 setPreviewFeatured(url);
                 setForm(prev => ({ ...prev, featuredImage: url }));
               }

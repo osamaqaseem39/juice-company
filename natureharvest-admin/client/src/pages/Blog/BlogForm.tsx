@@ -40,14 +40,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
     status: 'draft'
   });
 
-  // Generate slug from title
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .replace(/-{2,}/g, '-');
-  };
+
 
 
 
@@ -124,9 +117,12 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
       if (featuredImageFile instanceof File) {
         featuredImageUrl = await uploadBlogImage(featuredImageFile);
       }
+      // Generate slug from title if not provided
+      const slug = formData.slug || generateSlug(formData.title);
       // Always set featuredImage, even if empty
       const payload = {
         ...formData,
+        slug,
         featuredImage: featuredImageUrl || '',
       };
       // Debug log
