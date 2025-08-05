@@ -34,6 +34,15 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
   const [preview, setPreview] = useState('');
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
   const [previewFeatured, setPreviewFeatured] = useState<string | null>(null);
+
+  // Generate slug from title
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-{2,}/g, '-');
+  };
   const [formData, setFormData] = useState<CreateBlogInput>({
     title: '',
     content: '',
