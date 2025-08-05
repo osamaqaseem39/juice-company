@@ -55,7 +55,7 @@ function formatText(text: string) {
 const ProductForm: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<Partial<Product>>({ title: '', description: '', featuredImage: '', gallery: [] });
+  const [product, setProduct] = useState<Partial<Product>>({ name: '', description: '', images: [] });
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [previewFeatured, setPreviewFeatured] = useState<string | null>(null);
@@ -84,7 +84,7 @@ const ProductForm: React.FC = () => {
       // For now, we'll set loading to false and handle this later
       setLoading(false);
     } else {
-      setProduct({ title: '', description: '', featuredImage: '', gallery: [] });
+      setProduct({ name: '', description: '', images: [] });
       setFeaturedImageFile(null);
       setGalleryFiles([]);
       setPreviewFeatured(null);
@@ -176,21 +176,15 @@ const ProductForm: React.FC = () => {
     setSubmitting(true);
 
     try {
-      let featuredImageUrl = product.featuredImage || '';
+      let images = product.images || [];
       if (featuredImageFile) {
-        featuredImageUrl = await uploadProductImage(featuredImageFile);
-      }
-
-      const galleryUrls = [...existingGallery];
-      for (const file of galleryFiles) {
-        const url = await uploadProductImage(file);
-        galleryUrls.push(url);
+        const imageUrl = await uploadProductImage(featuredImageFile);
+        images = [imageUrl];
       }
 
       const productData = {
         ...product,
-        featuredImage: featuredImageUrl,
-        gallery: galleryUrls,
+        images,
       };
 
       if (id) {
@@ -274,8 +268,8 @@ const ProductForm: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">Product Title *</label>
                 <input
                   type="text"
-                  name="title"
-                  value={product.title}
+                  name="name"
+                  value={product.name}
                   onChange={handleChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

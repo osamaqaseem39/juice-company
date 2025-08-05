@@ -80,10 +80,10 @@ export default function Ecommerce() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {products.slice(0, 3).map(product => (
                 <div key={product._id} className="bg-white dark:bg-gray-900 shadow rounded-lg p-4 flex flex-col">
-                  {product.featuredImage && (
-                    <img src={product.featuredImage.replace('server/', '')} alt={product.title} className="h-32 w-full object-cover rounded mb-2" />
+                  {product.images && product.images.length > 0 && (
+                    <img src={product.images[0].replace('server/', '')} alt={product.name} className="h-32 w-full object-cover rounded mb-2" />
                   )}
-                  <h3 className="font-semibold text-lg mb-1">{product.title}</h3>
+                  <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
                   <p className="text-gray-600 text-sm line-clamp-2 mb-2">{product.description}</p>
                   <Link to={`/products/${product._id}`} className="text-indigo-600 text-sm hover:underline mt-auto">View</Link>
                 </div>
@@ -117,10 +117,7 @@ export default function Ecommerce() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {services.slice(0, 3).map(service => (
                 <div key={service._id} className="bg-white dark:bg-gray-900 shadow rounded-lg p-4 flex flex-col">
-                  {service.featuredImage && (
-                    <img src={service.featuredImage.replace('server/', '')} alt={service.title} className="h-32 w-full object-cover rounded mb-2" />
-                  )}
-                  <h3 className="font-semibold text-lg mb-1">{service.title}</h3>
+                  <h3 className="font-semibold text-lg mb-1">{service.name}</h3>
                   <p className="text-gray-600 text-sm line-clamp-2 mb-2">{service.description}</p>
                   <Link to={`/services/${service._id}`} className="text-indigo-600 text-sm hover:underline mt-auto">View</Link>
                 </div>

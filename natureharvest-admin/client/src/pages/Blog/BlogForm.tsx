@@ -37,8 +37,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
   const [formData, setFormData] = useState<CreateBlogInput>({
     title: '',
     content: '',
-    status: 'draft',
-    slug: ''
+    status: 'draft'
   });
 
   const generateSlug = (title: string): string => {
@@ -98,10 +97,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
         try {
           const response = await blogApi.getById(id);
           const { slug, ...blogData } = response.data;
-          setFormData({
-            ...blogData,
-            slug
-          });
+          setFormData(blogData);
           setPreviewFeatured(response.data.featuredImage || null);
           setError(null);
         } catch (err) {
@@ -122,7 +118,6 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
     setError(null);
 
     try {
-      const slug = generateSlug(formData.title);
       let featuredImageUrl = formData.featuredImage;
       if (featuredImageFile instanceof File) {
         featuredImageUrl = await uploadBlogImage(featuredImageFile);
@@ -130,7 +125,6 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
       // Always set featuredImage, even if empty
       const payload = {
         ...formData,
-        slug,
         featuredImage: featuredImageUrl || '',
       };
       // Debug log
@@ -154,8 +148,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value,
-      ...(name === 'title' ? { slug: generateSlug(value) } : {})
+      [name]: value
     }));
   };
 

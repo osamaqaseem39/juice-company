@@ -126,12 +126,12 @@ const BlogList: React.FC = () => {
               {sorted.map((blog) => (
                 <tr key={blog._id} className="hover:bg-leaf-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {blog.image ? (
+                    {blog.featuredImage ? (
                       <img
-                        src={blog.image}
+                        src={blog.featuredImage}
                         alt={blog.title}
                         className="h-12 w-12 object-cover rounded cursor-pointer border border-gray-200"
-                        onClick={() => openModal(blog.image!)}
+                        onClick={() => openModal(blog.featuredImage!)}
                       />
                     ) : (
                       <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center">

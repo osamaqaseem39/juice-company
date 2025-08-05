@@ -9,7 +9,8 @@ export interface Blog {
   title: string;
   content: string;
   author: string;
-  image?: string;
+  featuredImage?: string;
+  slug?: string;
   tags?: string[];
   status: string;
   createdAt: string;
@@ -19,8 +20,8 @@ export interface Blog {
 export interface CreateBlogInput {
   title: string;
   content: string;
-  author: string;
-  image?: string;
+  author?: string;
+  featuredImage?: string;
   tags?: string[];
   status?: string;
 }
@@ -29,7 +30,7 @@ export interface UpdateBlogInput {
   title?: string;
   content?: string;
   author?: string;
-  image?: string;
+  featuredImage?: string;
   tags?: string[];
   status?: string;
 }
@@ -54,9 +55,9 @@ export interface AuthResponse {
 
 export interface Product {
   _id: string;
-  title: string;
+  name: string;
   description: string;
-  image?: string;
+  images?: string[];
   brand?: string;
   category?: string;
   subCategory?: string;
@@ -84,23 +85,20 @@ export interface UpdateProductInput {
 
 export interface Service {
   _id: string;
-  title: string;
+  name: string;
   description: string;
-  image?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateServiceInput {
-  title: string;
+  name: string;
   description: string;
-  image?: string;
 }
 
 export interface UpdateServiceInput {
-  title?: string;
+  name?: string;
   description?: string;
-  image?: string;
 }
 
 export interface Quote {

@@ -45,9 +45,8 @@ const ServiceForm: React.FC = () => {
   const isEdit = Boolean(id);
 
   const [form, setForm] = useState<CreateServiceInput>({
-    title: '',
-    description: '',
-    featuredImage: ''
+    name: '',
+    description: ''
   });
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
   const [previewFeatured, setPreviewFeatured] = useState<string | null>(null);
@@ -60,16 +59,15 @@ const ServiceForm: React.FC = () => {
       serviceApi.getById(id)
         .then(res => {
           setForm({
-            title: res.data.title,
-            description: res.data.description,
-            featuredImage: res.data.featuredImage || ''
+            name: res.data.name,
+            description: res.data.description
           });
           setPreviewFeatured(res.data.featuredImage ? res.data.featuredImage : null);
         })
         .catch(() => setError('Failed to load service'))
         .finally(() => setLoading(false));
     } else {
-      setForm({ title: '', description: '', featuredImage: '' });
+      setForm({ name: '', description: '' });
       setFeaturedImageFile(null);
       setPreviewFeatured(null);
     }
@@ -86,14 +84,8 @@ const ServiceForm: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      let featuredImageUrl = form.featuredImage;
-      if (featuredImageFile instanceof File) {
-        featuredImageUrl = await uploadToCpanel(featuredImageFile);
-      }
-      // Always set featuredImage, even if empty
       const payload = {
         ...form,
-        featuredImage: featuredImageUrl || '',
       };
       // Debug log
       console.log('Submitting service:', payload);
@@ -101,7 +93,7 @@ const ServiceForm: React.FC = () => {
         await serviceApi.update(id, payload as UpdateServiceInput);
       } else {
         await serviceApi.create(payload);
-        setForm({ title: '', description: '', featuredImage: '' });
+        setForm({ name: '', description: '' });
         setFeaturedImageFile(null);
         setPreviewFeatured(null);
       }
@@ -122,8 +114,8 @@ const ServiceForm: React.FC = () => {
           <label className="block mb-1 font-semibold">Title</label>
           <input
             type="text"
-            name="title"
-            value={form.title}
+            name="name"
+            value={form.name}
             onChange={handleChange}
             className="w-full border rounded px-3 py-2"
             required

@@ -29,31 +29,15 @@ const ProductDetail: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto p-4">
       <div className="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6">
-        <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">{product.title}</h1>
+        <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">{product.name}</h1>
         <p className="mb-4 text-gray-700 dark:text-gray-300 text-lg">{product.description}</p>
-        {product.featuredImage && (
+        {product.images && product.images.length > 0 && (
           <img
-            src={product.featuredImage.replace('server/', '')}
-            alt={product.title}
+            src={product.images[0].replace('server/', '')}
+            alt={product.name}
             className="w-full h-72 object-cover rounded-lg mb-4 cursor-pointer transition-transform hover:scale-105"
-            onClick={() => openModal(product.featuredImage!)}
+            onClick={() => openModal(product.images![0]!)}
           />
-        )}
-        {product.gallery && product.gallery.length > 0 && (
-          <div className="mb-4">
-            <h2 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Gallery</h2>
-            <div className="grid grid-cols-3 gap-2">
-              {product.gallery.map((img, idx) => (
-                <img
-                  key={idx}
-                  src={img.replace('server/', '')}
-                  alt={`Gallery ${idx + 1}`}
-                  className="h-24 w-full object-cover rounded cursor-pointer transition-transform hover:scale-105"
-                  onClick={() => openModal(img)}
-                />
-              ))}
-            </div>
-          </div>
         )}
         <Link
           to="/products"

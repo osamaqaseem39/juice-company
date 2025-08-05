@@ -11,7 +11,7 @@ const ProductList: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [sortKey, setSortKey] = useState<'title' | 'brand' | ''>('');
+  const [sortKey, setSortKey] = useState<'name' | 'brand' | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
   const products = data?.products || [];
@@ -41,7 +41,7 @@ const ProductList: React.FC = () => {
 
   // Search and sort logic
   const filtered = products.filter((p: Product) =>
-    p.title.toLowerCase().includes(search.toLowerCase())
+    p.name.toLowerCase().includes(search.toLowerCase())
   );
   const sorted = [...filtered].sort((a: Product, b: Product) => {
     if (!sortKey) return 0;
@@ -53,7 +53,7 @@ const ProductList: React.FC = () => {
     return 0;
   });
 
-  const handleSort = (key: 'title' | 'brand') => {
+  const handleSort = (key: 'name' | 'brand') => {
     if (sortKey === key) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
@@ -106,8 +106,8 @@ const ProductList: React.FC = () => {
                 <thead className="text-logo-black bg-leaf-light">
                   <tr className="border-b border-gray-200">
                     <th className="px-4 py-2 border font-poppins font-medium">Image</th>
-                    <th className="px-4 py-2 border cursor-pointer font-poppins font-medium" onClick={() => handleSort('title')}>
-                      Name {sortKey === 'title' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
+                    <th className="px-4 py-2 border cursor-pointer font-poppins font-medium" onClick={() => handleSort('name')}>
+                      Name {sortKey === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
                     </th>
                     <th className="px-4 py-2 border cursor-pointer font-poppins font-medium" onClick={() => handleSort('brand')}>
                       Brand {sortKey === 'brand' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
@@ -120,16 +120,16 @@ const ProductList: React.FC = () => {
                   {sorted.map((product) => (
                     <tr key={product._id} className="border-t hover:bg-leaf-50 transition-colors">
                       <td className="px-4 py-2 border">
-                        {product.image && (
+                        {product.images && product.images.length > 0 && (
                           <img
-                            src={product.image.replace('server/', '')}
-                            alt={product.title}
+                            src={product.images[0].replace('server/', '')}
+                            alt={product.name}
                             className="w-16 h-16 object-cover rounded cursor-pointer border border-gray-200"
-                            onClick={() => openModal(product.image!)}
+                            onClick={() => openModal(product.images![0]!)}
                           />
                         )}
                       </td>
-                      <td className="px-4 py-2 border font-medium font-poppins">{product.title}</td>
+                      <td className="px-4 py-2 border font-medium font-poppins">{product.name}</td>
                       <td className="px-4 py-2 border font-poppins">{brandMap[product.brand || ''] || 'N/A'}</td>
                       <td className="px-4 py-2 border font-poppins">{product.category || 'N/A'}</td>
                       <td className="px-4 py-2 border">
