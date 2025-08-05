@@ -4,32 +4,81 @@ import { gql } from '@apollo/client';
 export const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
+      _id
+      fullName
+      email
+      phone
+      roles
       token
-      user {
-        id
-        username
-        email
-      }
+      isActive
     }
   }
 `;
 
 export const REGISTER = gql`
-  mutation Register($username: String!, $email: String!, $password: String!) {
-    register(username: $username, email: $email, password: $password) {
+  mutation Register($input: UserInput!) {
+    register(input: $input) {
+      _id
+      fullName
+      email
+      phone
+      roles
       token
-      user {
-        id
-        username
-        email
-      }
+      isActive
     }
+  }
+`;
+
+export const CREATE_USER = gql`
+  mutation CreateUser($input: UserInput!) {
+    createUser(input: $input) {
+      _id
+      fullName
+      email
+      phone
+      roles
+      isActive
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($id: ID!, $input: UserInput!) {
+    updateUser(id: $id, input: $input) {
+      _id
+      fullName
+      email
+      phone
+      roles
+      addresses {
+        _id
+        fullName
+        phone
+        street
+        city
+        state
+        postalCode
+        country
+        isDefault
+      }
+      isActive
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_USER = gql`
+  mutation DeleteUser($id: ID!) {
+    deleteUser(id: $id)
   }
 `;
 
 // Blog Mutations
 export const CREATE_BLOG = gql`
-  mutation CreateBlog($input: CreateBlogInput!) {
+  mutation CreateBlog($input: BlogInput!) {
     createBlog(input: $input) {
       _id
       title
@@ -44,7 +93,7 @@ export const CREATE_BLOG = gql`
 `;
 
 export const UPDATE_BLOG = gql`
-  mutation UpdateBlog($id: ID!, $input: UpdateBlogInput!) {
+  mutation UpdateBlog($id: ID!, $input: BlogInput!) {
     updateBlog(id: $id, input: $input) {
       _id
       title
@@ -60,172 +109,157 @@ export const UPDATE_BLOG = gql`
 
 export const DELETE_BLOG = gql`
   mutation DeleteBlog($id: ID!) {
-    deleteBlog(id: $id) {
-      _id
-      title
-    }
+    deleteBlog(id: $id)
   }
 `;
 
 // Product Mutations
 export const CREATE_PRODUCT = gql`
-  mutation CreateProduct($input: CreateProductInput!) {
+  mutation CreateProduct($input: ProductInput!) {
     createProduct(input: $input) {
       _id
-      title
+      name
+      slug
       description
-      featuredImage
-      gallery
-      brand
-      category
-      subCategory
+      categoryId {
+        _id
+        name
+        slug
+      }
+      brandId {
+        _id
+        name
+      }
+      variants {
+        _id
+        sku
+        price
+        compareAtPrice
+        quantity
+        color
+        size
+        weight
+        images
+        isActive
+      }
+      images
+      tags
+      seo {
+        title
+        description
+        keywords
+        slug
+        canonicalUrl
+        ogImage
+        noIndex
+        noFollow
+      }
+      isActive
+      createdAt
+      updatedAt
     }
   }
 `;
 
 export const UPDATE_PRODUCT = gql`
-  mutation UpdateProduct($id: ID!, $input: UpdateProductInput!) {
+  mutation UpdateProduct($id: ID!, $input: ProductInput!) {
     updateProduct(id: $id, input: $input) {
       _id
-      title
+      name
+      slug
       description
-      featuredImage
-      gallery
-      brand
-      category
-      subCategory
+      categoryId {
+        _id
+        name
+        slug
+      }
+      brandId {
+        _id
+        name
+      }
+      variants {
+        _id
+        sku
+        price
+        compareAtPrice
+        quantity
+        color
+        size
+        weight
+        images
+        isActive
+      }
+      images
+      tags
+      seo {
+        title
+        description
+        keywords
+        slug
+        canonicalUrl
+        ogImage
+        noIndex
+        noFollow
+      }
+      isActive
+      createdAt
+      updatedAt
     }
   }
 `;
 
 export const DELETE_PRODUCT = gql`
   mutation DeleteProduct($id: ID!) {
-    deleteProduct(id: $id) {
-      _id
-      title
-    }
-  }
-`;
-
-// Service Mutations
-export const CREATE_SERVICE = gql`
-  mutation CreateService($input: CreateServiceInput!) {
-    createService(input: $input) {
-      _id
-      title
-      description
-      featuredImage
-    }
-  }
-`;
-
-export const UPDATE_SERVICE = gql`
-  mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
-    updateService(id: $id, input: $input) {
-      _id
-      title
-      description
-      featuredImage
-    }
-  }
-`;
-
-export const DELETE_SERVICE = gql`
-  mutation DeleteService($id: ID!) {
-    deleteService(id: $id) {
-      _id
-      title
-    }
-  }
-`;
-
-// Quote Mutations
-export const UPDATE_QUOTE = gql`
-  mutation UpdateQuote($id: ID!, $status: String!) {
-    updateQuote(id: $id, status: $status) {
-      _id
-      name
-      email
-      phone
-      details
-      image
-      status
-      createdAt
-    }
-  }
-`;
-
-export const DELETE_QUOTE = gql`
-  mutation DeleteQuote($id: ID!) {
-    deleteQuote(id: $id) {
-      _id
-      name
-    }
-  }
-`;
-
-// Brand Mutations
-export const CREATE_BRAND = gql`
-  mutation CreateBrand($input: CreateBrandInput!) {
-    createBrand(input: $input) {
-      _id
-      name
-      image
-      description
-      createdAt
-    }
-  }
-`;
-
-export const UPDATE_BRAND = gql`
-  mutation UpdateBrand($id: ID!, $input: UpdateBrandInput!) {
-    updateBrand(id: $id, input: $input) {
-      _id
-      name
-      image
-      description
-      createdAt
-    }
-  }
-`;
-
-export const DELETE_BRAND = gql`
-  mutation DeleteBrand($id: ID!) {
-    deleteBrand(id: $id) {
-      _id
-      name
-    }
+    deleteProduct(id: $id)
   }
 `;
 
 // Category Mutations
 export const CREATE_CATEGORY = gql`
-  mutation CreateCategory($input: CreateCategoryInput!) {
+  mutation CreateCategory($input: CategoryInput!) {
     createCategory(input: $input) {
       _id
       name
-      image
+      slug
+      parentCategoryId
       description
-      parent {
-        _id
-        name
+      imageUrl
+      seo {
+        title
+        description
+        keywords
+        slug
+        canonicalUrl
+        ogImage
+        noIndex
+        noFollow
       }
+      isActive
       createdAt
     }
   }
 `;
 
 export const UPDATE_CATEGORY = gql`
-  mutation UpdateCategory($id: ID!, $input: UpdateCategoryInput!) {
+  mutation UpdateCategory($id: ID!, $input: CategoryInput!) {
     updateCategory(id: $id, input: $input) {
       _id
       name
-      image
+      slug
+      parentCategoryId
       description
-      parent {
-        _id
-        name
+      imageUrl
+      seo {
+        title
+        description
+        keywords
+        slug
+        canonicalUrl
+        ogImage
+        noIndex
+        noFollow
       }
+      isActive
       createdAt
     }
   }
@@ -233,41 +267,638 @@ export const UPDATE_CATEGORY = gql`
 
 export const DELETE_CATEGORY = gql`
   mutation DeleteCategory($id: ID!) {
-    deleteCategory(id: $id) {
+    deleteCategory(id: $id)
+  }
+`;
+
+// Brand Mutations
+export const CREATE_BRAND = gql`
+  mutation CreateBrand($input: BrandInput!) {
+    createBrand(input: $input) {
       _id
       name
+      description
+      logoUrl
+      website
+      seo {
+        title
+        description
+        keywords
+        slug
+        canonicalUrl
+        ogImage
+        noIndex
+        noFollow
+      }
+      isActive
     }
   }
 `;
 
-// SubCategory Mutations
-export const CREATE_SUBCATEGORY = gql`
-  mutation CreateSubcategory($input: CreateSubcategoryInput!) {
-    createSubcategory(input: $input) {
+export const UPDATE_BRAND = gql`
+  mutation UpdateBrand($id: ID!, $input: BrandInput!) {
+    updateBrand(id: $id, input: $input) {
       _id
       name
-      image
       description
-      parent {
+      logoUrl
+      website
+      seo {
+        title
+        description
+        keywords
+        slug
+        canonicalUrl
+        ogImage
+        noIndex
+        noFollow
+      }
+      isActive
+    }
+  }
+`;
+
+export const DELETE_BRAND = gql`
+  mutation DeleteBrand($id: ID!) {
+    deleteBrand(id: $id)
+  }
+`;
+
+// Cart Mutations
+export const ADD_TO_CART = gql`
+  mutation AddToCart($userId: ID!, $item: CartItemInput!) {
+    addToCart(userId: $userId, item: $item) {
+      _id
+      userId
+      items {
+        productId {
+          _id
+          name
+          slug
+          images
+        }
+        variantId {
+          _id
+          sku
+          price
+          compareAtPrice
+          color
+          size
+          images
+        }
+        quantity
+        priceAtTime
+      }
+      updatedAt
+    }
+  }
+`;
+
+export const REMOVE_FROM_CART = gql`
+  mutation RemoveFromCart($userId: ID!, $productId: ID!, $variantId: ID!) {
+    removeFromCart(userId: $userId, productId: $productId, variantId: $variantId) {
+      _id
+      userId
+      items {
+        productId {
+          _id
+          name
+          slug
+          images
+        }
+        variantId {
+          _id
+          sku
+          price
+          compareAtPrice
+          color
+          size
+          images
+        }
+        quantity
+        priceAtTime
+      }
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_CART_ITEM = gql`
+  mutation UpdateCartItem($userId: ID!, $productId: ID!, $variantId: ID!, $quantity: Int!) {
+    updateCartItem(userId: $userId, productId: $productId, variantId: $variantId, quantity: $quantity) {
+      _id
+      userId
+      items {
+        productId {
+          _id
+          name
+          slug
+          images
+        }
+        variantId {
+          _id
+          sku
+          price
+          compareAtPrice
+          color
+          size
+          images
+        }
+        quantity
+        priceAtTime
+      }
+      updatedAt
+    }
+  }
+`;
+
+export const CLEAR_CART = gql`
+  mutation ClearCart($userId: ID!) {
+    clearCart(userId: $userId) {
+      _id
+      userId
+      items {
+        productId {
+          _id
+          name
+          slug
+          images
+        }
+        variantId {
+          _id
+          sku
+          price
+          compareAtPrice
+          color
+          size
+          images
+        }
+        quantity
+        priceAtTime
+      }
+      updatedAt
+    }
+  }
+`;
+
+// Wishlist Mutations
+export const ADD_TO_WISHLIST = gql`
+  mutation AddToWishlist($userId: ID!, $productId: ID!) {
+    addToWishlist(userId: $userId, productId: $productId) {
+      _id
+      userId
+      productIds {
         _id
         name
+        slug
+        images
+        rating
       }
       createdAt
     }
   }
 `;
 
-export const UPDATE_SUBCATEGORY = gql`
-  mutation UpdateSubcategory($id: ID!, $input: UpdateSubcategoryInput!) {
-    updateSubcategory(id: $id, input: $input) {
+export const REMOVE_FROM_WISHLIST = gql`
+  mutation RemoveFromWishlist($userId: ID!, $productId: ID!) {
+    removeFromWishlist(userId: $userId, productId: $productId) {
       _id
-      name
-      image
-      description
-      parent {
+      userId
+      productIds {
         _id
         name
+        slug
+        images
+        rating
       }
+      createdAt
+    }
+  }
+`;
+
+export const CLEAR_WISHLIST = gql`
+  mutation ClearWishlist($userId: ID!) {
+    clearWishlist(userId: $userId) {
+      _id
+      userId
+      productIds {
+        _id
+        name
+        slug
+        images
+        rating
+      }
+      createdAt
+    }
+  }
+`;
+
+// Order Mutations
+export const CREATE_ORDER = gql`
+  mutation CreateOrder($input: OrderInput!) {
+    createOrder(input: $input) {
+      _id
+      userId {
+        _id
+        fullName
+        email
+      }
+      orderNumber
+      items {
+        productId {
+          _id
+          name
+          slug
+          images
+        }
+        variantId {
+          _id
+          sku
+          color
+          size
+        }
+        name
+        sku
+        price
+        quantity
+        imageUrl
+      }
+      shippingAddress {
+        _id
+        fullName
+        phone
+        street
+        city
+        state
+        postalCode
+        country
+        isDefault
+      }
+      billingAddress {
+        _id
+        fullName
+        phone
+        street
+        city
+        state
+        postalCode
+        country
+        isDefault
+      }
+      totalAmount
+      paymentStatus
+      orderStatus
+      shippingMethod
+      paymentMethod
+      trackingNumber
+      placedAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_ORDER = gql`
+  mutation UpdateOrder($id: ID!, $input: OrderInput!) {
+    updateOrder(id: $id, input: $input) {
+      _id
+      userId {
+        _id
+        fullName
+        email
+      }
+      orderNumber
+      items {
+        productId {
+          _id
+          name
+          slug
+          images
+        }
+        variantId {
+          _id
+          sku
+          color
+          size
+        }
+        name
+        sku
+        price
+        quantity
+        imageUrl
+      }
+      shippingAddress {
+        _id
+        fullName
+        phone
+        street
+        city
+        state
+        postalCode
+        country
+        isDefault
+      }
+      billingAddress {
+        _id
+        fullName
+        phone
+        street
+        city
+        state
+        postalCode
+        country
+        isDefault
+      }
+      totalAmount
+      paymentStatus
+      orderStatus
+      shippingMethod
+      paymentMethod
+      trackingNumber
+      placedAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_ORDER_STATUS = gql`
+  mutation UpdateOrderStatus($id: ID!, $status: String!) {
+    updateOrderStatus(id: $id, status: $status) {
+      _id
+      orderNumber
+      orderStatus
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_ORDER = gql`
+  mutation DeleteOrder($id: ID!) {
+    deleteOrder(id: $id)
+  }
+`;
+
+// Review Mutations
+export const CREATE_REVIEW = gql`
+  mutation CreateReview($input: ReviewInput!) {
+    createReview(input: $input) {
+      _id
+      userId {
+        _id
+        fullName
+        email
+      }
+      productId {
+        _id
+        name
+        slug
+        images
+      }
+      rating
+      comment
+      images
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_REVIEW = gql`
+  mutation UpdateReview($id: ID!, $input: ReviewInput!) {
+    updateReview(id: $id, input: $input) {
+      _id
+      userId {
+        _id
+        fullName
+        email
+      }
+      productId {
+        _id
+        name
+        slug
+        images
+      }
+      rating
+      comment
+      images
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_REVIEW = gql`
+  mutation DeleteReview($id: ID!) {
+    deleteReview(id: $id)
+  }
+`;
+
+// Coupon Mutations
+export const CREATE_COUPON = gql`
+  mutation CreateCoupon($input: CouponInput!) {
+    createCoupon(input: $input) {
+      _id
+      code
+      discountType
+      value
+      minOrderValue
+      maxDiscountAmount
+      expiryDate
+      isActive
+      usedBy
+    }
+  }
+`;
+
+export const UPDATE_COUPON = gql`
+  mutation UpdateCoupon($id: ID!, $input: CouponInput!) {
+    updateCoupon(id: $id, input: $input) {
+      _id
+      code
+      discountType
+      value
+      minOrderValue
+      maxDiscountAmount
+      expiryDate
+      isActive
+      usedBy
+    }
+  }
+`;
+
+export const DELETE_COUPON = gql`
+  mutation DeleteCoupon($id: ID!) {
+    deleteCoupon(id: $id)
+  }
+`;
+
+export const APPLY_COUPON = gql`
+  mutation ApplyCoupon($code: String!, $userId: ID!) {
+    applyCoupon(code: $code, userId: $userId) {
+      _id
+      code
+      discountType
+      value
+      minOrderValue
+      maxDiscountAmount
+      expiryDate
+      isActive
+      usedBy
+    }
+  }
+`;
+
+// Page Mutations
+export const CREATE_PAGE = gql`
+  mutation CreatePage($input: PageInput!) {
+    createPage(input: $input) {
+      _id
+      title
+      content
+      slug
+      seo {
+        title
+        description
+        keywords
+        slug
+        canonicalUrl
+        ogImage
+        noIndex
+        noFollow
+      }
+      isPublished
+      publishedAt
+    }
+  }
+`;
+
+export const UPDATE_PAGE = gql`
+  mutation UpdatePage($id: ID!, $input: PageInput!) {
+    updatePage(id: $id, input: $input) {
+      _id
+      title
+      content
+      slug
+      seo {
+        title
+        description
+        keywords
+        slug
+        canonicalUrl
+        ogImage
+        noIndex
+        noFollow
+      }
+      isPublished
+      publishedAt
+    }
+  }
+`;
+
+export const DELETE_PAGE = gql`
+  mutation DeletePage($id: ID!) {
+    deletePage(id: $id)
+  }
+`;
+
+// Global SEO Settings Mutations
+export const UPDATE_GLOBAL_SEO_SETTINGS = gql`
+  mutation UpdateGlobalSEOSettings($input: GlobalSEOSettingsInput!) {
+    updateGlobalSEOSettings(input: $input) {
+      _id
+      siteName
+      defaultTitle
+      defaultDescription
+      defaultOgImage
+      twitterHandle
+      fbAppId
+      googleAnalyticsId
+      defaultCanonicalUrl
+    }
+  }
+`;
+
+// Legacy mutations for backward compatibility
+export const CREATE_SERVICE = gql`
+  mutation CreateService($input: ServiceInput!) {
+    createService(input: $input) {
+      _id
+      title
+      description
+      featuredImage
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_SERVICE = gql`
+  mutation UpdateService($id: ID!, $input: ServiceInput!) {
+    updateService(id: $id, input: $input) {
+      _id
+      title
+      description
+      featuredImage
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_SERVICE = gql`
+  mutation DeleteService($id: ID!) {
+    deleteService(id: $id)
+  }
+`;
+
+export const UPDATE_QUOTE = gql`
+  mutation UpdateQuote($id: ID!, $input: QuoteInput!) {
+    updateQuote(id: $id, input: $input) {
+      _id
+      name
+      email
+      phone
+      message
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_QUOTE = gql`
+  mutation DeleteQuote($id: ID!) {
+    deleteQuote(id: $id)
+  }
+`;
+
+// Legacy subcategory mutations (using categories with parentCategoryId)
+export const CREATE_SUBCATEGORY = gql`
+  mutation CreateSubcategory($input: CategoryInput!) {
+    createCategory(input: $input) {
+      _id
+      name
+      slug
+      parentCategoryId
+      description
+      imageUrl
+      isActive
+      createdAt
+    }
+  }
+`;
+
+export const UPDATE_SUBCATEGORY = gql`
+  mutation UpdateSubcategory($id: ID!, $input: CategoryInput!) {
+    updateCategory(id: $id, input: $input) {
+      _id
+      name
+      slug
+      parentCategoryId
+      description
+      imageUrl
+      isActive
       createdAt
     }
   }
@@ -275,9 +906,6 @@ export const UPDATE_SUBCATEGORY = gql`
 
 export const DELETE_SUBCATEGORY = gql`
   mutation DeleteSubcategory($id: ID!) {
-    deleteSubcategory(id: $id) {
-      _id
-      name
-    }
+    deleteCategory(id: $id)
   }
 `; 

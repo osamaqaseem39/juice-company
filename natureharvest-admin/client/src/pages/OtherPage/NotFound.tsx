@@ -1,44 +1,52 @@
-import GridShape from "../../components/common/GridShape";
+import React from "react";
 import { Link } from "react-router-dom";
 import PageMeta from "../../components/common/PageMeta";
 
-export default function NotFound() {
+const NotFound: React.FC = () => {
   return (
     <>
       <PageMeta
-        title="Wingz Impex | 404 Not Found"
-        description="This is the 404 page for Wingz Impex."
+        title="404 - Page Not Found | Nature Harvest"
+        description="The page you are looking for does not exist"
       />
-      <div className="relative flex flex-col items-center justify-center min-h-screen p-6 overflow-hidden z-1">
-        <GridShape />
-        <div className="mx-auto w-full max-w-[242px] text-center sm:max-w-[472px]">
-          <h1 className="mb-8 font-bold text-gray-800 text-title-md dark:text-white/90 xl:text-title-2xl">
-            ERROR
-          </h1>
-
-          <img src="/images/error/404.svg" alt="404" className="dark:hidden" />
-          <img
-            src="/images/error/404-dark.svg"
-            alt="404"
-            className="hidden dark:block"
-          />
-
-          <p className="mt-10 mb-6 text-base text-gray-700 dark:text-gray-400 sm:text-lg">
-            We can’t seem to find the page you are looking for!
-          </p>
-
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-3.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-          >
-            Back to Home Page
-          </Link>
+      
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-boxdark">
+        <div className="text-center">
+          <div className="mb-8">
+            <h1 className="mb-4 text-9xl font-bold text-primary">404</h1>
+            <h2 className="mb-4 text-2xl font-semibold text-black dark:text-white">
+              Oops! Page not found
+            </h2>
+            <p className="mb-8 text-bodydark2">
+              The page you are looking for might have been removed, had its name changed, 
+              or is temporarily unavailable.
+            </p>
+          </div>
+          
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <Link
+              to="/"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+            >
+              Go to Homepage
+            </Link>
+            <Link
+              to="/blog"
+              className="inline-flex items-center justify-center rounded-md border border-stroke bg-white px-6 py-3 text-center font-medium text-black transition-all hover:bg-primary hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:bg-primary lg:px-8 xl:px-10"
+            >
+              View Blog
+            </Link>
+          </div>
+          
+          <div className="mt-8 text-center">
+            <p className="text-sm text-bodydark2">
+              © 2024 Nature Harvest. All rights reserved.
+            </p>
+          </div>
         </div>
-        {/* <!-- Footer --> */}
-        <p className="absolute text-sm text-center text-gray-500 -translate-x-1/2 bottom-6 left-1/2 dark:text-gray-400">
-          &copy; {new Date().getFullYear()} - TailAdmin
-        </p>
       </div>
     </>
   );
-}
+};
+
+export default NotFound;

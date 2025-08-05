@@ -2,12 +2,10 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  username: {
+  fullName: {
     type: String,
     required: true,
-    unique: true,
-    trim: true,
-    minlength: 3
+    trim: true
   },
   email: {
     type: String,
@@ -21,10 +19,22 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6
   },
-  role: {
+  phone: {
     type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
+    trim: true
+  },
+  roles: {
+    type: [String],
+    default: ['customer'],
+    enum: ['customer', 'admin', 'moderator']
+  },
+  addresses: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Address'
+  }],
+  isActive: {
+    type: Boolean,
+    default: true
   }
 }, {
   timestamps: true
@@ -43,10 +53,16 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-// Method to compare password
+// Compare password method
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
-module.exports = User; 
+// Remove password from JSON output
+userSchema.methods.toJSON = function() {
+  const user = this.toObject();
+  delete user.password;
+  return user;
+};
+
+module.exports = mongoose.model('User', userSchema); 

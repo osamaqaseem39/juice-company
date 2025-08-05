@@ -132,8 +132,8 @@ export default function SignUp() {
   return (
     <>
       <PageMeta
-        title="React.js SignUp Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js SignUp Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="Nature Harvest Admin Dashboard - Sign Up"
+        description="Create your account to access Nature Harvest Admin Dashboard"
       />
       <div className="relative flex w-full h-screen overflow-hidden bg-[#ede7de] z-1">
         <div className="flex flex-col flex-1 p-6 rounded-2xl sm:rounded-none sm:border-0 sm:p-8">
@@ -164,10 +164,10 @@ export default function SignUp() {
           <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
             <div className="mb-5 sm:mb-8">
               <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-                Sign Up
+                Join Nature Harvest
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Create your account to get started!
+                Create your account to access the Nature Harvest admin dashboard!
               </p>
             </div>
 

@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { serviceApi, Service } from '../../services/api';
+import { Service, useServices, useDeleteService } from '../../services/api';
 import { Modal } from '../../components/ui/modal';
+import PageMeta from '../../components/common/PageMeta';
 
 const ServiceList: React.FC = () => {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, loading, error, refetch } = useServices();
+  const [deleteService] = useDeleteService();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState<'title' | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
-  useEffect(() => {
-    serviceApi.getAll()
-      .then(res => setServices(Array.isArray(res.data) ? res.data : []))
-      .catch(() => setServices([]))
-      .finally(() => setLoading(false));
-  }, []);
+  const services = data?.services || [];
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this service?')) {
-      await serviceApi.delete(id);
-      setServices(services => services.filter(s => s._id !== id));
+      try {
+        await deleteService({ variables: { id } });
+        refetch(); // Refetch the data after deletion
+      } catch (err) {
+        console.error('Error deleting service:', err);
+      }
     }
   };
 
@@ -32,7 +32,7 @@ const ServiceList: React.FC = () => {
   };
 
   // Search and sort logic
-  const filtered = services.filter(s =>
+  const filtered = services.filter((s: Service) =>
     s.title.toLowerCase().includes(search.toLowerCase())
   );
   const sorted = [...filtered].sort((a, b) => {
@@ -54,27 +54,46 @@ const ServiceList: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-red-500">Error: {error.message}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full p-4">
-      <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-          <h1 className="text-3xl font-bold" style={{ color: '#062373' }}>Services</h1>
-          <div className="flex gap-2 w-full md:w-auto">
-            <input
-              type="text"
-              placeholder="Search by title..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="border rounded px-3 py-2 w-full md:w-64 text-[#062373]"
-              style={{ color: '#2d2d2d' }}
-            />
-            <Link to="/services/add" className="bg-indigo-600 text-white px-5 py-2 rounded-lg shadow hover:bg-indigo-700 transition">Add Service</Link>
+    <>
+      <PageMeta
+        title="Services | Nature Harvest Admin"
+        description="Manage your service offerings"
+      />
+      <div className="w-full p-4">
+        <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <h1 className="text-3xl font-bold" style={{ color: '#062373' }}>Services</h1>
+            <div className="flex gap-2 w-full md:w-auto">
+              <input
+                type="text"
+                placeholder="Search by title..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="border rounded px-3 py-2 w-full md:w-64 text-[#062373]"
+                style={{ color: '#2d2d2d' }}
+              />
+              <Link to="/services/add" className="bg-indigo-600 text-white px-5 py-2 rounded-lg shadow hover:bg-indigo-700 transition">Add Service</Link>
+            </div>
           </div>
-        </div>
-        {loading ? (
-          <div className="flex justify-center items-center h-64" style={{ color: '#2d2d2d' }}>Loading...</div>
-        ) : (
-          sorted.length > 0 ? (
+          
+          {sorted.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full w-full border border-gray-200 rounded-lg text-[#2d2d2d]">
                 <thead className="text-[#2d2d2d]">
@@ -88,7 +107,7 @@ const ServiceList: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="text-[#2d2d2d]">
-                  {sorted.map(service => (
+                  {sorted.map((service: Service) => (
                     <tr key={service._id} className="border-t">
                       <td className="px-4 py-2 border">
                         {service.featuredImage && (
@@ -103,9 +122,24 @@ const ServiceList: React.FC = () => {
                       <td className="px-4 py-2 border font-medium">{service.title}</td>
                       <td className="px-4 py-2 border max-w-xs truncate">{service.description}</td>
                       <td className="px-4 py-2 border">
-                        <Link to={`/services/${service._id}`} className="px-3 py-1 rounded font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition mr-2">View</Link>
-                        <Link to={`/services/${service._id}/edit`} className="px-3 py-1 rounded font-semibold bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition mr-2">Edit</Link>
-                        <button onClick={() => handleDelete(service._id)} className="px-3 py-1 rounded font-semibold bg-red-100 text-red-700 hover:bg-red-200 transition">Delete</button>
+                        <Link
+                          to={`/services/${service._id}`}
+                          className="px-3 py-1 rounded font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition mr-2"
+                        >
+                          View
+                        </Link>
+                        <Link
+                          to={`/services/${service._id}/edit`}
+                          className="px-3 py-1 rounded font-semibold bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition mr-2"
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(service._id)}
+                          className="px-3 py-1 rounded font-semibold bg-red-100 text-red-700 hover:bg-red-200 transition"
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -113,16 +147,26 @@ const ServiceList: React.FC = () => {
               </table>
             </div>
           ) : (
-            <div className="flex justify-center items-center h-64" style={{ color: '#2d2d2d' }}>No services found.</div>
-          )
-        )}
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} isFullscreen={false}>
-          {modalImg && (
-            <img src={modalImg} alt="Preview" className="max-h-[80vh] max-w-full rounded-lg mx-auto" />
+            <div className="flex justify-center items-center h-64" style={{ color: '#2d2d2d' }}>
+              No services found.
+            </div>
           )}
-        </Modal>
+        </div>
+
+        {/* Image Modal */}
+        {modalOpen && modalImg && (
+          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+            <div className="p-4">
+              <img
+                src={modalImg}
+                alt="Service image"
+                className="max-w-full max-h-96 object-contain"
+              />
+            </div>
+          </Modal>
+        )}
       </div>
-    </div>
+    </>
   );
 };
 

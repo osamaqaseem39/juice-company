@@ -11,6 +11,7 @@ const quoteTypes = require('./types/quote');
 const serviceTypes = require('./types/service');
 const companyTypes = require('./types/company');
 const flavorTypes = require('./types/flavor');
+const ecommerceTypes = require('./ecommerce');
 
 // Import resolvers
 const userResolvers = require('./resolvers/user');
@@ -22,6 +23,7 @@ const quoteResolvers = require('./resolvers/quote');
 const serviceResolvers = require('./resolvers/service');
 const companyResolvers = require('./resolvers/company');
 const flavorResolvers = require('./resolvers/flavor');
+const ecommerceResolvers = require('./resolvers/ecommerce');
 
 // Base Query and Mutation types
 const baseSchema = gql`
@@ -49,7 +51,8 @@ const typeDefs = [
   quoteTypes,
   serviceTypes,
   companyTypes,
-  flavorTypes
+  flavorTypes,
+  ecommerceTypes
 ];
 
 // Combine all resolvers
@@ -62,7 +65,8 @@ const resolvers = [
   quoteResolvers,
   serviceResolvers,
   companyResolvers,
-  flavorResolvers
+  flavorResolvers,
+  ecommerceResolvers
 ];
 
 // Merge resolvers

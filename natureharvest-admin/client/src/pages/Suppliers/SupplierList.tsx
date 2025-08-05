@@ -1,23 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { supplierApi, SupplierRequest } from '../../services/api';
+import { SupplierRequest, useSuppliers } from '../../services/api';
+import PageMeta from '../../components/common/PageMeta';
 
 const SupplierList: React.FC = () => {
-  const [suppliers, setSuppliers] = useState<SupplierRequest[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, loading, error } = useSuppliers();
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState<'name' | 'companyName' | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
-  useEffect(() => {
-    supplierApi.getAll()
-      .then(res => setSuppliers(Array.isArray(res.data) ? res.data : []))
-      .catch(() => setSuppliers([]))
-      .finally(() => setLoading(false));
-  }, []);
+  const suppliers = data?.suppliers || [];
 
   // Search and sort logic
-  const filtered = suppliers.filter(s =>
+  const filtered = suppliers.filter((s: SupplierRequest) =>
     (`${s.firstName} ${s.lastName}`.toLowerCase().includes(search.toLowerCase()) ||
       s.companyName.toLowerCase().includes(search.toLowerCase()))
   );
@@ -44,24 +39,43 @@ const SupplierList: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-red-500">Error: {error.message}</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full p-4">
-      <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-          <h1 className="text-3xl font-bold" style={{ color: '#062373' }}>Supplier Requests</h1>
-          <input
-            type="text"
-            placeholder="Search by name or company..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="border rounded px-3 py-2 w-full md:w-64 text-[#062373]"
-            style={{ color: '#062373' }}
-          />
-        </div>
-        {loading ? (
-          <div className="flex justify-center items-center h-64" style={{ color: '#062373' }}>Loading...</div>
-        ) : (
-          sorted.length > 0 ? (
+    <>
+      <PageMeta
+        title="Supplier Requests | Nature Harvest Admin"
+        description="Manage supplier partnership requests"
+      />
+      <div className="w-full p-4">
+        <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <h1 className="text-3xl font-bold" style={{ color: '#062373' }}>Supplier Requests</h1>
+            <input
+              type="text"
+              placeholder="Search by name or company..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="border rounded px-3 py-2 w-full md:w-64 text-[#062373]"
+              style={{ color: '#062373' }}
+            />
+          </div>
+          
+          {sorted.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full w-full border border-gray-200 rounded-lg text-[#062373]">
                 <thead className="text-[#062373]">
@@ -79,7 +93,7 @@ const SupplierList: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="text-[#062373]">
-                  {sorted.map((s) => (
+                  {sorted.map((s: SupplierRequest) => (
                     <tr key={s._id} className="border-t">
                       <td className="px-4 py-2 border font-medium">{s.firstName} {s.lastName}</td>
                       <td className="px-4 py-2 border">{s.companyName}</td>
@@ -87,7 +101,12 @@ const SupplierList: React.FC = () => {
                       <td className="px-4 py-2 border">{s.phone}</td>
                       <td className="px-4 py-2 border text-xs text-gray-500">{new Date(s.createdAt).toLocaleString()}</td>
                       <td className="px-4 py-2 border">
-                        <Link to={`/suppliers/${s._id}`} className="px-3 py-1 rounded font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition">View</Link>
+                        <Link 
+                          to={`/suppliers/${s._id}`} 
+                          className="px-3 py-1 rounded font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
+                        >
+                          View
+                        </Link>
                       </td>
                     </tr>
                   ))}
@@ -95,11 +114,13 @@ const SupplierList: React.FC = () => {
               </table>
             </div>
           ) : (
-            <div className="flex justify-center items-center h-64" style={{ color: '#062373' }}>No supplier requests found.</div>
-          )
-        )}
+            <div className="flex justify-center items-center h-64" style={{ color: '#062373' }}>
+              No supplier requests found.
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
