@@ -1,170 +1,145 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { productApi, blogApi, serviceApi, quoteApi, categoryApi, subcategoryApi, Product, Blog, Service, Quote, Category, SubCategory } from '../../services/api';
-import PageMeta from "../../components/common/PageMeta";
-import ProductList from '../Products/ProductList';
 
-export default function Ecommerce() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [services, setServices] = useState<Service[]>([]);
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<SubCategory[]>([]);
-  const [loading, setLoading] = useState(true);
+const ECommerce: React.FC = () => {
+  const products = [
+    { name: "Orange Fresh", category: "Citrus", stock: 150, sales: 89 },
+    { name: "Apple Delight", category: "Fruit", stock: 120, sales: 67 },
+    { name: "Berry Blast", category: "Berry", stock: 80, sales: 45 },
+    { name: "Grape Essence", category: "Grape", stock: 95, sales: 52 },
+  ];
 
-  useEffect(() => {
-    Promise.all([
-      productApi.getAll(),
-      blogApi.getAll(),
-      serviceApi.getAll(),
-      quoteApi.getAll(),
-      categoryApi.getAll(),
-      subcategoryApi.getAll()
-    ]).then(([prodRes, blogRes, servRes, quotesRes, catRes, subcatRes]) => {
-      setProducts(Array.isArray(prodRes.data) ? prodRes.data : []);
-      setBlogs(Array.isArray(blogRes.data) ? blogRes.data : []);
-      setServices(Array.isArray(servRes.data) ? servRes.data : []);
-      setQuotes(Array.isArray(quotesRes.data) ? quotesRes.data : []);
-      setCategories(Array.isArray(catRes.data) ? catRes.data : []);
-      setSubcategories(Array.isArray(subcatRes.data) ? subcatRes.data : []);
-    }).finally(() => setLoading(false));
-  }, []);
+  const services = [
+    { name: "Home Delivery", status: "Active", customers: 234 },
+    { name: "Wholesale", status: "Active", customers: 156 },
+    { name: "Subscription", status: "Active", customers: 89 },
+  ];
 
   return (
-    <>
-      <PageMeta
-        title="Dashboard"
-        description="Welcome to your dashboard."
-      />
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Welcome to the Admin Dashboard!</h1>
-        <p className="text-gray-600">Manage your products, blogs, and services from one place.</p>
+    <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <p className="text-gray-600 dark:text-gray-400">Welcome to Nature Harvest Admin Panel</p>
       </div>
+
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-indigo-600">{products.length}</span>
-          <span className="mt-2 text-lg font-semibold">Products</span>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Products</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{products.length}</p>
+            </div>
+            <div className="p-3 bg-logo-red/10 rounded-full">
+              <svg className="w-6 h-6 text-logo-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+            </div>
+          </div>
         </div>
-        <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-green-600">{blogs.length}</span>
-          <span className="mt-2 text-lg font-semibold">Blogs</span>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Services</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">{services.length}</p>
+            </div>
+            <div className="p-3 bg-leaf-dark/10 rounded-full">
+              <svg className="w-6 h-6 text-leaf-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+          </div>
         </div>
-        <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-purple-600">{services.length}</span>
-          <span className="mt-2 text-lg font-semibold">Services</span>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Sales</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">$12,450</p>
+            </div>
+            <div className="p-3 bg-sun-yellow/10 rounded-full">
+              <svg className="w-6 h-6 text-sun-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+              </svg>
+            </div>
+          </div>
         </div>
-        <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-orange-600">{quotes.filter(q => q.status === 'pending').length}</span>
-          <span className="mt-2 text-lg font-semibold">Pending Messages</span>
-        </div>
-        <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-blue-600">{categories.length}</span>
-          <span className="mt-2 text-lg font-semibold">Categories</span>
-        </div>
-        <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-pink-600">{subcategories.length}</span>
-          <span className="mt-2 text-lg font-semibold">Subcategories</span>
+
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Orders</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-white">24</p>
+            </div>
+            <div className="p-3 bg-leaf-light/10 rounded-full">
+              <svg className="w-6 h-6 text-leaf-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
-      {loading ? (
-        <div className="flex justify-center items-center h-32">Loading...</div>
-      ) : (
-        <>
-          {/* Products Row */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-xl font-bold">Recent Products</h2>
-              <Link to="/products" className="text-indigo-600 hover:underline">View All</Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {products.slice(0, 3).map(product => (
-                <div key={product._id} className="bg-white dark:bg-gray-900 shadow rounded-lg p-4 flex flex-col">
-                  {product.images && product.images.length > 0 && (
-                    <img src={product.images[0].replace('server/', '')} alt={product.name} className="h-32 w-full object-cover rounded mb-2" />
-                  )}
-                  <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-                  <p className="text-gray-600 text-sm line-clamp-2 mb-2">{product.description}</p>
-                  <Link to={`/products/${product._id}`} className="text-indigo-600 text-sm hover:underline mt-auto">View</Link>
-                </div>
-              ))}
-              {products.length === 0 && <div className="col-span-3 text-gray-500">No products found.</div>}
-            </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <Link
+          to="/products"
+          className="bg-white border-2 border-logo-red text-logo-red p-6 rounded-xl hover:bg-logo-red hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          <div className="text-center">
+            <div className="text-4xl mb-3">🍊</div>
+            <h3 className="text-lg font-semibold font-poppins mb-2">Manage Products</h3>
+            <p className="text-sm font-poppins opacity-75">Add, edit, or remove products</p>
           </div>
-          {/* Blogs Row */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-xl font-bold">Recent Blogs</h2>
-              <Link to="/blog" className="text-indigo-600 hover:underline">View All</Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {blogs.slice(0, 3).map(blog => (
-                <div key={blog._id} className="bg-white dark:bg-gray-900 shadow rounded-lg p-4 flex flex-col">
-                  <h3 className="font-semibold text-lg mb-1">{blog.title}</h3>
-                  <p className="text-gray-600 text-sm line-clamp-2 mb-2">{blog.content.substring(0, 100)}...</p>
-                  <Link to={`/blog/${blog.slug}`} className="text-indigo-600 text-sm hover:underline mt-auto">View</Link>
-                </div>
-              ))}
-              {blogs.length === 0 && <div className="col-span-3 text-gray-500">No blogs found.</div>}
-            </div>
+        </Link>
+
+        <Link
+          to="/orders"
+          className="bg-white border-2 border-sun-yellow text-sun-yellow p-6 rounded-xl hover:bg-sun-yellow hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          <div className="text-center">
+            <div className="text-4xl mb-3">📋</div>
+            <h3 className="text-lg font-semibold font-poppins mb-2">View Orders</h3>
+            <p className="text-sm font-poppins opacity-75">Manage customer orders</p>
           </div>
-          {/* Services Row */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-xl font-bold">Recent Services</h2>
-              <Link to="/services" className="text-indigo-600 hover:underline">View All</Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {services.slice(0, 3).map(service => (
-                <div key={service._id} className="bg-white dark:bg-gray-900 shadow rounded-lg p-4 flex flex-col">
-                  <h3 className="font-semibold text-lg mb-1">{service.title}</h3>
-                  <p className="text-gray-600 text-sm line-clamp-2 mb-2">{service.description}</p>
-                  <Link to={`/services/${service._id}`} className="text-indigo-600 text-sm hover:underline mt-auto">View</Link>
-                </div>
-              ))}
-              {services.length === 0 && <div className="col-span-3 text-gray-500">No services found.</div>}
-            </div>
+        </Link>
+
+        <Link
+          to="/categories"
+          className="bg-white border-2 border-leaf-dark text-leaf-dark p-6 rounded-xl hover:bg-leaf-dark hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          <div className="text-center">
+            <div className="text-4xl mb-3">📂</div>
+            <h3 className="text-lg font-semibold font-poppins mb-2">Categories</h3>
+            <p className="text-sm font-poppins opacity-75">Organize your products</p>
           </div>
-          {/* Messages Row */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-xl font-bold">Recent Messages</h2>
-              <Link to="/messages" className="text-indigo-600 hover:underline">View All</Link>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border border-gray-200 rounded-lg">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="px-4 py-2 border">Name</th>
-                    <th className="px-4 py-2 border">Phone</th>
-                    <th className="px-4 py-2 border">Status</th>
-                    <th className="px-4 py-2 border">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {quotes.slice(0, 3).map((q) => (
-                    <tr key={q._id} className="border-t">
-                      <td className="px-4 py-2 border font-medium">{q.name}</td>
-                      <td className="px-4 py-2 border">{q.phone}</td>
-                      <td className="px-4 py-2 border capitalize">
-                        <span className={`px-2 py-1 rounded text-xs font-semibold ${q.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : q.status === 'completed' ? 'bg-green-100 text-green-800' : q.status === 'in_progress' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'}`}>{q.status.replace('_', ' ')}</span>
-                      </td>
-                      <td className="px-4 py-2 border text-xs text-gray-500">{new Date(q.createdAt).toLocaleString()}</td>
-                    </tr>
-                  ))}
-                  {quotes.length === 0 && (
-                    <tr><td colSpan={4} className="text-gray-500 text-center py-4">No messages found.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+        </Link>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h2>
+        <div className="space-y-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-2 h-2 bg-logo-red rounded-full"></div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">New order #ORD-001 received</p>
+            <span className="text-xs text-gray-500">2 minutes ago</span>
           </div>
-          {/* Full Product List at the end */}
-          <div className="mt-16">
-            <ProductList />
+          <div className="flex items-center space-x-3">
+            <div className="w-2 h-2 bg-leaf-dark rounded-full"></div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Product "Orange Fresh" stock updated</p>
+            <span className="text-xs text-gray-500">15 minutes ago</span>
           </div>
-        </>
-      )}
-    </>
+          <div className="flex items-center space-x-3">
+            <div className="w-2 h-2 bg-sun-yellow rounded-full"></div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">New customer registered</p>
+            <span className="text-xs text-gray-500">1 hour ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+export default ECommerce;
