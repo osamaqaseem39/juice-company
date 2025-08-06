@@ -1,56 +1,46 @@
-import React, { ReactNode } from "react";
+import React, { FC, ButtonHTMLAttributes } from "react";
+import { twMerge } from "tailwind-merge";
 
-interface ButtonProps {
-  children: ReactNode; // Button text or content
-  size?: "sm" | "md"; // Button size
-  variant?: "primary" | "outline"; // Button variant
-  startIcon?: ReactNode; // Icon before the text
-  endIcon?: ReactNode; // Icon after the text
-  onClick?: () => void; // Click handler
-  disabled?: boolean; // Disabled state
-  className?: string; // Additional classes
-  type?: "button" | "submit" | "reset"; // HTML button type
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
+  size?: "sm" | "md" | "lg";
+  children: React.ReactNode;
+  className?: string;
 }
 
-const Button: React.FC<ButtonProps> = ({
-  children,
-  size = "md",
+const Button: FC<ButtonProps> = ({
   variant = "primary",
-  startIcon,
-  endIcon,
-  onClick,
+  size = "md",
+  children,
   className = "",
-  disabled = false,
-  type = "button",
+  ...props
 }) => {
-  // Size Classes
-  const sizeClasses = {
-    sm: "px-4 py-3 text-sm",
-    md: "px-5 py-3.5 text-sm",
+  const baseClasses = "inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+
+  const variantClasses = {
+    primary: "bg-logo-red text-white hover:bg-red-600 focus:ring-logo-red/20 shadow-lg hover:shadow-xl",
+    secondary: "bg-leaf-dark text-white hover:bg-leaf-light focus:ring-leaf-dark/20 shadow-lg hover:shadow-xl",
+    outline: "border-2 border-logo-red text-logo-red hover:bg-logo-red hover:text-white focus:ring-logo-red/20",
+    ghost: "text-logo-red hover:bg-logo-red/10 focus:ring-logo-red/20",
+    danger: "bg-error-500 text-white hover:bg-error-600 focus:ring-error-500/20 shadow-lg hover:shadow-xl",
   };
 
-  // Variant Classes
-  const variantClasses = {
-    primary:
-      "bg-brand-500 text-white shadow-theme-xs hover:bg-brand-600 disabled:bg-brand-300",
-    outline:
-      "bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300",
+  const sizeClasses = {
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-4 py-2 text-sm",
+    lg: "px-6 py-3 text-base",
   };
+
+  const classes = twMerge(
+    baseClasses,
+    variantClasses[variant],
+    sizeClasses[size],
+    className
+  );
 
   return (
-    <button
-      type={type}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg transition ${className} ${
-        sizeClasses[size]
-      } ${variantClasses[variant]} ${
-        disabled ? "cursor-not-allowed opacity-50" : ""
-      }`}
-      onClick={onClick}
-      disabled={disabled}
-    >
-      {startIcon && <span className="flex items-center">{startIcon}</span>}
+    <button className={classes} {...props}>
       {children}
-      {endIcon && <span className="flex items-center">{endIcon}</span>}
     </button>
   );
 };

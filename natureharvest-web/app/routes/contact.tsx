@@ -115,7 +115,7 @@ export default function Contact() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-natural-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-natural-300 rounded-lg focus:ring-2 focus:ring-logo-red focus:border-transparent transition-colors"
                       placeholder="Your full name"
                     />
                   </div>
@@ -130,7 +130,7 @@ export default function Contact() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-natural-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                      className="w-full px-4 py-3 border border-natural-300 rounded-lg focus:ring-2 focus:ring-logo-red focus:border-transparent transition-colors"
                       placeholder="your.email@example.com"
                     />
                   </div>
@@ -146,7 +146,7 @@ export default function Contact() {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-natural-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 border border-natural-300 rounded-lg focus:ring-2 focus:ring-logo-red focus:border-transparent transition-colors"
                   >
                     <option value="">Select a subject</option>
                     <option value="general">General Inquiry</option>
@@ -168,7 +168,7 @@ export default function Contact() {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 border border-natural-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors resize-none"
+                    className="w-full px-4 py-3 border border-natural-300 rounded-lg focus:ring-2 focus:ring-logo-red focus:border-transparent transition-colors resize-none"
                     placeholder="Tell us how we can help you..."
                   />
                 </div>

@@ -1,57 +1,45 @@
 import React, { useState } from "react";
 
-interface CountryCode {
+interface Country {
   code: string;
   label: string;
 }
 
 interface PhoneInputProps {
-  countries: CountryCode[];
+  countries: Country[];
   placeholder?: string;
-  onChange?: (phoneNumber: string) => void;
-  selectPosition?: "start" | "end"; // New prop for dropdown position
+  onChange: (phoneNumber: string) => void;
+  selectPosition?: "start" | "end";
 }
 
 const PhoneInput: React.FC<PhoneInputProps> = ({
   countries,
   placeholder = "+1 (555) 000-0000",
   onChange,
-  selectPosition = "start", // Default position is 'start'
+  selectPosition = "start",
 }) => {
-  const [selectedCountry, setSelectedCountry] = useState<string>("US");
-  const [phoneNumber, setPhoneNumber] = useState<string>("+1");
-
-  const countryCodes: Record<string, string> = countries.reduce(
-    (acc, { code, label }) => ({ ...acc, [code]: label }),
-    {}
-  );
-
-  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newCountry = e.target.value;
-    setSelectedCountry(newCountry);
-    setPhoneNumber(countryCodes[newCountry]);
-    if (onChange) {
-      onChange(countryCodes[newCountry]);
-    }
-  };
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(countries[0]?.code || "");
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPhoneNumber = e.target.value;
-    setPhoneNumber(newPhoneNumber);
-    if (onChange) {
-      onChange(newPhoneNumber);
-    }
+    const value = e.target.value;
+    setPhoneNumber(value);
+    onChange(value);
+  };
+
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCountry(e.target.value);
   };
 
   return (
-    <div className="relative flex">
+    <div className="relative">
       {/* Dropdown position: Start */}
       {selectPosition === "start" && (
-        <div className="absolute">
+        <div className="absolute left-0">
           <select
             value={selectedCountry}
             onChange={handleCountryChange}
-            className="appearance-none bg-none rounded-l-lg border-0 border-r border-gray-200 bg-transparent py-3 pl-3.5 pr-8 leading-tight text-gray-700 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-800 dark:text-gray-400"
+            className="appearance-none bg-none rounded-l-lg border-0 border-r border-gray-200 bg-transparent py-3 pl-3.5 pr-8 leading-tight text-gray-700 focus:border-logo-red focus:outline-none focus:ring focus:ring-logo-red/10 dark:border-gray-800 dark:text-gray-400"
           >
             {countries.map((country) => (
               <option
@@ -59,32 +47,13 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
                 value={country.code}
                 className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
               >
-                {country.code}
+                {country.label}
               </option>
             ))}
           </select>
-          <div className="absolute inset-y-0 flex items-center text-gray-700 pointer-events-none bg-none right-3 dark:text-gray-400">
-            <svg
-              className="stroke-current"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
         </div>
       )}
 
-      {/* Input field */}
       <input
         type="tel"
         value={phoneNumber}
@@ -92,7 +61,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
         placeholder={placeholder}
         className={`dark:bg-dark-900 h-11 w-full ${
           selectPosition === "start" ? "pl-[84px]" : "pr-[84px]"
-        } rounded-lg border border-gray-300 bg-transparent py-3 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800`}
+        } rounded-lg border border-gray-300 bg-transparent py-3 px-4 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-logo-red focus:outline-none focus:ring focus:ring-logo-red/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-logo-red`}
       />
 
       {/* Dropdown position: End */}
@@ -101,7 +70,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           <select
             value={selectedCountry}
             onChange={handleCountryChange}
-            className="appearance-none bg-none rounded-r-lg border-0 border-l border-gray-200 bg-transparent py-3 pl-3.5 pr-8 leading-tight text-gray-700 focus:border-brand-300 focus:outline-none focus:ring focus:ring-brand-500/10 dark:border-gray-800 dark:text-gray-400"
+            className="appearance-none bg-none rounded-r-lg border-0 border-l border-gray-200 bg-transparent py-3 pl-3.5 pr-8 leading-tight text-gray-700 focus:border-logo-red focus:outline-none focus:ring focus:ring-logo-red/10 dark:border-gray-800 dark:text-gray-400"
           >
             {countries.map((country) => (
               <option
@@ -113,24 +82,6 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
               </option>
             ))}
           </select>
-          <div className="absolute inset-y-0 flex items-center text-gray-700 pointer-events-none right-3 dark:text-gray-400">
-            <svg
-              className="stroke-current"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
         </div>
       )}
     </div>

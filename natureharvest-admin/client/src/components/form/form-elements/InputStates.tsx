@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ComponentCard from "../../common/ComponentCard";
+import FormField from "../FormField";
 import Input from "../input/InputField";
-import Label from "../Label";
 
 export default function InputStates() {
   const [email, setEmail] = useState("");
@@ -20,6 +20,7 @@ export default function InputStates() {
     setEmail(value);
     validateEmail(value);
   };
+  
   return (
     <ComponentCard
       title="Input States"
@@ -27,42 +28,45 @@ export default function InputStates() {
     >
       <div className="space-y-5 sm:space-y-6">
         {/* Error Input */}
-        <div>
-          <Label>Email</Label>
+        <FormField
+          label="Email"
+          error={error ? "This is an invalid email address." : ""}
+        >
           <Input
             type="email"
             value={email}
             error={error}
             onChange={handleEmailChange}
             placeholder="Enter your email"
-            hint={error ? "This is an invalid email address." : ""}
           />
-        </div>
+        </FormField>
 
         {/* Success Input */}
-        <div>
-          <Label>Email</Label>
+        <FormField
+          label="Email"
+          hint={!error ? "Valid email!" : ""}
+        >
           <Input
             type="email"
             value={email}
             success={!error}
             onChange={handleEmailChange}
             placeholder="Enter your email"
-            hint={!error ? "Valid email!" : ""}
           />
-        </div>
+        </FormField>
 
         {/* Disabled Input */}
-        <div>
-          <Label>Email</Label>
+        <FormField
+          label="Email"
+          hint="This field is disabled."
+        >
           <Input
             type="text"
             value="disabled@example.com"
             disabled={true}
             placeholder="Disabled email"
-            hint="This field is disabled."
           />
-        </div>
+        </FormField>
       </div>
     </ComponentCard>
   );
