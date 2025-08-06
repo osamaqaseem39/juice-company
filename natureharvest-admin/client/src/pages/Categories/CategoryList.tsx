@@ -101,7 +101,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
               />
               <Link 
                 to={isSubcategoryList ? "/subcategories/add" : "/categories/add"} 
-                className="bg-indigo-600 text-white px-5 py-2 rounded-lg shadow hover:bg-indigo-700 transition"
+                className="bg-logo-red text-white px-5 py-2 rounded-lg shadow hover:bg-red-700 transition"
               >
                 Add {isSubcategoryList ? 'Subcategory' : 'Category'}
               </Link>
