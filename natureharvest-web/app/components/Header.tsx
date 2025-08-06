@@ -4,9 +4,16 @@ export default function Header() {
   return (
     <nav className="fixed top-2 sm:top-4 left-1/2 transform -translate-x-1/2 z-50 w-[98%] sm:w-[95%] max-w-7xl">
       <div className="bg-gray-50/90 backdrop-blur-md rounded-xl sm:rounded-2xl shadow-2xl border border-gray-200/20 px-4 sm:px-6 py-3 sm:py-4">
-        <div className="flex justify-between items-center">
-          {/* Left side - Navigation Links */}
-          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
+        <div className="flex items-center justify-center">
+          {/* Left side - Brand Logo */}
+          <div className="flex items-center mr-8">
+            <div className="text-center">
+              <img src="/logo.png" alt="Nature Harvest" className="h-12 w-auto sm:h-16" />
+            </div>
+          </div>
+
+          {/* Center - Navigation Links */}
+          <div className="hidden md:flex items-center space-x-8 lg:space-x-12 justify-center flex-1">
             <a href="#products" className="text-gray-800 hover:text-red-600 transition-colors font-light text-base lg:text-lg font-poppins">
               Juices
             </a>
@@ -18,15 +25,8 @@ export default function Header() {
             </a>
           </div>
 
-          {/* Center - Brand Logo */}
-          <div className="flex items-center">
-            <div className="text-center">
-              <img src="/logo.png" alt="Nature Harvest" className="h-12 w-auto sm:h-16" />
-            </div>
-          </div>
-
           {/* Right side - Action Buttons */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4 ml-8">
             <div className="hidden md:flex items-center space-x-2">
               <span className="text-gray-800 font-light text-base lg:text-lg font-hurme">Discover</span>
               <svg className="w-4 h-4 lg:w-5 lg:h-5 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">

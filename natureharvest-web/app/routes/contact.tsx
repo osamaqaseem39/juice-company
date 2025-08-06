@@ -27,41 +27,6 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sun-yellow via-leaf-light to-sun-orange">
-      {/* Navigation */}
-      <nav className="bg-logo-black sticky top-0 z-50 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <a href="/" className="text-2xl font-serif font-bold text-white">
-                Nature Harvest
-              </a>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="/" className="text-white hover:text-sun-yellow transition-colors">
-                Home
-              </a>
-              <a href="/about" className="text-white hover:text-sun-yellow transition-colors">
-                About
-              </a>
-              <a href="/products" className="text-white hover:text-sun-yellow transition-colors">
-                Products
-              </a>
-              <a href="/contact" className="text-sun-yellow font-semibold">
-                Contact
-              </a>
-            </div>
-            <div className="flex items-center space-x-2">
-              <button className="bg-logo-red text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-colors">
-                Find Store
-              </button>
-              <button className="bg-logo-red text-white p-2 rounded-full hover:bg-red-600 transition-colors">
-                🔍
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -81,6 +46,8 @@ export default function Contact() {
           </motion.div>
         </div>
       </section>
+
+
 
       {/* Contact Information */}
       <section className="py-20 bg-gradient-to-br from-white to-sun-yellow">
