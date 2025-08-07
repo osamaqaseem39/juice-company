@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { StarIcon, HeartIcon, ShoppingBagIcon, FilterIcon, ViewGridIcon, ViewListIcon } from "@heroicons/react/24/outline";
+import { StarIcon, HeartIcon, ShoppingBagIcon, Squares2X2Icon, ListBulletIcon } from "@heroicons/react/24/outline";
 import ProductCategories from "./ProductCategories";
 import ProductFilters from "./ProductFilters";
 import BrandDetails from "./BrandDetails";
@@ -219,7 +219,7 @@ export default function ProductsPage() {
                         viewMode === "grid" ? "bg-white text-logo-green shadow-sm" : "text-gray-500"
                       }`}
                     >
-                      <ViewGridIcon className="w-4 h-4" />
+                      <Squares2X2Icon className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setViewMode("list")}
@@ -227,7 +227,7 @@ export default function ProductsPage() {
                         viewMode === "list" ? "bg-white text-logo-green shadow-sm" : "text-gray-500"
                       }`}
                     >
-                      <ViewListIcon className="w-4 h-4" />
+                      <ListBulletIcon className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

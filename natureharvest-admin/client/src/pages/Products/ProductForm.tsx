@@ -58,7 +58,6 @@ const ProductForm: React.FC = () => {
     status: 'active'
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -167,7 +166,7 @@ const ProductForm: React.FC = () => {
     navigate('/products');
   };
 
-  if (loading) {
+  if (productData?.loading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <LoadingSpinner size="lg" />

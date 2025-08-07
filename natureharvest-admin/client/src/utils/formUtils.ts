@@ -243,9 +243,9 @@ export const commonValidationRules = {
     }
   },
   phone: { 
-    pattern: /^[\+]?[1-9][\d]{0,15}$/,
+    pattern: /^[+]?[1-9][0-9]{0,15}$/,
     custom: (value: string) => {
-      if (value && !/^[\+]?[1-9][\d]{0,15}$/.test(value)) {
+      if (value && !/^[+]?[1-9][0-9]{0,15}$/.test(value)) {
         return 'Invalid phone number format';
       }
       return undefined;

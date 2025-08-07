@@ -37,7 +37,7 @@ const CategoryForm: React.FC<{ mode?: CategoryFormMode }> = ({ mode }) => {
   const navigate = useNavigate();
   const [createCategory] = useCreateCategory();
   const [updateCategory] = useUpdateCategory();
-  const { data: categoryData, loading: categoryLoading } = useCategory(id || '');
+  const { data: categoryData } = useCategory(id || '');
   const { data: categoriesData } = useCategories();
   
   const [formData, setFormData] = useState<CategoryFormData>({
@@ -53,7 +53,6 @@ const CategoryForm: React.FC<{ mode?: CategoryFormMode }> = ({ mode }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const isEdit = mode === 'edit' || !!id;
-  const categories = categoriesData?.categories || [];
 
   useEffect(() => {
     if (isEdit && categoryData?.category) {
