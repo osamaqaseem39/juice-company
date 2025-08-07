@@ -1,184 +1,151 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { 
-  Product, 
-  Brand, 
-  Category, 
-  SubCategory, 
   useCreateProduct, 
   useUpdateProduct, 
+  useProduct,
   useBrands, 
-  useCategories, 
-  useSubcategories 
-} from '../../services/api';
-import PageMeta from '../../components/common/PageMeta';
+  useCategories
+} from '../../services/apiService';
+import { 
+  FormField, 
+  ImageUpload, 
+  FormActions, 
+  LoadingSpinner
+} from '../../components/forms/FormComponents';
+import { FormLayout } from '../../components/forms/FormLayout';
+import { 
+  uploadImageWithProgress, 
+  formatText, 
+  insertFormatting,
+  validateForm,
+  ValidationRule
+} from '../../utils/formUtils';
 
-// Product-specific image upload
-async function uploadProductImage(file: File): Promise<string> {
-  const formData = new FormData();
-  const ext = file.name.split('.').pop();
-  const uniqueName = `${Date.now()}-product-${Math.random().toString(36).substring(2, 8)}.${ext}`;
-  formData.append('file', file, uniqueName);
-  const response = await fetch('https://osamaqaseem.online/upload.php', {
-    method: 'POST',
-    body: formData,
-  });
-  const data = await response.json();
-  if (data.url) {
-    return data.url;
-  } else {
-    throw new Error(data.error || 'Upload failed');
-  }
+interface ProductFormData {
+  name: string;
+  description: string;
+  brandId: string;
+  categoryId: string;
+  images: string[];
+  status: string;
 }
 
-// Add formatText and insertFormatting helpers (adapted from BlogForm)
-function formatText(text: string) {
-  text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-  text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  text = text.replace(/__(.+?)__/g, '<em>$1</em>');
-  text = text.replace(/^- (.+)$/gm, '<li>$1</li>').replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
-  text = text.replace(/^\d+\. (.+)$/gm, '<li>$1</li>').replace(/((?:<li>.*<\/li>\n?)+)/g, '<ol>$1</ol>');
-  text = text.replace(/`(.+?)`/g, '<code>$1</code>');
-  text = text.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
-  text = text.replace(/^---$/gm, '<hr>');
-  text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
-  text = text.replace(/!img\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1">');
-  text = text.replace(/<center>(.+?)<\/center>/g, '<div style="text-align: center">$1</div>');
-  text = text.replace(/<right>(.+?)<\/right>/g, '<div style="text-align: right">$1</div>');
-  text = text.replace(/<left>(.+?)<\/left>/g, '<div style="text-align: left">$1</div>');
-  text = text.replace(/\n/g, '<br>');
-  return text;
-}
+const validationRules: Record<keyof ProductFormData, ValidationRule> = {
+  name: { required: true, minLength: 2, maxLength: 100 },
+  description: { required: true, minLength: 10 },
+  brandId: { required: false },
+  categoryId: { required: false },
+  images: { required: false },
+  status: { required: true }
+};
 
 const ProductForm: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<Partial<Product>>({ name: '', description: '', images: [] });
-  const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
-  const [previewFeatured, setPreviewFeatured] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
   const [createProduct] = useCreateProduct();
   const [updateProduct] = useUpdateProduct();
+  const { data: productData, loading: productLoading } = useProduct(id || '');
   const { data: brandsData } = useBrands();
   const { data: categoriesData } = useCategories();
-  const { data: subcategoriesData } = useSubcategories();
+
+  const [formData, setFormData] = useState<ProductFormData>({
+    name: '',
+    description: '',
+    brandId: '',
+    categoryId: '',
+    images: [],
+    status: 'active'
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [descriptionPreview, setDescriptionPreview] = useState('');
 
   const brands = brandsData?.brands || [];
   const categories = categoriesData?.categories || [];
-  const subcategories = subcategoriesData?.subcategories || [];
-
+  
   const descriptionTextareaRef = useRef<HTMLTextAreaElement>(null);
-  const [descriptionPreview, setDescriptionPreview] = useState('');
 
   useEffect(() => {
-    if (id) {
-      setLoading(true);
-      // For now, we'll need to implement a getProductById hook
-      // For now, we'll set loading to false and handle this later
-      setLoading(false);
-    } else {
-      setProduct({ name: '', description: '', images: [] });
-      setFeaturedImageFile(null);
-      setPreviewFeatured(null);
+    if (id && productData?.product) {
+      const product = productData.product;
+      setFormData({
+        name: product.name || '',
+        description: product.description || '',
+        brandId: product.brandId?._id || '',
+        categoryId: product.categoryId?._id || '',
+        images: product.images || [],
+        status: product.status || 'active'
+      });
     }
-  }, [id]);
+  }, [id, productData]);
 
   useEffect(() => {
-    setDescriptionPreview(formatText(product.description || ''));
-  }, [product.description]);
+    setDescriptionPreview(formatText(formData.description));
+  }, [formData.description]);
 
-  function insertFormatting(format: string) {
-    const textarea = descriptionTextareaRef.current;
-    if (!textarea) return;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-    let replacement = '';
-
-    switch (format) {
-      case 'bold':
-        replacement = `**${selectedText}**`;
-        break;
-      case 'italic':
-        replacement = `__${selectedText}__`;
-        break;
-      case 'code':
-        replacement = `\`${selectedText}\``;
-        break;
-      case 'link':
-        replacement = `[${selectedText}](url)`;
-        break;
-      case 'image':
-        replacement = `!img[${selectedText}](image-url)`;
-        break;
-      case 'h1':
-        replacement = `# ${selectedText}`;
-        break;
-      case 'h2':
-        replacement = `## ${selectedText}`;
-        break;
-      case 'h3':
-        replacement = `### ${selectedText}`;
-        break;
-      case 'ul':
-        replacement = `- ${selectedText}`;
-        break;
-      case 'ol':
-        replacement = `1. ${selectedText}`;
-        break;
-      case 'quote':
-        replacement = `> ${selectedText}`;
-        break;
-      case 'center':
-        replacement = `<center>${selectedText}</center>`;
-        break;
-      case 'right':
-        replacement = `<right>${selectedText}</right>`;
-        break;
-      case 'left':
-        replacement = `<left>${selectedText}</left>`;
-        break;
-      case 'hr':
-        replacement = `---`;
-        break;
-    }
-
-    const newValue = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
-    setProduct(prev => ({ ...prev, description: newValue }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Set cursor position after the inserted text
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + replacement.length, start + replacement.length);
-    }, 0);
-  }
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setProduct(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setProduct(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleImageUpload = async (file: File): Promise<string> => {
+    setUploading(true);
+    setUploadProgress(0);
+    
+    try {
+      const url = await uploadImageWithProgress(file, 'product', (progress) => {
+        setUploadProgress(progress);
+      });
+      
+      setFormData(prev => ({ 
+        ...prev, 
+        images: [...prev.images, url] 
+      }));
+      
+      return url;
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  const handleFormattingInsert = (format: string) => {
+    if (descriptionTextareaRef.current) {
+      insertFormatting(descriptionTextareaRef.current, format, (newValue) => {
+        setFormData(prev => ({ ...prev, description: newValue }));
+      });
+    }
+  };
+
+  const validateFormData = (): boolean => {
+    const validationErrors = validateForm(formData, validationRules);
+    setErrors(validationErrors);
+    return Object.keys(validationErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateFormData()) {
+      return;
+    }
+
     setSubmitting(true);
 
     try {
-      let images = product.images || [];
-      if (featuredImageFile) {
-        const imageUrl = await uploadProductImage(featuredImageFile);
-        images = [imageUrl];
-      }
-
       const productData = {
-        ...product,
-        images,
+        ...formData,
+        brandId: formData.brandId || undefined,
+        categoryId: formData.categoryId || undefined
       };
 
       if (id) {
@@ -190,137 +157,121 @@ const ProductForm: React.FC = () => {
       navigate('/products');
     } catch (error) {
       console.error('Error saving product:', error);
-      alert('Failed to save product. Please try again.');
+      setErrors({ submit: 'Failed to save product. Please try again.' });
     } finally {
       setSubmitting(false);
     }
   };
 
-  const handleFeaturedImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFeaturedImageFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreviewFeatured(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleCancel = () => {
+    navigate('/products');
   };
-
-
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
 
   return (
-    <>
-      <PageMeta
-        title={`${id ? 'Edit' : 'Add'} Product | Nature Harvest Admin`}
-        description={`${id ? 'Edit' : 'Add'} a new product to your catalog`}
-      />
-      <div className="w-full p-4">
-        <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold" style={{ color: '#062373' }}>
-              {id ? 'Edit Product' : 'Add New Product'}
-            </h1>
-            <Link to="/products" className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
-              Back to Products
-            </Link>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
+    <FormLayout
+      title={id ? 'Edit Product' : 'Add New Product'}
+      description={`${id ? 'Edit' : 'Add'} a new product to your catalog`}
+      backPath="/products"
+      backText="Back to Products"
+      error={errors.submit}
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Product Title *</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={product.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              <FormField
+                label="Product Title"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                placeholder="Enter product title"
+                error={errors.name}
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Brand</label>
-                <select
-                  name="brand"
-                  value={product.brand}
-                  onChange={handleSelectChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Brand</option>
-                  {brands.map((brand: Brand) => (
-                    <option key={brand._id} value={brand._id}>{brand.name}</option>
-                  ))}
-                </select>
-              </div>
+              <FormField
+                label="Brand"
+                name="brandId"
+                value={formData.brandId}
+                onChange={handleChange}
+                type="select"
+                options={brands.map((brand: any) => ({
+                  value: brand._id,
+                  label: brand.name
+                }))}
+                error={errors.brandId}
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                <select
-                  name="category"
-                  value={product.category}
-                  onChange={handleSelectChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((category: Category) => (
-                    <option key={category._id} value={category._id}>{category.name}</option>
-                  ))}
-                </select>
-              </div>
+              <FormField
+                label="Category"
+                name="categoryId"
+                value={formData.categoryId}
+                onChange={handleChange}
+                type="select"
+                options={categories.map((category: any) => ({
+                  value: category._id,
+                  label: category.name
+                }))}
+                error={errors.categoryId}
+              />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Subcategory</label>
-                <select
-                  name="subCategory"
-                  value={product.subCategory}
-                  onChange={handleSelectChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Subcategory</option>
-                  {subcategories.map((subcategory: SubCategory) => (
-                    <option key={subcategory._id} value={subcategory._id}>{subcategory.name}</option>
-                  ))}
-                </select>
-              </div>
+              <FormField
+                label="Status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                type="select"
+                options={[
+                  { value: 'active', label: 'Active' },
+                  { value: 'inactive', label: 'Inactive' },
+                  { value: 'discontinued', label: 'Discontinued' }
+                ]}
+                error={errors.status}
+              />
+
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Description
+              </label>
+              
               <div className="mb-2">
                 <div className="flex flex-wrap gap-2">
                   {['bold', 'italic', 'code', 'link', 'image', 'h1', 'h2', 'h3', 'ul', 'ol', 'quote', 'center', 'right', 'left', 'hr'].map(format => (
                     <button
                       key={format}
                       type="button"
-                      onClick={() => insertFormatting(format)}
-                      className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+                      onClick={() => handleFormattingInsert(format)}
+                      className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded transition-colors"
                     >
                       {format.toUpperCase()}
                     </button>
                   ))}
                 </div>
               </div>
+              
               <textarea
                 ref={descriptionTextareaRef}
                 name="description"
-                value={product.description}
+                value={formData.description}
                 onChange={handleChange}
                 rows={8}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-logo-red transition-colors"
                 placeholder="Enter product description..."
               />
-              {product.description && (
+              
+              {errors.description && (
+                <p className="text-sm text-red-600 mt-1">{errors.description}</p>
+              )}
+              
+              {formData.description && (
                 <div className="mt-2 p-4 bg-gray-50 rounded-md">
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Preview:</h4>
                   <div 
@@ -332,41 +283,54 @@ const ProductForm: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFeaturedImageChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Product Images
+              </label>
+              
+              <ImageUpload
+                label=""
+                value={null}
+                onChange={() => {}} // Handled by onUpload
+                onUpload={handleImageUpload}
+                uploading={uploading}
+                uploadProgress={uploadProgress}
               />
-              {previewFeatured && (
-                <div className="mt-2">
-                  <img src={previewFeatured} alt="Preview" className="w-32 h-32 object-cover rounded" />
+              
+              {formData.images.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {formData.images.map((image, index) => (
+                    <div key={index} className="relative">
+                      <img 
+                        src={image} 
+                        alt={`Product ${index + 1}`} 
+                        className="w-full h-32 object-cover rounded border"
+                      />
+                      <button
+                        type="button"
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition"
+                        onClick={() => setFormData(prev => ({
+                          ...prev,
+                          images: prev.images.filter((_, i) => i !== index)
+                        }))}
+                        title="Remove image"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
 
-
-
-            <div className="flex justify-end space-x-4">
-              <Link
-                to="/products"
-                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-              >
-                Cancel
-              </Link>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-              >
-                {submitting ? 'Saving...' : (id ? 'Update Product' : 'Create Product')}
-              </button>
-            </div>
+            <FormActions
+              onSubmit={handleSubmit}
+              onCancel={handleCancel}
+              submitText={id ? 'Update Product' : 'Create Product'}
+              loading={submitting}
+              disabled={uploading}
+            />
           </form>
-        </div>
-      </div>
-    </>
+    </FormLayout>
   );
 };
 

@@ -153,7 +153,7 @@ export interface Brand {
 export interface Category {
   _id: string;
   name: string;
-  image?: string;
+  image?: string | null;
   description?: string;
   parent?: Category | string | null;
   createdAt: string;
@@ -298,6 +298,143 @@ export interface UpdateCompanyInput {
   status?: 'active' | 'inactive';
 }
 
+// Flavor types
+export interface FlavorNutritionalInfo {
+  calories?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
+  fiber?: number;
+  sugar?: number;
+  vitaminC?: number;
+  potassium?: number;
+}
+
+export interface FlavorSeasonality {
+  startMonth?: number;
+  endMonth?: number;
+}
+
+export interface FlavorSize {
+  _id?: string;
+  sizeLabel: string;
+  price: number;
+  imageUrl?: string;
+  stock: number;
+  barcode?: string;
+  weight: number;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    depth?: number;
+  };
+  isAvailable: boolean;
+}
+
+export interface Flavor {
+  _id: string;
+  brandId: string;
+  brand?: Brand;
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  flavorProfile: string;
+  ingredients?: string[];
+  nutritionalInfo?: FlavorNutritionalInfo;
+  allergens?: string[];
+  certifications?: string[];
+  sizes?: FlavorSize[];
+  tags?: string[];
+  featured: boolean;
+  status: string;
+  seasonality?: FlavorSeasonality;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateFlavorInput {
+  brandId: string;
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  flavorProfile: string;
+  ingredients?: string[];
+  nutritionalInfo?: FlavorNutritionalInfo;
+  allergens?: string[];
+  certifications?: string[];
+  sizes?: FlavorSize[];
+  tags?: string[];
+  featured?: boolean;
+  status?: string;
+  seasonality?: FlavorSeasonality;
+}
+
+export interface UpdateFlavorInput {
+  brandId?: string;
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+  flavorProfile?: string;
+  ingredients?: string[];
+  nutritionalInfo?: FlavorNutritionalInfo;
+  allergens?: string[];
+  certifications?: string[];
+  sizes?: FlavorSize[];
+  tags?: string[];
+  featured?: boolean;
+  status?: string;
+  seasonality?: FlavorSeasonality;
+}
+
+// Size types
+export interface Size {
+  _id: string;
+  sizeLabel: string;
+  price: number;
+  imageUrl?: string;
+  stock: number;
+  barcode?: string;
+  weight: number;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    depth?: number;
+  };
+  isAvailable: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateSizeInput {
+  sizeLabel: string;
+  price: number;
+  imageUrl?: string;
+  stock: number;
+  barcode?: string;
+  weight: number;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    depth?: number;
+  };
+  isAvailable?: boolean;
+}
+
+export interface UpdateSizeInput {
+  sizeLabel?: string;
+  price?: number;
+  imageUrl?: string;
+  stock?: number;
+  barcode?: string;
+  weight?: number;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    depth?: number;
+  };
+  isAvailable?: boolean;
+}
+
 // GraphQL API functions
 export const blogApi = {
   getAll: () => client.query({ query: Queries.GET_ALL_BLOGS }),
@@ -396,6 +533,28 @@ export const companyApi = {
   delete: (id: string) => client.mutate({ mutation: Mutations.DELETE_COMPANY, variables: { id } }),
 };
 
+// TODO: Implement GraphQL queries and mutations for flavors
+export const flavorApi = {
+  // getAll: () => client.query({ query: Queries.GET_ALL_FLAVORS }),
+  // getById: (id: string) => client.query({ query: Queries.GET_FLAVOR_BY_ID, variables: { id } }),
+  // getByBrand: (brandId: string) => client.query({ query: Queries.GET_FLAVORS_BY_BRAND, variables: { brandId } }),
+  // create: (data: CreateFlavorInput) => client.mutate({ mutation: Mutations.CREATE_FLAVOR, variables: { input: data } }),
+  // update: (id: string, data: UpdateFlavorInput) => client.mutate({ mutation: Mutations.UPDATE_FLAVOR, variables: { id, input: data } }),
+  // delete: (id: string) => client.mutate({ mutation: Mutations.DELETE_FLAVOR, variables: { id } }),
+  // addSize: (flavorId: string, size: FlavorSize) => client.mutate({ mutation: Mutations.ADD_SIZE_TO_FLAVOR, variables: { flavorId, size } }),
+  // updateSize: (flavorId: string, sizeId: string, size: FlavorSize) => client.mutate({ mutation: Mutations.UPDATE_SIZE_IN_FLAVOR, variables: { flavorId, sizeId, size } }),
+  // removeSize: (flavorId: string, sizeId: string) => client.mutate({ mutation: Mutations.REMOVE_SIZE_FROM_FLAVOR, variables: { flavorId, sizeId } }),
+};
+
+// TODO: Implement GraphQL queries and mutations for sizes
+export const sizeApi = {
+  // getAll: () => client.query({ query: Queries.GET_ALL_SIZES }),
+  // getById: (id: string) => client.query({ query: Queries.GET_SIZE_BY_ID, variables: { id } }),
+  // create: (data: CreateSizeInput) => client.mutate({ mutation: Mutations.CREATE_SIZE, variables: { input: data } }),
+  // update: (id: string, data: UpdateSizeInput) => client.mutate({ mutation: Mutations.UPDATE_SIZE, variables: { id, input: data } }),
+  // delete: (id: string) => client.mutate({ mutation: Mutations.DELETE_SIZE, variables: { id } }),
+};
+
 // React hooks for components
 export const useBlogs = () => useQuery(Queries.GET_ALL_BLOGS);
 export const useBlog = (id: string) => useQuery(Queries.GET_BLOG_BY_ID, { variables: { id } });
@@ -479,3 +638,29 @@ export const useDeleteCompany = () => useMutation(Mutations.DELETE_COMPANY);
 
 export const useLogin = () => useMutation(Mutations.LOGIN);
 export const useRegister = () => useMutation(Mutations.REGISTER);
+
+// TODO: Implement GraphQL queries and mutations for flavors
+// Flavor hooks
+// export const useFlavors = () => useQuery(Queries.GET_ALL_FLAVORS);
+// export const useFlavor = (id: string) => useQuery(Queries.GET_FLAVOR_BY_ID, { variables: { id } });
+// export const useFlavorsByBrand = (brandId: string) => useQuery(Queries.GET_FLAVORS_BY_BRAND, { variables: { brandId } });
+
+// TODO: Implement GraphQL queries and mutations for sizes
+// Size hooks
+// export const useSizes = () => useQuery(Queries.GET_ALL_SIZES);
+// export const useSize = (id: string) => useQuery(Queries.GET_SIZE_BY_ID, { variables: { id } });
+
+// TODO: Implement GraphQL mutations for flavors
+// Flavor mutation hooks
+// export const useCreateFlavor = () => useMutation(Mutations.CREATE_FLAVOR);
+// export const useUpdateFlavor = () => useMutation(Mutations.UPDATE_FLAVOR);
+// export const useDeleteFlavor = () => useMutation(Mutations.DELETE_FLAVOR);
+// export const useAddSizeToFlavor = () => useMutation(Mutations.ADD_SIZE_TO_FLAVOR);
+// export const useUpdateSizeInFlavor = () => useMutation(Mutations.UPDATE_SIZE_IN_FLAVOR);
+// export const useRemoveSizeFromFlavor = () => useMutation(Mutations.REMOVE_SIZE_FROM_FLAVOR);
+
+// TODO: Implement GraphQL mutations for sizes
+// Size mutation hooks
+// export const useCreateSize = () => useMutation(Mutations.CREATE_SIZE);
+// export const useUpdateSize = () => useMutation(Mutations.UPDATE_SIZE);
+// export const useDeleteSize = () => useMutation(Mutations.DELETE_SIZE);

@@ -4,13 +4,15 @@ import { gql } from '@apollo/client';
 export const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
-      _id
-      fullName
-      email
-      phone
-      roles
       token
-      isActive
+      user {
+        _id
+        fullName
+        email
+        phone
+        roles
+        isActive
+      }
     }
   }
 `;
@@ -18,13 +20,15 @@ export const LOGIN = gql`
 export const REGISTER = gql`
   mutation Register($input: UserInput!) {
     register(input: $input) {
-      _id
-      fullName
-      email
-      phone
-      roles
       token
-      isActive
+      user {
+        _id
+        fullName
+        email
+        phone
+        roles
+        isActive
+      }
     }
   }
 `;
@@ -119,42 +123,16 @@ export const CREATE_PRODUCT = gql`
     createProduct(input: $input) {
       _id
       name
-      slug
       description
-      categoryId {
-        _id
-        name
-        slug
-      }
+      images
       brandId {
         _id
         name
       }
-      variants {
+      categoryId {
         _id
-        sku
-        price
-        compareAtPrice
-        quantity
-        color
-        size
-        weight
-        images
-        isActive
+        name
       }
-      images
-      tags
-      seo {
-        title
-        description
-        keywords
-        slug
-        canonicalUrl
-        ogImage
-        noIndex
-        noFollow
-      }
-      isActive
       createdAt
       updatedAt
     }
@@ -166,42 +144,16 @@ export const UPDATE_PRODUCT = gql`
     updateProduct(id: $id, input: $input) {
       _id
       name
-      slug
       description
-      categoryId {
-        _id
-        name
-        slug
-      }
+      images
       brandId {
         _id
         name
       }
-      variants {
+      categoryId {
         _id
-        sku
-        price
-        compareAtPrice
-        quantity
-        color
-        size
-        weight
-        images
-        isActive
+        name
       }
-      images
-      tags
-      seo {
-        title
-        description
-        keywords
-        slug
-        canonicalUrl
-        ogImage
-        noIndex
-        noFollow
-      }
-      isActive
       createdAt
       updatedAt
     }
@@ -220,22 +172,14 @@ export const CREATE_CATEGORY = gql`
     createCategory(input: $input) {
       _id
       name
-      slug
-      parentCategoryId
+      image
       description
-      imageUrl
-      seo {
-        title
-        description
-        keywords
-        slug
-        canonicalUrl
-        ogImage
-        noIndex
-        noFollow
+      parent {
+        _id
+        name
       }
-      isActive
       createdAt
+      updatedAt
     }
   }
 `;
@@ -245,22 +189,14 @@ export const UPDATE_CATEGORY = gql`
     updateCategory(id: $id, input: $input) {
       _id
       name
-      slug
-      parentCategoryId
+      image
       description
-      imageUrl
-      seo {
-        title
-        description
-        keywords
-        slug
-        canonicalUrl
-        ogImage
-        noIndex
-        noFollow
+      parent {
+        _id
+        name
       }
-      isActive
       createdAt
+      updatedAt
     }
   }
 `;
@@ -277,20 +213,10 @@ export const CREATE_BRAND = gql`
     createBrand(input: $input) {
       _id
       name
+      image
       description
-      logoUrl
-      website
-      seo {
-        title
-        description
-        keywords
-        slug
-        canonicalUrl
-        ogImage
-        noIndex
-        noFollow
-      }
-      isActive
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -300,20 +226,10 @@ export const UPDATE_BRAND = gql`
     updateBrand(id: $id, input: $input) {
       _id
       name
+      image
       description
-      logoUrl
-      website
-      seo {
-        title
-        description
-        keywords
-        slug
-        canonicalUrl
-        ogImage
-        noIndex
-        noFollow
-      }
-      isActive
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -962,5 +878,179 @@ export const UPDATE_COMPANY = gql`
 export const DELETE_COMPANY = gql`
   mutation DeleteCompany($id: ID!) {
     deleteCompany(id: $id)
+  }
+`;
+
+// Flavor mutations
+export const CREATE_FLAVOR = gql`
+  mutation CreateFlavor($input: FlavorInput!) {
+    createFlavor(input: $input) {
+      _id
+      name
+      description
+      flavorProfile
+      nutritionalInfo {
+        calories
+        protein
+        carbs
+        fat
+        fiber
+        sugar
+        sodium
+        vitamins
+        minerals
+      }
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+      seasonality {
+        isSeasonal
+        availableMonths
+        peakSeason
+      }
+      brandId {
+        _id
+        name
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_FLAVOR = gql`
+  mutation UpdateFlavor($id: ID!, $input: FlavorInput!) {
+    updateFlavor(id: $id, input: $input) {
+      _id
+      name
+      description
+      flavorProfile
+      nutritionalInfo {
+        calories
+        protein
+        carbs
+        fat
+        fiber
+        sugar
+        sodium
+        vitamins
+        minerals
+      }
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+      seasonality {
+        isSeasonal
+        availableMonths
+        peakSeason
+      }
+      brandId {
+        _id
+        name
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_FLAVOR = gql`
+  mutation DeleteFlavor($id: ID!) {
+    deleteFlavor(id: $id)
+  }
+`;
+
+export const ADD_SIZE_TO_FLAVOR = gql`
+  mutation AddSizeToFlavor($flavorId: ID!, $size: FlavorSizeInput!) {
+    addSizeToFlavor(flavorId: $flavorId, size: $size) {
+      _id
+      name
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+    }
+  }
+`;
+
+export const UPDATE_SIZE_IN_FLAVOR = gql`
+  mutation UpdateSizeInFlavor($flavorId: ID!, $sizeId: ID!, $size: FlavorSizeInput!) {
+    updateSizeInFlavor(flavorId: $flavorId, sizeId: $sizeId, size: $size) {
+      _id
+      name
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+    }
+  }
+`;
+
+export const REMOVE_SIZE_FROM_FLAVOR = gql`
+  mutation RemoveSizeFromFlavor($flavorId: ID!, $sizeId: ID!) {
+    removeSizeFromFlavor(flavorId: $flavorId, sizeId: $sizeId) {
+      _id
+      name
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+    }
+  }
+`;
+
+// Size mutations
+export const CREATE_SIZE = gql`
+  mutation CreateSize($input: SizeInput!) {
+    createSize(input: $input) {
+      _id
+      sizeLabel
+      price
+      volume
+      availability
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_SIZE = gql`
+  mutation UpdateSize($id: ID!, $input: SizeInput!) {
+    updateSize(id: $id, input: $input) {
+      _id
+      sizeLabel
+      price
+      volume
+      availability
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_SIZE = gql`
+  mutation DeleteSize($id: ID!) {
+    deleteSize(id: $id)
   }
 `; 

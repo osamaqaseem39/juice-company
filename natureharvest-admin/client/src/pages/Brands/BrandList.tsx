@@ -49,7 +49,7 @@ const BrandList: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-logo-red"></div>
       </div>
     );
   }
@@ -57,7 +57,7 @@ const BrandList: React.FC = () => {
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="text-red-500">Error: {error.message}</div>
+        <div className="text-logo-red">Error: {error.message}</div>
       </div>
     );
   }
@@ -68,28 +68,27 @@ const BrandList: React.FC = () => {
         title="Brands | Nature Harvest Admin"
         description="Manage your brand catalog"
       />
-      <div className="w-full p-4">
-        <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
+      <div className="w-full">
+        <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <h1 className="text-3xl font-bold" style={{ color: '#062373' }}>Brands</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Brands</h1>
             <div className="flex gap-2 w-full md:w-auto">
               <input
                 type="text"
                 placeholder="Search by name..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="border rounded px-3 py-2 w-full md:w-64 text-[#062373]"
-                style={{ color: '#062373' }}
+                className="border rounded px-3 py-2 w-full md:w-64 text-gray-700 focus:ring-2 focus:ring-logo-red focus:border-logo-red"
               />
-              <Link to="/brands/add" className="bg-indigo-600 text-white px-5 py-2 rounded-lg shadow hover:bg-indigo-700 transition">Add Brand</Link>
+              <Link to="/brands/add" className="bg-logo-red hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2">Add Brand</Link>
             </div>
           </div>
           
           {sorted.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="min-w-full w-full border border-gray-200 rounded-lg text-[#062373]">
-                <thead className="text-[#062373]">
-                  <tr className="bg-gray-100">
+              <table className="min-w-full w-full border border-gray-200 rounded-lg">
+                <thead>
+                  <tr className="bg-gray-50">
                     <th className="px-4 py-2 border">Image</th>
                     <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort('name')}>
                       Name {sortKey === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
@@ -98,9 +97,9 @@ const BrandList: React.FC = () => {
                     <th className="px-4 py-2 border">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="text-[#062373]">
+                <tbody>
                   {sorted.map((b: Brand) => (
-                    <tr key={b._id} className="border-t">
+                    <tr key={b._id} className="border-t hover:bg-gray-50">
                       <td className="px-4 py-2 border">
                         {b.image && (
                           <img 
@@ -115,13 +114,13 @@ const BrandList: React.FC = () => {
                       <td className="px-4 py-2 border">
                         <Link 
                           to={`/brands/${b._id}/edit`} 
-                          className="px-3 py-1 rounded font-semibold bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition mr-2"
+                          className="px-3 py-1 rounded font-semibold bg-green-600 text-white hover:bg-green-700 transition mr-2"
                         >
                           Edit
                         </Link>
                         <button 
                           onClick={() => handleDelete(b._id)} 
-                          className="px-3 py-1 rounded font-semibold bg-red-100 text-red-700 hover:bg-red-200 transition"
+                          className="px-3 py-1 rounded font-semibold bg-red-600 text-white hover:bg-red-700 transition"
                         >
                           Delete
                         </button>
@@ -132,7 +131,7 @@ const BrandList: React.FC = () => {
               </table>
             </div>
           ) : (
-            <div className="flex justify-center items-center h-64" style={{ color: '#062373' }}>
+            <div className="flex justify-center items-center h-64 text-gray-500">
               No brands found.
             </div>
           )}

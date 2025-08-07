@@ -1,41 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Blog, useBlogs, useDeleteBlog } from '../../services/api';
-import { Modal } from '../../components/ui/modal';
+import { 
+  PencilIcon, 
+  TrashBinIcon, 
+  PlusIcon,
+  EyeIcon
+} from '../../icons';
 import PageMeta from '../../components/common/PageMeta';
+import { LoadingSpinner } from '../../components/forms/FormComponents';
 
-const BlogList: React.FC = () => {
-  const { data, loading, error, refetch } = useBlogs();
-  const [deleteBlog] = useDeleteBlog();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalImg, setModalImg] = useState<string | null>(null);
+interface Size {
+  _id: string;
+  name: string;
+  description: string;
+  imageUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const SizeList: React.FC = () => {
+  const [sizes, setSizes] = useState<Size[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [sortKey, setSortKey] = useState<'title' | ''>('');
+  const [sortKey, setSortKey] = useState<'name' | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
-  const blogs = data?.blogs || [];
+  useEffect(() => {
+    // TODO: Implement getSizes API call
+    // For now, using empty array
+    setSizes([]);
+    setLoading(false);
+  }, []);
 
-  const handleDelete = async (_id: string) => {
-    if (window.confirm('Are you sure you want to delete this blog?')) {
-      try {
-        await deleteBlog({ variables: { id: _id } });
-        refetch(); // Refetch the data after deletion
-      } catch (err) {
-        console.error('Error deleting blog:', err);
-      }
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this size?')) {
+      // TODO: Implement delete size API call
+      setSizes(prev => prev.filter(size => size._id !== id));
     }
   };
 
-  const openModal = (img: string) => {
-    setModalImg(img.replace('server/', ''));
-    setModalOpen(true);
-  };
-
   // Search and sort logic
-  const filtered = blogs.filter((b: Blog) =>
-    b.title.toLowerCase().includes(search.toLowerCase())
+  const filtered = sizes.filter((s: Size) =>
+    s.name.toLowerCase().includes(search.toLowerCase()) ||
+    s.description.toLowerCase().includes(search.toLowerCase())
   );
-  const sorted = [...filtered].sort((a: Blog, b: Blog) => {
+  const sorted = [...filtered].sort((a: Size, b: Size) => {
     if (!sortKey) return 0;
     const aVal = a[sortKey] || '';
     const bVal = b[sortKey] || '';
@@ -45,7 +54,7 @@ const BlogList: React.FC = () => {
     return 0;
   });
 
-  const handleSort = (key: 'title') => {
+  const handleSort = (key: 'name') => {
     if (sortKey === key) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
@@ -57,15 +66,7 @@ const BlogList: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-logo-red"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-logo-red">Error: {error.message}</div>
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
@@ -73,26 +74,28 @@ const BlogList: React.FC = () => {
   return (
     <>
       <PageMeta
-        title="Blog Posts | Nature Harvest Admin"
-        description="Manage your blog posts"
+        title="Sizes | Nature Harvest Admin"
+        description="Manage your product sizes"
       />
+      
       <div className="w-full">
         <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">Blog Posts</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Sizes</h1>
             <div className="flex gap-2 w-full md:w-auto">
               <input
                 type="text"
-                placeholder="Search by title..."
+                placeholder="Search sizes..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="border rounded px-3 py-2 w-full md:w-64 text-gray-700 focus:ring-2 focus:ring-logo-red focus:border-logo-red"
               />
               <Link
-                to="/blog/add"
+                to="/sizes/add"
                 className="bg-logo-red hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
               >
-                Add New Post
+                <PlusIcon className="w-4 h-4" />
+                Add Size
               </Link>
             </div>
           </div>
@@ -103,25 +106,23 @@ const BlogList: React.FC = () => {
                 <thead>
                   <tr className="bg-gray-50">
                     <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Image</th>
-                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700 cursor-pointer" onClick={() => handleSort('title')}>
-                      Title {sortKey === 'title' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
+                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700 cursor-pointer" onClick={() => handleSort('name')}>
+                      Name {sortKey === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
                     </th>
-                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Author</th>
-                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Status</th>
+                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Description</th>
                     <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Created</th>
                     <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sorted.map((blog) => (
-                    <tr key={blog._id} className="border-t hover:bg-gray-50">
+                  {sorted.map((size) => (
+                    <tr key={size._id} className="border-t hover:bg-gray-50">
                       <td className="px-4 py-2 border">
-                        {blog.featuredImage ? (
+                        {size.imageUrl ? (
                           <img
-                            src={blog.featuredImage}
-                            alt={blog.title}
-                            className="w-12 h-12 object-cover rounded cursor-pointer"
-                            onClick={() => openModal(blog.featuredImage!)}
+                            src={size.imageUrl}
+                            alt={size.name}
+                            className="w-12 h-12 object-cover rounded"
                           />
                         ) : (
                           <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
@@ -130,45 +131,36 @@ const BlogList: React.FC = () => {
                         )}
                       </td>
                       <td className="px-4 py-2 border">
-                        <div className="font-medium text-gray-900">{blog.title}</div>
+                        <div className="font-medium text-gray-900">{size.name}</div>
                       </td>
                       <td className="px-4 py-2 border text-sm text-gray-700">
-                        {blog.author}
-                      </td>
-                      <td className="px-4 py-2 border">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          blog.status === 'published' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {blog.status}
-                        </span>
+                        <div className="truncate max-w-xs">{size.description}</div>
                       </td>
                       <td className="px-4 py-2 border text-sm text-gray-700">
-                        {new Date(blog.createdAt).toLocaleDateString()}
+                        {new Date(size.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-4 py-2 border">
                         <div className="flex items-center gap-2">
                           <Link
-                            to={`/blog/${blog._id}`}
+                            to={`/sizes/${size._id}`}
                             className="text-logo-red hover:text-red-800"
                             title="View"
                           >
-                            View
+                            <EyeIcon className="w-4 h-4" />
                           </Link>
                           <Link
-                            to={`/blog/edit/${blog._id}`}
+                            to={`/sizes/${size._id}/edit`}
                             className="text-green-600 hover:text-green-800"
                             title="Edit"
                           >
-                            Edit
+                            <PencilIcon className="w-4 h-4" />
                           </Link>
                           <button
-                            onClick={() => handleDelete(blog._id)}
+                            onClick={() => handleDelete(size._id)}
                             className="text-red-600 hover:text-red-800"
                             title="Delete"
                           >
-                            Delete
+                            <TrashBinIcon className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -179,26 +171,13 @@ const BlogList: React.FC = () => {
             </div>
           ) : (
             <div className="flex justify-center items-center h-64 text-gray-500">
-              No blogs found.
+              No sizes found.
             </div>
           )}
         </div>
-
-        {/* Image Modal */}
-        {modalOpen && modalImg && (
-          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-            <div className="p-4">
-              <img
-                src={modalImg}
-                alt="Blog"
-                className="max-w-full max-h-96 object-contain"
-              />
-            </div>
-          </Modal>
-        )}
       </div>
     </>
   );
 };
 
-export default BlogList; 
+export default SizeList; 

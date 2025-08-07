@@ -22,8 +22,28 @@ dotenv.config();
 const app = express();
 
 // Middleware - CORS must be first!
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:5173',
+  'http://localhost:4173',
+  'https://natureharvest.osamaqaseem.online',
+  'https://juice-company-server.vercel.app',
+  'https://natureharvest-admin.vercel.app',
+  'https://natureharvest-web.vercel.app'
+];
+
 app.use(cors({
-  origin: '*',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
@@ -46,7 +66,10 @@ app.use(cors({
 
 // Also add a pre-flight middleware to ensure headers are set
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-auth-token');
@@ -56,6 +79,9 @@ app.use((req, res, next) => {
 // Other middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Check MongoDB connection middleware
 app.use((req, res, next) => {
@@ -200,6 +226,7 @@ const server = new ApolloServer({
 app.use('/uploads/products', express.static(path.join(__dirname, '../uploads/products')));
 app.use('/uploads/brochures', express.static(path.join(__dirname, '../uploads/brochures')));
 app.use('/uploads/brand-category', express.static(path.join(__dirname, '../uploads/brand-category')));
+app.use('/uploads/general', express.static(path.join(__dirname, '../uploads/general')));
 
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -207,11 +234,93 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/categories', require('./routes/categories'));
 app.use('/api/subcategories', require('./routes/subcategories'));
 app.use('/api/brands', require('./routes/brands'));
-
 app.use('/api/services', require('./routes/services'));
 app.use('/api/quotes', require('./routes/quotes'));
 app.use('/api/blogs', require('./routes/blogs'));
+app.use('/', require('./routes/upload'));
 
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Health check endpoint
+ *     tags: [Health]
+ *     description: Check server and database health status
+ *     responses:
+ *       200:
+ *         description: Server health status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   enum: [healthy, unhealthy]
+ *                   description: Overall server health status
+ *                 message:
+ *                   type: string
+ *                   description: Health status message
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                   description: Current server timestamp
+ *                 mongodb:
+ *                   type: object
+ *                   properties:
+ *                     isConnected:
+ *                       type: boolean
+ *                       description: Whether MongoDB is connected
+ *                     state:
+ *                       type: string
+ *                       description: MongoDB connection state
+ *                     database:
+ *                       type: string
+ *                       description: Database name
+ *                     host:
+ *                       type: string
+ *                       description: Database host
+ *                     port:
+ *                       type: string
+ *                       description: Database port
+ *                     models:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       description: Available Mongoose models
+ *                     collections:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       description: Available database collections
+ *                 server:
+ *                   type: object
+ *                   properties:
+ *                     uptime:
+ *                       type: number
+ *                       description: Server uptime in seconds
+ *                     memory:
+ *                       type: object
+ *                       description: Memory usage statistics
+ *                     cpu:
+ *                       type: object
+ *                       description: CPU usage statistics
+ *                     env:
+ *                       type: string
+ *                       description: Environment (development/production)
+ *                     nodeVersion:
+ *                       type: string
+ *                       description: Node.js version
+ *                     platform:
+ *                       type: string
+ *                       description: Operating system platform
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 // Root route for API health check
 app.get('/', (req, res) => {
   const mongoStatus = {
@@ -286,7 +395,16 @@ const startServer = async () => {
 
   // Apply Apollo Server middleware with CORS
   app.use('/graphql', cors({
-    origin: '*',
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nature Harvest Juice Company API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .api-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .swagger-link {
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .swagger-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .swagger-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+        
+        .endpoints {
+            margin-top: 3rem;
+        }
+        
+        .endpoints h2 {
+            color: #667eea;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        
+        .endpoint-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .endpoint {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .endpoint h4 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .get { background: #28a745; color: white; }
+        .post { background: #007bff; color: white; }
+        .put { background: #ffc107; color: black; }
+        .delete { background: #dc3545; color: white; }
+        .patch { background: #6f42c1; color: white; }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            margin-top: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍹 Nature Harvest Juice Company API</h1>
+            <p>Complete API documentation for the Nature Harvest Juice Company admin dashboard and web application</p>
+        </div>
+        
+        <div class="content">
+            <div class="api-info">
+                <div class="info-card">
+                    <h3>📚 API Documentation</h3>
+                    <p>Comprehensive Swagger documentation with interactive testing capabilities for all API endpoints.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>🔐 Authentication</h3>
+                    <p>JWT-based authentication system with role-based access control for secure API access.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>📊 Database</h3>
+                    <p>MongoDB with Mongoose ODM for efficient data management and real-time operations.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h3>🚀 GraphQL Support</h3>
+                    <p>Apollo Server integration for flexible data querying and real-time subscriptions.</p>
+                </div>
+            </div>
+            
+            <div class="swagger-link">
+                <a href="/api-docs" class="swagger-btn">📖 View API Documentation</a>
+            </div>
+            
+            <div class="endpoints">
+                <h2>Available Endpoints</h2>
+                <div class="endpoint-grid">
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <h4>Health Check</h4>
+                        <p>/ - Server and database health status</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <h4>Authentication</h4>
+                        <p>/api/auth/register - User registration</p>
+                        <p>/api/auth/login - User login</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <span class="method post">POST</span>
+                        <span class="method put">PUT</span>
+                        <span class="method delete">DELETE</span>
+                        <h4>Products</h4>
+                        <p>/api/products - Product management</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <span class="method post">POST</span>
+                        <span class="method put">PUT</span>
+                        <span class="method delete">DELETE</span>
+                        <h4>Categories</h4>
+                        <p>/api/categories - Category management</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <span class="method post">POST</span>
+                        <span class="method put">PUT</span>
+                        <span class="method delete">DELETE</span>
+                        <h4>Subcategories</h4>
+                        <p>/api/subcategories - Subcategory management</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <span class="method post">POST</span>
+                        <span class="method put">PUT</span>
+                        <span class="method delete">DELETE</span>
+                        <h4>Brands</h4>
+                        <p>/api/brands - Brand management</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <span class="method post">POST</span>
+                        <span class="method put">PUT</span>
+                        <span class="method delete">DELETE</span>
+                        <h4>Services</h4>
+                        <p>/api/services - Service management</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <span class="method post">POST</span>
+                        <span class="method patch">PATCH</span>
+                        <h4>Quotes</h4>
+                        <p>/api/quotes - Quote management</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <span class="method get">GET</span>
+                        <span class="method post">POST</span>
+                        <span class="method put">PUT</span>
+                        <span class="method delete">DELETE</span>
+                        <h4>Blogs</h4>
+                        <p>/api/blogs - Blog post management</p>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <span class="method post">POST</span>
+                        <h4>GraphQL</h4>
+                        <p>/graphql - GraphQL endpoint</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2024 Nature Harvest Juice Company. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html> 

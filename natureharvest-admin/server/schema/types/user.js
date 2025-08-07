@@ -3,10 +3,12 @@ const { gql } = require('graphql-tag');
 const userTypes = gql`
   type User {
     _id: ID!
-    name: String!
+    fullName: String!
     email: String!
-    password: String!
-    role: String!
+    phone: String
+    roles: [String!]!
+    addresses: [Address!]
+    isActive: Boolean!
     createdAt: Date
     updatedAt: Date
   }
@@ -16,16 +18,13 @@ const userTypes = gql`
     user: User!
   }
 
-  input RegisterInput {
-    name: String!
+  input UserInput {
+    fullName: String!
     email: String!
     password: String!
-    role: String
-  }
-
-  input LoginInput {
-    email: String!
-    password: String!
+    phone: String
+    roles: [String!]
+    isActive: Boolean
   }
 
   extend type Query {
@@ -35,9 +34,10 @@ const userTypes = gql`
   }
 
   extend type Mutation {
-    register(input: RegisterInput!): AuthPayload!
-    login(input: LoginInput!): AuthPayload!
-    updateUser(id: ID!, input: RegisterInput!): User!
+    register(input: UserInput!): AuthPayload!
+    login(email: String!, password: String!): AuthPayload!
+    createUser(input: UserInput!): User!
+    updateUser(id: ID!, input: UserInput!): User!
     deleteUser(id: ID!): Boolean!
   }
 `;

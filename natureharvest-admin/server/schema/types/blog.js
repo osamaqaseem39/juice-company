@@ -40,7 +40,7 @@ const blogTypes = gql`
 
   extend type Mutation {
     createBlog(input: BlogInput!): Blog!
-    updateBlog(id: ID!, input: BlogUpdateInput!): Blog!
+    updateBlog(id: ID!, input: BlogInput!): Blog!
     deleteBlog(id: ID!): Boolean!
   }
 `;

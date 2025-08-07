@@ -16,15 +16,15 @@ const ECommerce: React.FC = () => {
   ];
 
   return (
-    <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+    <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
         <p className="text-gray-600 dark:text-gray-400">Welcome to Nature Harvest Admin Panel</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Products</p>
@@ -38,7 +38,7 @@ const ECommerce: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Services</p>
@@ -52,7 +52,7 @@ const ECommerce: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Sales</p>
@@ -66,7 +66,7 @@ const ECommerce: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Orders</p>
@@ -82,45 +82,45 @@ const ECommerce: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <Link
           to="/products"
-          className="bg-white border-2 border-logo-red text-logo-red p-6 rounded-xl hover:bg-logo-red hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+          className="bg-white border-2 border-logo-red text-logo-red p-4 rounded-xl hover:bg-logo-red hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
         >
           <div className="text-center">
-            <div className="text-4xl mb-3">🍊</div>
-            <h3 className="text-lg font-semibold font-poppins mb-2">Manage Products</h3>
+            <div className="text-3xl mb-2">🍊</div>
+            <h3 className="text-lg font-semibold font-poppins mb-1">Manage Products</h3>
             <p className="text-sm font-poppins opacity-75">Add, edit, or remove products</p>
           </div>
         </Link>
 
         <Link
           to="/orders"
-          className="bg-white border-2 border-sun-yellow text-sun-yellow p-6 rounded-xl hover:bg-sun-yellow hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+          className="bg-white border-2 border-sun-yellow text-sun-yellow p-4 rounded-xl hover:bg-sun-yellow hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
         >
           <div className="text-center">
-            <div className="text-4xl mb-3">📋</div>
-            <h3 className="text-lg font-semibold font-poppins mb-2">View Orders</h3>
+            <div className="text-3xl mb-2">📋</div>
+            <h3 className="text-lg font-semibold font-poppins mb-1">View Orders</h3>
             <p className="text-sm font-poppins opacity-75">Manage customer orders</p>
           </div>
         </Link>
 
         <Link
           to="/categories"
-          className="bg-white border-2 border-leaf-dark text-leaf-dark p-6 rounded-xl hover:bg-leaf-dark hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+          className="bg-white border-2 border-leaf-dark text-leaf-dark p-4 rounded-xl hover:bg-leaf-dark hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
         >
           <div className="text-center">
-            <div className="text-4xl mb-3">📂</div>
-            <h3 className="text-lg font-semibold font-poppins mb-2">Categories</h3>
+            <div className="text-3xl mb-2">📂</div>
+            <h3 className="text-lg font-semibold font-poppins mb-1">Categories</h3>
             <p className="text-sm font-poppins opacity-75">Organize your products</p>
           </div>
         </Link>
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h2>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex items-center space-x-3">
             <div className="w-2 h-2 bg-logo-red rounded-full"></div>
             <p className="text-sm text-gray-600 dark:text-gray-400">New order #ORD-001 received</p>

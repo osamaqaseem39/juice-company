@@ -55,11 +55,11 @@ export const GET_ALL_PRODUCTS = gql`
       name
       description
       images
-      brand {
+      brandId {
         _id
         name
       }
-      category {
+      categoryId {
         _id
         name
       }
@@ -76,11 +76,11 @@ export const GET_PRODUCT_BY_ID = gql`
       name
       description
       images
-      brand {
+      brandId {
         _id
         name
       }
-      category {
+      categoryId {
         _id
         name
       }
@@ -94,11 +94,9 @@ export const GET_ALL_SERVICES = gql`
   query GetAllServices {
     services {
       _id
-      name
+      title
       description
-      price
-      duration
-      status
+      featuredImage
       createdAt
       updatedAt
     }
@@ -109,11 +107,9 @@ export const GET_SERVICE_BY_ID = gql`
   query GetServiceById($id: ID!) {
     service(id: $id) {
       _id
-      name
+      title
       description
-      price
-      duration
-      status
+      featuredImage
       createdAt
       updatedAt
     }
@@ -125,10 +121,8 @@ export const GET_ALL_BRANDS = gql`
     brands {
       _id
       name
-      logoUrl
+      image
       description
-      category
-      status
       createdAt
       updatedAt
     }
@@ -140,10 +134,8 @@ export const GET_BRAND_BY_ID = gql`
     brand(id: $id) {
       _id
       name
-      logoUrl
+      image
       description
-      category
-      status
       createdAt
       updatedAt
     }
@@ -157,7 +149,10 @@ export const GET_ALL_CATEGORIES = gql`
       name
       image
       description
-      status
+      parent {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -171,7 +166,10 @@ export const GET_CATEGORY_BY_ID = gql`
       name
       image
       description
-      status
+      parent {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -185,11 +183,10 @@ export const GET_ALL_SUBCATEGORIES = gql`
       name
       image
       description
-      category {
+      parent {
         _id
         name
       }
-      status
       createdAt
       updatedAt
     }
@@ -203,11 +200,10 @@ export const GET_SUBCATEGORY_BY_ID = gql`
       name
       image
       description
-      category {
+      parent {
         _id
         name
       }
-      status
       createdAt
       updatedAt
     }
@@ -216,12 +212,15 @@ export const GET_SUBCATEGORY_BY_ID = gql`
 
 export const GET_NESTED_SUBCATEGORIES = gql`
   query GetNestedSubcategories($parentId: ID!) {
-    subcategoriesByParent(parentId: $parentId) {
+    nestedSubcategories(parentId: $parentId) {
       _id
       name
       image
       description
-      parent
+      parent {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -740,6 +739,161 @@ export const GET_COMPANY_BY_ID = gql`
         zip
         country
       }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+// Flavor queries
+export const GET_ALL_FLAVORS = gql`
+  query GetAllFlavors {
+    flavors {
+      _id
+      name
+      description
+      flavorProfile
+      nutritionalInfo {
+        calories
+        protein
+        carbs
+        fat
+        fiber
+        sugar
+        sodium
+        vitamins
+        minerals
+      }
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+      seasonality {
+        isSeasonal
+        availableMonths
+        peakSeason
+      }
+      brandId {
+        _id
+        name
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_FLAVOR_BY_ID = gql`
+  query GetFlavorById($id: ID!) {
+    flavor(id: $id) {
+      _id
+      name
+      description
+      flavorProfile
+      nutritionalInfo {
+        calories
+        protein
+        carbs
+        fat
+        fiber
+        sugar
+        sodium
+        vitamins
+        minerals
+      }
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+      seasonality {
+        isSeasonal
+        availableMonths
+        peakSeason
+      }
+      brandId {
+        _id
+        name
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_FLAVORS_BY_BRAND = gql`
+  query GetFlavorsByBrand($brandId: ID!) {
+    flavorsByBrand(brandId: $brandId) {
+      _id
+      name
+      description
+      flavorProfile
+      nutritionalInfo {
+        calories
+        protein
+        carbs
+        fat
+        fiber
+        sugar
+        sodium
+        vitamins
+        minerals
+      }
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+      seasonality {
+        isSeasonal
+        availableMonths
+        peakSeason
+      }
+      brandId {
+        _id
+        name
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+// Size queries
+export const GET_ALL_SIZES = gql`
+  query GetAllSizes {
+    sizes {
+      _id
+      sizeLabel
+      price
+      volume
+      availability
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_SIZE_BY_ID = gql`
+  query GetSizeById($id: ID!) {
+    size(id: $id) {
+      _id
+      sizeLabel
+      price
+      volume
+      availability
       status
       createdAt
       updatedAt
