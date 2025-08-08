@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCreateCategory, useUpdateCategory, useCategory, useCategories } from '../../services/apiService';
+import { useCreateCategory, useUpdateCategory, useCategory } from '../../services/apiService';
 import { 
   FormField, 
   ImageUpload, 
