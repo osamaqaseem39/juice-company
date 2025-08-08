@@ -35,7 +35,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
   const navigate = useNavigate();
   const [createBrand] = useCreateBrand();
   const [updateBrand] = useUpdateBrand();
-  const { data: brandData, loading: brandLoading } = useBrand(id || '');
+  const { data: brandData } = useBrand(id || '');
   
   const [formData, setFormData] = useState<BrandFormData>({
     name: '',

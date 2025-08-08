@@ -32,7 +32,7 @@ const ServiceForm: React.FC = () => {
   const navigate = useNavigate();
   const [createService] = useCreateService();
   const [updateService] = useUpdateService();
-  const { data: serviceData, loading: serviceLoading } = useService(id || '');
+  const { data: serviceData } = useService(id || '');
   
   const isEdit = Boolean(id);
 

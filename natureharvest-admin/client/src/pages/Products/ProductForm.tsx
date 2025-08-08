@@ -45,7 +45,7 @@ const ProductForm: React.FC = () => {
   const navigate = useNavigate();
   const [createProduct] = useCreateProduct();
   const [updateProduct] = useUpdateProduct();
-  const { data: productData, loading: productLoading } = useProduct(id || '');
+  const { data: productData } = useProduct(id || '');
   const { data: brandsData } = useBrands();
   const { data: categoriesData } = useCategories();
 

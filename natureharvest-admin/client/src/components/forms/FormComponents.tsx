@@ -141,7 +141,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     const file = e.target.files?.[0];
     if (file) {
       try {
-        const url = await onUpload(file);
+        await onUpload(file);
         onChange(null); // Clear the file input
         // The parent component should handle the URL update
       } catch (error) {

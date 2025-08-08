@@ -13,7 +13,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
   const { id } = useParams<{ id: string }>();
   const [createBlog] = useCreateBlog();
   const [updateBlog] = useUpdateBlog();
-  const { data: blogData, loading: blogLoading } = useBlog(id || '');
+  const { data: blogData } = useBlog(id || '');
   
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
