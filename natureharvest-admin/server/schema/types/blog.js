@@ -10,8 +10,8 @@ const blogTypes = gql`
     slug: String
     tags: [String!]
     status: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
   }
 
   input BlogInput {
@@ -40,7 +40,7 @@ const blogTypes = gql`
 
   extend type Mutation {
     createBlog(input: BlogInput!): Blog!
-    updateBlog(id: ID!, input: BlogUpdateInput!): Blog!
+    updateBlog(id: ID!, input: BlogInput!): Blog!
     deleteBlog(id: ID!): Boolean!
   }
 `;

@@ -22,6 +22,7 @@ export interface CreateBlogInput {
   content: string;
   author?: string;
   featuredImage?: string;
+  slug?: string;
   tags?: string[];
   status?: string;
 }
@@ -152,7 +153,7 @@ export interface Brand {
 export interface Category {
   _id: string;
   name: string;
-  image?: string;
+  image?: string | null;
   description?: string;
   parent?: Category | string | null;
   createdAt: string;
@@ -160,6 +161,279 @@ export interface Category {
 }
 
 export interface SubCategory extends Category {}
+
+export interface User {
+  _id: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  roles: string[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateUserInput {
+  fullName: string;
+  email: string;
+  password: string;
+  phone?: string;
+  roles?: string[];
+  isActive?: boolean;
+}
+
+export interface UpdateUserInput {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  phone?: string;
+  roles?: string[];
+  isActive?: boolean;
+}
+
+export interface Coupon {
+  _id: string;
+  code: string;
+  discountType: 'percentage' | 'fixed';
+  value: number;
+  minOrderValue?: number;
+  maxDiscountAmount?: number;
+  expiryDate?: string;
+  isActive: boolean;
+  usedBy?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCouponInput {
+  code: string;
+  discountType: 'percentage' | 'fixed';
+  value: number;
+  minOrderValue?: number;
+  maxDiscountAmount?: number;
+  expiryDate?: string | null;
+  isActive?: boolean;
+}
+
+export interface UpdateCouponInput {
+  code?: string;
+  discountType?: 'percentage' | 'fixed';
+  value?: number;
+  minOrderValue?: number;
+  maxDiscountAmount?: number;
+  expiryDate?: string | null;
+  isActive?: boolean;
+}
+
+export interface Order {
+  _id: string;
+  orderNumber: string;
+  userId: string;
+  user?: User;
+  items: OrderItem[];
+  shippingAddress?: Address;
+  billingAddress?: Address;
+  totalAmount: number;
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  orderStatus: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  shippingMethod: string;
+  paymentMethod: string;
+  trackingNumber?: string;
+  placedAt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OrderItem {
+  productId: string;
+  variantId: string;
+  name: string;
+  sku: string;
+  price: number;
+  quantity: number;
+  imageUrl?: string;
+}
+
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
+}
+
+export interface Company {
+  _id: string;
+  name: string;
+  description: string;
+  logoUrl?: string;
+  website?: string;
+  contactEmail: string;
+  contactPhone: string;
+  address: Address;
+  status: 'active' | 'inactive';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCompanyInput {
+  name: string;
+  description: string;
+  logoUrl?: string;
+  website?: string;
+  contactEmail: string;
+  contactPhone: string;
+  address: Address;
+  status?: 'active' | 'inactive';
+}
+
+export interface UpdateCompanyInput {
+  name?: string;
+  description?: string;
+  logoUrl?: string;
+  website?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  address?: Address;
+  status?: 'active' | 'inactive';
+}
+
+// Flavor types
+export interface FlavorNutritionalInfo {
+  calories?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
+  fiber?: number;
+  sugar?: number;
+  vitaminC?: number;
+  potassium?: number;
+}
+
+export interface FlavorSeasonality {
+  startMonth?: number;
+  endMonth?: number;
+}
+
+export interface FlavorSize {
+  _id?: string;
+  sizeLabel: string;
+  price: number;
+  imageUrl?: string;
+  stock: number;
+  barcode?: string;
+  weight: number;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    depth?: number;
+  };
+  isAvailable: boolean;
+}
+
+export interface Flavor {
+  _id: string;
+  brandId: string;
+  brand?: Brand;
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  flavorProfile: string;
+  ingredients?: string[];
+  nutritionalInfo?: FlavorNutritionalInfo;
+  allergens?: string[];
+  certifications?: string[];
+  sizes?: FlavorSize[];
+  tags?: string[];
+  featured: boolean;
+  status: string;
+  seasonality?: FlavorSeasonality;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateFlavorInput {
+  brandId: string;
+  name: string;
+  description?: string;
+  imageUrl?: string;
+  flavorProfile: string;
+  ingredients?: string[];
+  nutritionalInfo?: FlavorNutritionalInfo;
+  allergens?: string[];
+  certifications?: string[];
+  sizes?: FlavorSize[];
+  tags?: string[];
+  featured?: boolean;
+  status?: string;
+  seasonality?: FlavorSeasonality;
+}
+
+export interface UpdateFlavorInput {
+  brandId?: string;
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+  flavorProfile?: string;
+  ingredients?: string[];
+  nutritionalInfo?: FlavorNutritionalInfo;
+  allergens?: string[];
+  certifications?: string[];
+  sizes?: FlavorSize[];
+  tags?: string[];
+  featured?: boolean;
+  status?: string;
+  seasonality?: FlavorSeasonality;
+}
+
+// Size types
+export interface Size {
+  _id: string;
+  sizeLabel: string;
+  price: number;
+  imageUrl?: string;
+  stock: number;
+  barcode?: string;
+  weight: number;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    depth?: number;
+  };
+  isAvailable: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateSizeInput {
+  sizeLabel: string;
+  price: number;
+  imageUrl?: string;
+  stock: number;
+  barcode?: string;
+  weight: number;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    depth?: number;
+  };
+  isAvailable?: boolean;
+}
+
+export interface UpdateSizeInput {
+  sizeLabel?: string;
+  price?: number;
+  imageUrl?: string;
+  stock?: number;
+  barcode?: string;
+  weight?: number;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    depth?: number;
+  };
+  isAvailable?: boolean;
+}
 
 // GraphQL API functions
 export const blogApi = {
@@ -229,6 +503,58 @@ export const subcategoryApi = {
   getNested: (parentId: string) => client.query({ query: Queries.GET_NESTED_SUBCATEGORIES, variables: { parentId } }),
 };
 
+export const userApi = {
+  getAll: () => client.query({ query: Queries.GET_ALL_USERS }),
+  getById: (id: string) => client.query({ query: Queries.GET_USER_BY_ID, variables: { id } }),
+  create: (data: CreateUserInput) => client.mutate({ mutation: Mutations.CREATE_USER, variables: { input: data } }),
+  update: (id: string, data: UpdateUserInput) => client.mutate({ mutation: Mutations.UPDATE_USER, variables: { id, input: data } }),
+  delete: (id: string) => client.mutate({ mutation: Mutations.DELETE_USER, variables: { id } }),
+};
+
+export const couponApi = {
+  getAll: () => client.query({ query: Queries.GET_ALL_COUPONS }),
+  getById: (id: string) => client.query({ query: Queries.GET_COUPON_BY_ID, variables: { id } }),
+  create: (data: CreateCouponInput) => client.mutate({ mutation: Mutations.CREATE_COUPON, variables: { input: data } }),
+  update: (id: string, data: UpdateCouponInput) => client.mutate({ mutation: Mutations.UPDATE_COUPON, variables: { id, input: data } }),
+  delete: (id: string) => client.mutate({ mutation: Mutations.DELETE_COUPON, variables: { id } }),
+};
+
+export const orderApi = {
+  getAll: () => client.query({ query: Queries.GET_ALL_ORDERS }),
+  getById: (id: string) => client.query({ query: Queries.GET_ORDER_BY_ID, variables: { id } }),
+  update: (id: string, data: Partial<Order>) => client.mutate({ mutation: Mutations.UPDATE_ORDER, variables: { id, input: data } }),
+};
+
+export const companyApi = {
+  getAll: () => client.query({ query: Queries.GET_ALL_COMPANIES }),
+  getById: (id: string) => client.query({ query: Queries.GET_COMPANY_BY_ID, variables: { id } }),
+  create: (data: CreateCompanyInput) => client.mutate({ mutation: Mutations.CREATE_COMPANY, variables: { input: data } }),
+  update: (id: string, data: UpdateCompanyInput) => client.mutate({ mutation: Mutations.UPDATE_COMPANY, variables: { id, input: data } }),
+  delete: (id: string) => client.mutate({ mutation: Mutations.DELETE_COMPANY, variables: { id } }),
+};
+
+// TODO: Implement GraphQL queries and mutations for flavors
+export const flavorApi = {
+  // getAll: () => client.query({ query: Queries.GET_ALL_FLAVORS }),
+  // getById: (id: string) => client.query({ query: Queries.GET_FLAVOR_BY_ID, variables: { id } }),
+  // getByBrand: (brandId: string) => client.query({ query: Queries.GET_FLAVORS_BY_BRAND, variables: { brandId } }),
+  // create: (data: CreateFlavorInput) => client.mutate({ mutation: Mutations.CREATE_FLAVOR, variables: { input: data } }),
+  // update: (id: string, data: UpdateFlavorInput) => client.mutate({ mutation: Mutations.UPDATE_FLAVOR, variables: { id, input: data } }),
+  // delete: (id: string) => client.mutate({ mutation: Mutations.DELETE_FLAVOR, variables: { id } }),
+  // addSize: (flavorId: string, size: FlavorSize) => client.mutate({ mutation: Mutations.ADD_SIZE_TO_FLAVOR, variables: { flavorId, size } }),
+  // updateSize: (flavorId: string, sizeId: string, size: FlavorSize) => client.mutate({ mutation: Mutations.UPDATE_SIZE_IN_FLAVOR, variables: { flavorId, sizeId, size } }),
+  // removeSize: (flavorId: string, sizeId: string) => client.mutate({ mutation: Mutations.REMOVE_SIZE_FROM_FLAVOR, variables: { flavorId, sizeId } }),
+};
+
+// TODO: Implement GraphQL queries and mutations for sizes
+export const sizeApi = {
+  // getAll: () => client.query({ query: Queries.GET_ALL_SIZES }),
+  // getById: (id: string) => client.query({ query: Queries.GET_SIZE_BY_ID, variables: { id } }),
+  // create: (data: CreateSizeInput) => client.mutate({ mutation: Mutations.CREATE_SIZE, variables: { input: data } }),
+  // update: (id: string, data: UpdateSizeInput) => client.mutate({ mutation: Mutations.UPDATE_SIZE, variables: { id, input: data } }),
+  // delete: (id: string) => client.mutate({ mutation: Mutations.DELETE_SIZE, variables: { id } }),
+};
+
 // React hooks for components
 export const useBlogs = () => useQuery(Queries.GET_ALL_BLOGS);
 export const useBlog = (id: string) => useQuery(Queries.GET_BLOG_BY_ID, { variables: { id } });
@@ -255,6 +581,18 @@ export const useCategory = (id: string) => useQuery(Queries.GET_CATEGORY_BY_ID, 
 export const useSubcategories = () => useQuery(Queries.GET_ALL_SUBCATEGORIES);
 export const useSubcategory = (id: string) => useQuery(Queries.GET_SUBCATEGORY_BY_ID, { variables: { id } });
 export const useNestedSubcategories = (parentId: string) => useQuery(Queries.GET_NESTED_SUBCATEGORIES, { variables: { parentId } });
+
+export const useUsers = () => useQuery(Queries.GET_ALL_USERS);
+export const useUser = (id: string) => useQuery(Queries.GET_USER_BY_ID, { variables: { id } });
+
+export const useCoupons = () => useQuery(Queries.GET_ALL_COUPONS);
+export const useCoupon = (id: string) => useQuery(Queries.GET_COUPON_BY_ID, { variables: { id } });
+
+export const useOrders = () => useQuery(Queries.GET_ALL_ORDERS);
+export const useOrder = (id: string) => useQuery(Queries.GET_ORDER_BY_ID, { variables: { id } });
+
+export const useCompanies = () => useQuery(Queries.GET_ALL_COMPANIES);
+export const useCompany = (id: string) => useQuery(Queries.GET_COMPANY_BY_ID, { variables: { id } });
 
 // Mutation hooks
 export const useCreateBlog = () => useMutation(Mutations.CREATE_BLOG);
@@ -284,5 +622,45 @@ export const useCreateSubcategory = () => useMutation(Mutations.CREATE_SUBCATEGO
 export const useUpdateSubcategory = () => useMutation(Mutations.UPDATE_SUBCATEGORY);
 export const useDeleteSubcategory = () => useMutation(Mutations.DELETE_SUBCATEGORY);
 
+export const useCreateUser = () => useMutation(Mutations.CREATE_USER);
+export const useUpdateUser = () => useMutation(Mutations.UPDATE_USER);
+export const useDeleteUser = () => useMutation(Mutations.DELETE_USER);
+
+export const useCreateCoupon = () => useMutation(Mutations.CREATE_COUPON);
+export const useUpdateCoupon = () => useMutation(Mutations.UPDATE_COUPON);
+export const useDeleteCoupon = () => useMutation(Mutations.DELETE_COUPON);
+
+export const useUpdateOrder = () => useMutation(Mutations.UPDATE_ORDER);
+
+export const useCreateCompany = () => useMutation(Mutations.CREATE_COMPANY);
+export const useUpdateCompany = () => useMutation(Mutations.UPDATE_COMPANY);
+export const useDeleteCompany = () => useMutation(Mutations.DELETE_COMPANY);
+
 export const useLogin = () => useMutation(Mutations.LOGIN);
 export const useRegister = () => useMutation(Mutations.REGISTER);
+
+// TODO: Implement GraphQL queries and mutations for flavors
+// Flavor hooks
+// export const useFlavors = () => useQuery(Queries.GET_ALL_FLAVORS);
+// export const useFlavor = (id: string) => useQuery(Queries.GET_FLAVOR_BY_ID, { variables: { id } });
+// export const useFlavorsByBrand = (brandId: string) => useQuery(Queries.GET_FLAVORS_BY_BRAND, { variables: { brandId } });
+
+// TODO: Implement GraphQL queries and mutations for sizes
+// Size hooks
+// export const useSizes = () => useQuery(Queries.GET_ALL_SIZES);
+// export const useSize = (id: string) => useQuery(Queries.GET_SIZE_BY_ID, { variables: { id } });
+
+// TODO: Implement GraphQL mutations for flavors
+// Flavor mutation hooks
+// export const useCreateFlavor = () => useMutation(Mutations.CREATE_FLAVOR);
+// export const useUpdateFlavor = () => useMutation(Mutations.UPDATE_FLAVOR);
+// export const useDeleteFlavor = () => useMutation(Mutations.DELETE_FLAVOR);
+// export const useAddSizeToFlavor = () => useMutation(Mutations.ADD_SIZE_TO_FLAVOR);
+// export const useUpdateSizeInFlavor = () => useMutation(Mutations.UPDATE_SIZE_IN_FLAVOR);
+// export const useRemoveSizeFromFlavor = () => useMutation(Mutations.REMOVE_SIZE_FROM_FLAVOR);
+
+// TODO: Implement GraphQL mutations for sizes
+// Size mutation hooks
+// export const useCreateSize = () => useMutation(Mutations.CREATE_SIZE);
+// export const useUpdateSize = () => useMutation(Mutations.UPDATE_SIZE);
+// export const useDeleteSize = () => useMutation(Mutations.DELETE_SIZE);

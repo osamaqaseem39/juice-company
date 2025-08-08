@@ -1,12 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { categoryApi, Category } from '../../services/api';
+import { useCreateCategory, useUpdateCategory, useCategory, useCategories } from '../../services/apiService';
+import { 
+  FormField, 
+  ImageUpload, 
+  FormActions, 
+  LoadingSpinner
+} from '../../components/forms/FormComponents';
+import { FormLayout } from '../../components/forms/FormLayout';
+import { 
+  uploadImageWithProgress, 
+  validateForm,
+  ValidationRule
+} from '../../utils/formUtils';
 
-const initialState = {
-  name: '',
-  description: '',
-  image: null as string | File | null,
-  parent: '',
+interface CategoryFormData {
+  name: string;
+  description: string;
+  image: string | null;
+  parent: string;
+  status: string;
+}
+
+const validationRules: Record<keyof CategoryFormData, ValidationRule> = {
+  name: { required: true, minLength: 2, maxLength: 50 },
+  description: { required: false, maxLength: 500 },
+  image: { required: false },
+  parent: { required: false },
+  status: { required: true }
 };
 
 type CategoryFormMode = 'add' | 'edit';
@@ -14,183 +35,182 @@ type CategoryFormMode = 'add' | 'edit';
 const CategoryForm: React.FC<{ mode?: CategoryFormMode }> = ({ mode }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [form, setForm] = useState<{
-    name: string;
-    description: string;
-    image: string | File | null;
-    parent: string;
-  }>(initialState);
+  const [createCategory] = useCreateCategory();
+  const [updateCategory] = useUpdateCategory();
+  const { data: categoryData } = useCategory(id || '');
+  const { data: categoriesData } = useCategories();
+  
+  const [formData, setFormData] = useState<CategoryFormData>({
+    name: '',
+    description: '',
+    image: null,
+    parent: '',
+    status: 'active'
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const isEdit = mode === 'edit' || !!id;
 
   useEffect(() => {
-    if (isEdit && id) {
-      setLoading(true);
-      categoryApi.getById(id)
-        .then(res => {
-          setForm({
-            name: res.data.name,
-            description: res.data.description || '',
-            image: res.data.image || '',
-            parent: res.data.parent && typeof res.data.parent === 'object' ? (res.data.parent as Category)._id : (res.data.parent || ''),
-          });
-
-        })
-        .catch(() => setError('Failed to load category'))
-        .finally(() => setLoading(false));
+    if (isEdit && categoryData?.category) {
+      const category = categoryData.category;
+      setFormData({
+        name: category.name || '',
+        description: category.description || '',
+        image: category.image || null,
+        parent: category.parent?._id || '',
+        status: category.status || 'active'
+      });
     }
-  }, [isEdit, id]);
+  }, [isEdit, categoryData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
+  const handleImageUpload = async (file: File): Promise<string> => {
+    setUploading(true);
+    setUploadProgress(0);
+    
+    try {
+      const url = await uploadImageWithProgress(file, 'category', (progress) => {
+        setUploadProgress(progress);
+      });
+      
+      setFormData(prev => ({ ...prev, image: url }));
+      return url;
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
 
+  const handleImageChange = (file: File | null) => {
+    if (file) {
+      handleImageUpload(file);
+    } else {
+      setFormData(prev => ({ ...prev, image: null }));
+    }
+  };
+
+  const validateFormData = (): boolean => {
+    const validationErrors = validateForm(formData, validationRules);
+    setErrors(validationErrors);
+    return Object.keys(validationErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    if (!form.image) {
-      setError('Please upload an image before submitting.');
+    
+    if (!validateFormData()) {
       return;
     }
+
     setLoading(true);
+    setErrors({});
+
     try {
-      let imageUrl = form.image;
-      if (form.image instanceof File) {
-        imageUrl = await uploadCategoryImage(form.image);
-      }
-      const payload: any = {
-        name: form.name,
-        description: form.description,
-        image: imageUrl,
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        image: formData.image,
+        parent: formData.parent || undefined,
+        status: formData.status
       };
+
       if (isEdit && id) {
-        await categoryApi.update(id, payload);
+        await updateCategory({
+          variables: {
+            id,
+            input: payload
+          }
+        });
       } else {
-        await categoryApi.create(payload);
+        await createCategory({
+          variables: {
+            input: payload
+          }
+        });
       }
+
       navigate('/categories');
     } catch (err) {
-      setError('Failed to save category.');
+      setErrors({ submit: 'Failed to save category.' });
     } finally {
       setLoading(false);
     }
   };
 
-  // Category-specific image upload
-  const uploadCategoryImage = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const formData = new FormData();
-      const ext = file.name.split('.').pop();
-      const uniqueName = `${Date.now()}-category-${Math.random().toString(36).substring(2, 8)}.${ext}`;
-      formData.append('file', file, uniqueName);
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', 'https://osamaqaseem.online/upload.php');
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          setUploadProgress(Math.round((event.loaded / event.total) * 100));
-        }
-      };
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          const data = JSON.parse(xhr.responseText);
-          if (data.url) {
-
-            setForm(prev => ({ ...prev, image: data.url }));
-            resolve(data.url);
-          } else {
-            setError(data.error || 'Upload failed');
-            reject(new Error(data.error || 'Upload failed'));
-          }
-        } else {
-          setError('Upload failed');
-          reject(new Error('Upload failed'));
-        }
-        setUploading(false);
-        setUploadProgress(0);
-      };
-      xhr.onerror = () => {
-        setUploading(false);
-        setUploadProgress(0);
-        setError('Upload failed');
-        reject(new Error('Upload failed'));
-      };
-      setUploading(true);
-      setUploadProgress(0);
-      xhr.send(formData);
-    });
+  const handleCancel = () => {
+    navigate('/categories');
   };
 
-  return (
-    <div className="max-w-xl mx-auto p-4">
-      <div className="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-8 border border-gray-200 dark:border-gray-800">
-        <h1 className="text-3xl font-extrabold mb-6 text-center text-brand-700 dark:text-brand-400">{isEdit ? 'Edit Category' : 'Add Category'}</h1>
-        {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded text-center">{error}</div>}
-        <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
-          <div>
-            <label className="block font-semibold mb-2 text-gray-700 dark:text-gray-200">Category Name</label>
-            <input name="name" value={form.name} onChange={handleChange} required className="w-full border border-gray-300 dark:border-gray-700 px-4 py-2 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none transition" placeholder="Enter category name" />
-          </div>
-          <div>
-            <label className="block font-semibold mb-2 text-gray-700 dark:text-gray-200">Description</label>
-            <textarea name="description" value={form.description} onChange={handleChange} className="w-full border border-gray-300 dark:border-gray-700 px-4 py-2 rounded-lg focus:ring-2 focus:ring-brand-500 focus:outline-none transition" rows={3} placeholder="Enter category description" />
-          </div>
-          <div>
-            <label className="block font-semibold mb-2 text-gray-700 dark:text-gray-200">Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={async (e) => {
-                if (e.target.files && e.target.files[0]) {
-                  await uploadCategoryImage(e.target.files[0]);
-                }
-              }}
-              disabled={uploading}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            />
-            {uploading && (
-              <div className="mb-2">
-                <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-                  <div
-                    className="bg-brand-600 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${uploadProgress}%` }}
-                  ></div>
-                </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  {uploadProgress < 100 ? 'Processing image...' : 'Upload complete!'}
-                </p>
-              </div>
-            )}
-            {form.image && (
-              <div className="relative inline-block mt-2">
-                <img
-                  src={form.image as string}
-                  alt="Preview"
-                  className="h-32 w-32 object-cover rounded border"
-                />
-                <button
-                  type="button"
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition"
-                  onClick={() => setForm(prev => ({ ...prev, image: null }))}
-                  title="Remove image"
-                >
-                  ×
-                </button>
-              </div>
-            )}
-          </div>
-          <button type="submit" className="w-full bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-bold text-lg shadow transition disabled:opacity-60 disabled:cursor-not-allowed" disabled={loading || uploading}>
-            {uploading ? 'Uploading Image...' : loading ? (isEdit ? 'Updating...' : 'Saving...') : (isEdit ? 'Update Category' : 'Add Category')}
-          </button>
-        </form>
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingSpinner size="lg" />
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <FormLayout
+      title={isEdit ? 'Edit Category' : 'Add Category'}
+      description={`${isEdit ? 'Edit' : 'Add'} a new category to your catalog`}
+      backPath="/categories"
+      backText="Back to Categories"
+      error={errors.submit}
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
+          <FormField
+            label="Category Name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            placeholder="Enter category name"
+            error={errors.name}
+          />
+
+          <FormField
+            label="Description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            type="textarea"
+            placeholder="Enter category description"
+            rows={3}
+            error={errors.description}
+          />
+
+          <ImageUpload
+            label="Category Image"
+            value={formData.image}
+            onChange={handleImageChange}
+            onUpload={handleImageUpload}
+            uploading={uploading}
+            uploadProgress={uploadProgress}
+            required={false}
+          />
+
+          <FormActions
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            submitText={isEdit ? 'Update Category' : 'Add Category'}
+            loading={loading || uploading}
+            disabled={uploading}
+          />
+        </form>
+    </FormLayout>
   );
 };
 

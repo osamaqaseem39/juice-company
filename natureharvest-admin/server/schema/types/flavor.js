@@ -17,8 +17,8 @@ const flavorTypes = gql`
     featured: Boolean!
     status: String!
     seasonality: Seasonality
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
     brand: Brand
   }
 

@@ -61,7 +61,7 @@ const SupplierList: React.FC = () => {
         title="Supplier Requests | Nature Harvest Admin"
         description="Manage supplier partnership requests"
       />
-      <div className="w-full p-4">
+              <div className="w-full">
         <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <h1 className="text-3xl font-bold" style={{ color: '#062373' }}>Supplier Requests</h1>

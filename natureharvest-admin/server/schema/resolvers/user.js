@@ -41,7 +41,7 @@ const userResolvers = {
   Mutation: {
     register: async (_, { input }) => {
       try {
-        const { name, email, password, role = 'user' } = input;
+        const { fullName, email, password, roles = ['customer'] } = input;
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -49,16 +49,12 @@ const userResolvers = {
           throw new Error('User already exists');
         }
 
-        // Hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
         // Create new user
         const user = new User({
-          name,
+          fullName,
           email,
-          password: hashedPassword,
-          role
+          password,
+          roles
         });
 
         await user.save();
@@ -74,9 +70,10 @@ const userResolvers = {
           token,
           user: {
             _id: user._id,
-            name: user.name,
+            fullName: user.fullName,
             email: user.email,
-            role: user.role,
+            roles: user.roles,
+            isActive: user.isActive,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
           }
@@ -85,9 +82,8 @@ const userResolvers = {
         throw new Error(error.message);
       }
     },
-    login: async (_, { input }) => {
+    login: async (_, { email, password }) => {
       try {
-        const { email, password } = input;
 
         // Check if user exists
         const user = await User.findOne({ email });
@@ -112,9 +108,10 @@ const userResolvers = {
           token,
           user: {
             _id: user._id,
-            name: user.name,
+            fullName: user.fullName,
             email: user.email,
-            role: user.role,
+            roles: user.roles,
+            isActive: user.isActive,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
           }
@@ -129,12 +126,13 @@ const userResolvers = {
           throw new Error('Not authenticated');
         }
 
-        const { name, email, password, role } = input;
+        const { fullName, email, password, roles, isActive } = input;
         const updateData = {};
 
-        if (name) updateData.name = name;
+        if (fullName) updateData.fullName = fullName;
         if (email) updateData.email = email;
-        if (role) updateData.role = role;
+        if (roles) updateData.roles = roles;
+        if (isActive !== undefined) updateData.isActive = isActive;
 
         if (password) {
           const salt = await bcrypt.genSalt(10);

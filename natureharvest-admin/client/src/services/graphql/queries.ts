@@ -7,7 +7,7 @@ export const GET_ALL_BLOGS = gql`
       title
       content
       author
-      image
+      featuredImage
       tags
       status
       createdAt
@@ -23,7 +23,7 @@ export const GET_BLOG_BY_ID = gql`
       title
       content
       author
-      image
+      featuredImage
       tags
       status
       createdAt
@@ -39,7 +39,7 @@ export const GET_BLOG_BY_SLUG = gql`
       title
       content
       author
-      image
+      featuredImage
       tags
       status
       createdAt
@@ -52,12 +52,17 @@ export const GET_ALL_PRODUCTS = gql`
   query GetAllProducts {
     products {
       _id
-      title
+      name
       description
-      image
-      brand
-      category
-      subCategory
+      images
+      brandId {
+        _id
+        name
+      }
+      categoryId {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -68,12 +73,17 @@ export const GET_PRODUCT_BY_ID = gql`
   query GetProductById($id: ID!) {
     product(id: $id) {
       _id
-      title
+      name
       description
-      image
-      brand
-      category
-      subCategory
+      images
+      brandId {
+        _id
+        name
+      }
+      categoryId {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -86,7 +96,7 @@ export const GET_ALL_SERVICES = gql`
       _id
       title
       description
-      image
+      featuredImage
       createdAt
       updatedAt
     }
@@ -99,7 +109,7 @@ export const GET_SERVICE_BY_ID = gql`
       _id
       title
       description
-      image
+      featuredImage
       createdAt
       updatedAt
     }
@@ -139,7 +149,10 @@ export const GET_ALL_CATEGORIES = gql`
       name
       image
       description
-      parent
+      parent {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -153,7 +166,10 @@ export const GET_CATEGORY_BY_ID = gql`
       name
       image
       description
-      parent
+      parent {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -167,7 +183,10 @@ export const GET_ALL_SUBCATEGORIES = gql`
       name
       image
       description
-      parent
+      parent {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -181,7 +200,10 @@ export const GET_SUBCATEGORY_BY_ID = gql`
       name
       image
       description
-      parent
+      parent {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -190,12 +212,15 @@ export const GET_SUBCATEGORY_BY_ID = gql`
 
 export const GET_NESTED_SUBCATEGORIES = gql`
   query GetNestedSubcategories($parentId: ID!) {
-    subcategoriesByParent(parentId: $parentId) {
+    nestedSubcategories(parentId: $parentId) {
       _id
       name
       image
       description
-      parent
+      parent {
+        _id
+        name
+      }
       createdAt
       updatedAt
     }
@@ -667,6 +692,209 @@ export const GET_GLOBAL_SEO_SETTINGS = gql`
       fbAppId
       googleAnalyticsId
       defaultCanonicalUrl
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_ALL_COMPANIES = gql`
+  query GetAllCompanies {
+    companies {
+      _id
+      name
+      description
+      logoUrl
+      website
+      contactEmail
+      contactPhone
+      address {
+        street
+        city
+        state
+        zip
+        country
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_COMPANY_BY_ID = gql`
+  query GetCompanyById($id: ID!) {
+    company(id: $id) {
+      _id
+      name
+      description
+      logoUrl
+      website
+      contactEmail
+      contactPhone
+      address {
+        street
+        city
+        state
+        zip
+        country
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+// Flavor queries
+export const GET_ALL_FLAVORS = gql`
+  query GetAllFlavors {
+    flavors {
+      _id
+      name
+      description
+      flavorProfile
+      nutritionalInfo {
+        calories
+        protein
+        carbs
+        fat
+        fiber
+        sugar
+        sodium
+        vitamins
+        minerals
+      }
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+      seasonality {
+        isSeasonal
+        availableMonths
+        peakSeason
+      }
+      brandId {
+        _id
+        name
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_FLAVOR_BY_ID = gql`
+  query GetFlavorById($id: ID!) {
+    flavor(id: $id) {
+      _id
+      name
+      description
+      flavorProfile
+      nutritionalInfo {
+        calories
+        protein
+        carbs
+        fat
+        fiber
+        sugar
+        sodium
+        vitamins
+        minerals
+      }
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+      seasonality {
+        isSeasonal
+        availableMonths
+        peakSeason
+      }
+      brandId {
+        _id
+        name
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_FLAVORS_BY_BRAND = gql`
+  query GetFlavorsByBrand($brandId: ID!) {
+    flavorsByBrand(brandId: $brandId) {
+      _id
+      name
+      description
+      flavorProfile
+      nutritionalInfo {
+        calories
+        protein
+        carbs
+        fat
+        fiber
+        sugar
+        sodium
+        vitamins
+        minerals
+      }
+      sizes {
+        _id
+        sizeLabel
+        price
+        volume
+        availability
+      }
+      seasonality {
+        isSeasonal
+        availableMonths
+        peakSeason
+      }
+      brandId {
+        _id
+        name
+      }
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+// Size queries
+export const GET_ALL_SIZES = gql`
+  query GetAllSizes {
+    sizes {
+      _id
+      sizeLabel
+      price
+      volume
+      availability
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_SIZE_BY_ID = gql`
+  query GetSizeById($id: ID!) {
+    size(id: $id) {
+      _id
+      sizeLabel
+      price
+      volume
+      availability
+      status
       createdAt
       updatedAt
     }

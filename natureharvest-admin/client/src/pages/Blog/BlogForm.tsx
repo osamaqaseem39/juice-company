@@ -1,44 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { blogApi, CreateBlogInput } from '../../services/api';
+import { useCreateBlog, useUpdateBlog, useBlog } from '../../services/apiService';
+import { FormLayout } from '../../components/forms/FormLayout';
+import { uploadImage } from '../../utils/formUtils';
 
 interface BlogFormProps {
   mode: 'add' | 'edit';
 }
 
-// Upload a file to cPanel server and return the public URL
-
-// Blog-specific image upload
-async function uploadBlogImage(file: File): Promise<string> {
-  const formData = new FormData();
-  const ext = file.name.split('.').pop();
-  const uniqueName = `${Date.now()}-blog-${Math.random().toString(36).substring(2, 8)}.${ext}`;
-  formData.append('file', file, uniqueName);
-  const response = await fetch('https://osamaqaseem.online/upload.php', {
-    method: 'POST',
-    body: formData,
-  });
-  const data = await response.json();
-  if (data.url) {
-    return data.url;
-  } else {
-    throw new Error(data.error || 'Upload failed');
-  }
-}
-
 const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const [createBlog] = useCreateBlog();
+  const [updateBlog] = useUpdateBlog();
+  const { data: blogData, loading: blogLoading } = useBlog(id || '');
+  
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(mode === 'edit');
+  const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState('');
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
   const [previewFeatured, setPreviewFeatured] = useState<string | null>(null);
-  const [formData, setFormData] = useState<CreateBlogInput>({
-    title: '',
-    content: '',
-    status: 'draft'
-  });
 
   // Generate slug from title
   const generateSlug = (title: string) => {
@@ -48,6 +29,17 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
       .replace(/^-+|-+$/g, '')
       .replace(/-{2,}/g, '-');
   };
+  
+  const [formData, setFormData] = useState({
+    title: '',
+    content: '',
+    status: 'draft',
+    featuredImage: ''
+  });
+
+
+
+
 
 
 
@@ -94,25 +86,17 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
   }, [formData.content]);
 
   useEffect(() => {
-    const fetchBlog = async () => {
-      if (mode === 'edit' && id) {
-        try {
-          const response = await blogApi.getById(id);
-          const { slug, ...blogData } = response.data;
-          setFormData(blogData);
-          setPreviewFeatured(response.data.featuredImage || null);
-          setError(null);
-        } catch (err) {
-          setError('Failed to fetch blog. Please try again later.');
-          console.error('Error fetching blog:', err);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchBlog();
-  }, [mode, id]);
+    if (mode === 'edit' && blogData?.blog) {
+      const blog = blogData.blog;
+      setFormData({
+        title: blog.title || '',
+        content: blog.content || '',
+        status: blog.status || 'draft',
+        featuredImage: blog.featuredImage || ''
+      });
+      setPreviewFeatured(blog.featuredImage || null);
+    }
+  }, [mode, blogData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,23 +106,35 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
     try {
       let featuredImageUrl = formData.featuredImage;
       if (featuredImageFile instanceof File) {
-        featuredImageUrl = await uploadBlogImage(featuredImageFile);
+        featuredImageUrl = await uploadImage(featuredImageFile);
       }
-      // Always set featuredImage, even if empty
+      
+      // Generate slug from title
+      const slug = generateSlug(formData.title);
+      
       const payload = {
         ...formData,
+        slug,
         featuredImage: featuredImageUrl || '',
       };
-      // Debug log
-      console.log('Submitting blog:', payload);
+
       if (mode === 'add') {
-        await blogApi.create(payload);
+        await createBlog({
+          variables: {
+            input: payload
+          }
+        });
         navigate('/blog');
       } else if (mode === 'edit' && id) {
-        await blogApi.update(id, payload);
+        await updateBlog({
+          variables: {
+            id,
+            input: payload
+          }
+        });
         navigate(`/blog`);
       }
-    } catch (err) {
+    } catch (err: any) {
       setError(`Failed to ${mode} blog post. Please try again.`);
       console.error(`Error ${mode}ing blog:`, err);
     } finally {
@@ -225,17 +221,13 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">
-        {mode === 'add' ? 'Create New Blog Post' : 'Edit Blog Post'}
-      </h1>
-
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-
+    <FormLayout
+      title={mode === 'add' ? 'Create New Blog Post' : 'Edit Blog Post'}
+      description={`${mode === 'add' ? 'Create' : 'Edit'} a new blog post`}
+      backPath="/blog"
+      backText="Back to Blog"
+      error={error || undefined}
+    >
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -248,7 +240,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
             value={formData.title}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-logo-red focus:ring-logo-red dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           />
         </div>
 
@@ -261,7 +253,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-logo-red focus:ring-logo-red dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           >
             <option value="draft">Draft</option>
             <option value="published">Published</option>
@@ -275,13 +267,13 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
             accept="image/*"
             onChange={async (e) => {
               if (e.target.files && e.target.files[0]) {
-                const url = await uploadBlogImage(e.target.files[0]);
+                const url = await uploadImage(e.target.files[0]);
                 setFeaturedImageFile(null);
                 setPreviewFeatured(url);
                 setFormData(prev => ({ ...prev, featuredImage: url }));
               }
             }}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition"
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-logo-red/10 file:text-logo-red hover:file:bg-logo-red/20 transition"
           />
           {previewFeatured && (
             <div className="relative inline-block mt-2">
@@ -438,7 +430,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
             onChange={handleChange}
             required
             rows={10}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-logo-red focus:ring-logo-red dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           />
         </div>
 
@@ -463,13 +455,13 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
           <button
             type="submit"
             disabled={loading}
-            className="px-4 py-2 text-sm font-medium text-white bg-brand-500 border border-transparent rounded-md hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50"
+            className="px-4 py-2 text-sm font-medium text-white bg-logo-red border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-logo-red disabled:opacity-50"
           >
             {loading ? 'Saving...' : mode === 'add' ? 'Create Post' : 'Update Post'}
           </button>
         </div>
       </form>
-    </div>
+    </FormLayout>
   );
 };
 

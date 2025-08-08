@@ -9,8 +9,8 @@ const quoteTypes = gql`
     details: String!
     image: String
     status: String!
-    createdAt: String!
-    updatedAt: String
+    createdAt: Date
+    updatedAt: Date
   }
 
   input QuoteInput {

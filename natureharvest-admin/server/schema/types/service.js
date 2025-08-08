@@ -8,8 +8,8 @@ const serviceTypes = gql`
     price: Float!
     duration: String!
     status: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
   }
 
   input ServiceInput {

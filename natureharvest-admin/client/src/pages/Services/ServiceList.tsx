@@ -76,8 +76,8 @@ const ServiceList: React.FC = () => {
         title="Services | Nature Harvest Admin"
         description="Manage your service offerings"
       />
-      <div className="w-full p-4">
-        <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
+      <div className="w-full">
+        <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <h1 className="text-3xl font-bold font-poppins text-logo-black">Services</h1>
             <div className="flex gap-2 w-full md:w-auto">

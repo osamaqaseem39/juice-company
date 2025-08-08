@@ -11,8 +11,8 @@ const productTypes = gql`
     images: [String!]
     specifications: String
     status: String!
-    createdAt: String!
-    updatedAt: String!
+    createdAt: Date
+    updatedAt: Date
   }
 
   input ProductInput {

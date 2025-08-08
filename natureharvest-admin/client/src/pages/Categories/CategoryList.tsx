@@ -65,7 +65,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-logo-red"></div>
       </div>
     );
   }
@@ -73,7 +73,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="text-red-500">Error: {error.message}</div>
+        <div className="text-logo-red">Error: {error.message}</div>
       </div>
     );
   }
@@ -84,11 +84,11 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
         title={`${isSubcategoryList ? 'Subcategories' : 'Categories'} | Nature Harvest Admin`}
         description={`Manage your ${isSubcategoryList ? 'subcategory' : 'category'} catalog`}
       />
-      <div className="w-full p-4">
-        <div className="bg-white shadow-lg rounded-xl p-8 border border-gray-200">
+      <div className="w-full">
+        <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-            <h1 className="text-3xl font-extrabold text-brand-700 dark:text-brand-400" style={{ color: '#062373' }}>
-              {isSubcategoryList ? 'All Subcategories' : 'All Categories'}
+            <h1 className="text-3xl font-bold text-gray-800">
+              {isSubcategoryList ? 'Subcategories' : 'Categories'}
             </h1>
             <div className="flex gap-2 w-full md:w-auto">
               <input
@@ -96,12 +96,11 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
                 placeholder="Search by name..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="border rounded px-3 py-2 w-full md:w-64 text-[#062373]"
-                style={{ color: '#062373' }}
+                className="border rounded px-3 py-2 w-full md:w-64 text-gray-700 focus:ring-2 focus:ring-logo-red focus:border-logo-red"
               />
               <Link 
                 to={isSubcategoryList ? "/subcategories/add" : "/categories/add"} 
-                className="bg-indigo-600 text-white px-5 py-2 rounded-lg shadow hover:bg-indigo-700 transition"
+                className="bg-logo-red hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
               >
                 Add {isSubcategoryList ? 'Subcategory' : 'Category'}
               </Link>
@@ -110,9 +109,9 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
           
           {sorted.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="min-w-full w-full border border-gray-200 rounded-lg text-[#062373]">
-                <thead className="text-[#062373]">
-                  <tr className="bg-gray-100">
+              <table className="min-w-full w-full border border-gray-200 rounded-lg">
+                <thead>
+                  <tr className="bg-gray-50">
                     <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort('name')}>
                       Name {sortKey === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
                     </th>
@@ -120,21 +119,21 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
                     <th className="px-4 py-2 border">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="text-[#062373]">
+                <tbody>
                   {sorted.map((cat: Category) => (
-                    <tr key={cat._id} className="border-t">
+                    <tr key={cat._id} className="border-t hover:bg-gray-50">
                       <td className="px-4 py-2 border font-semibold">{cat.name}</td>
                       <td className="px-4 py-2 border">{cat.description}</td>
                       <td className="px-4 py-2 border">
                         <Link 
                           to={isSubcategoryList ? `/subcategories/${cat._id}/edit` : `/categories/${cat._id}/edit`} 
-                          className="px-3 py-1 rounded font-semibold bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition mr-2"
+                          className="px-3 py-1 rounded font-semibold bg-green-600 text-white hover:bg-green-700 transition mr-2"
                         >
                           Edit
                         </Link>
                         <button 
                           onClick={() => handleDelete(cat._id)} 
-                          className="px-3 py-1 rounded font-semibold bg-red-100 text-red-700 hover:bg-red-200 transition"
+                          className="px-3 py-1 rounded font-semibold bg-red-600 text-white hover:bg-red-700 transition"
                         >
                           Delete
                         </button>
@@ -145,7 +144,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
               </table>
             </div>
           ) : (
-            <div className="flex justify-center items-center h-64" style={{ color: '#062373' }}>
+            <div className="flex justify-center items-center h-64 text-gray-500">
               No {isSubcategoryList ? 'subcategories' : 'categories'} found.
             </div>
           )}

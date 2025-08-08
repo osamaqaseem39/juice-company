@@ -1,6 +1,6 @@
 import React from "react";
 import ComponentCard from "../../common/ComponentCard";
-import Label from "../Label";
+import FormField from "../FormField";
 import Input from "../input/InputField";
 import { EnvelopeIcon } from "../../../icons";
 import PhoneInput from "../group-input/PhoneInput";
@@ -15,11 +15,11 @@ export default function InputGroup() {
   const handlePhoneNumberChange = (phoneNumber: string) => {
     console.log("Updated phone number:", phoneNumber);
   };
+  
   return (
     <ComponentCard title="Input Group">
       <div className="space-y-6">
-        <div>
-          <Label>Email</Label>
+        <FormField label="Email">
           <div className="relative">
             <Input
               placeholder="info@gmail.com"
@@ -30,25 +30,25 @@ export default function InputGroup() {
               <EnvelopeIcon />
             </span>
           </div>
-        </div>
-        <div>
-          <Label>Phone</Label>
+        </FormField>
+        
+        <FormField label="Phone">
           <PhoneInput
             selectPosition="start"
             countries={countries}
             placeholder="+1 (555) 000-0000"
             onChange={handlePhoneNumberChange}
           />
-        </div>{" "}
-        <div>
-          <Label>Phone</Label>
+        </FormField>
+        
+        <FormField label="Phone">
           <PhoneInput
             selectPosition="end"
             countries={countries}
             placeholder="+1 (555) 000-0000"
             onChange={handlePhoneNumberChange}
           />
-        </div>
+        </FormField>
       </div>
     </ComponentCard>
   );

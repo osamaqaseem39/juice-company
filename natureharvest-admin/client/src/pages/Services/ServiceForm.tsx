@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { serviceApi, CreateServiceInput, UpdateServiceInput } from '../../services/api';
+import { useCreateService, useUpdateService, useService } from '../../services/apiService';
 
 // Service-specific image upload
 async function uploadServiceImage(file: File): Promise<string> {
@@ -8,7 +8,7 @@ async function uploadServiceImage(file: File): Promise<string> {
   const ext = file.name.split('.').pop();
   const uniqueName = `${Date.now()}-service-${Math.random().toString(36).substring(2, 8)}.${ext}`;
   formData.append('file', file, uniqueName);
-  const response = await fetch('https://osamaqaseem.online/upload.php', {
+  const response = await fetch('https://natureharvest.osamaqaseem.online/upload.php', {
     method: 'POST',
     body: formData,
   });
@@ -20,18 +20,27 @@ async function uploadServiceImage(file: File): Promise<string> {
   }
 }
 
-
-
+interface ServiceFormData {
+  title: string;
+  description: string;
+  featuredImage: string;
+  status: string;
+}
 
 const ServiceForm: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [createService] = useCreateService();
+  const [updateService] = useUpdateService();
+  const { data: serviceData, loading: serviceLoading } = useService(id || '');
+  
   const isEdit = Boolean(id);
 
-  const [form, setForm] = useState<CreateServiceInput>({
+  const [form, setForm] = useState<ServiceFormData>({
     title: '',
     description: '',
-    featuredImage: ''
+    featuredImage: '',
+    status: 'active'
   });
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
   const [previewFeatured, setPreviewFeatured] = useState<string | null>(null);
@@ -40,48 +49,54 @@ const ServiceForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isEdit && id) {
-      setLoading(true);
-      serviceApi.getById(id)
-        .then(res => {
-          setForm({
-            title: res.data.title,
-            description: res.data.description,
-            featuredImage: res.data.featuredImage || ''
-          });
-          setPreviewFeatured(res.data.featuredImage ? res.data.featuredImage : null);
-
-        })
-        .catch(() => setError('Failed to load service'))
-        .finally(() => setLoading(false));
+    if (isEdit && serviceData?.service) {
+      const service = serviceData.service;
+      setForm({
+        title: service.title || '',
+        description: service.description || '',
+        featuredImage: service.featuredImage || '',
+        status: service.status || 'active'
+      });
+      setPreviewFeatured(service.featuredImage || null);
     } else {
-      setForm({ title: '', description: '', featuredImage: '' });
-      setFeaturedImageFile(null);
+      setForm({ title: '', description: '', featuredImage: '', status: 'active' });
       setPreviewFeatured(null);
     }
-  }, [isEdit, id]);
+  }, [isEdit, serviceData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
+      let featuredImageUrl = form.featuredImage;
+      if (featuredImageFile instanceof File) {
+        featuredImageUrl = await uploadServiceImage(featuredImageFile);
+      }
       const payload = {
         ...form,
+        featuredImage: featuredImageUrl,
       };
       // Debug log
       console.log('Submitting service:', payload);
       if (isEdit && id) {
-        await serviceApi.update(id, payload as UpdateServiceInput);
+        await updateService({
+          variables: {
+            id,
+            input: payload
+          }
+        });
       } else {
-        await serviceApi.create(payload);
-        setForm({ title: '', description: '', featuredImage: '' });
+        await createService({
+          variables: {
+            input: payload
+          }
+        });
+        setForm({ title: '', description: '', featuredImage: '', status: 'active' });
         setFeaturedImageFile(null);
         setPreviewFeatured(null);
       }
@@ -127,8 +142,9 @@ const ServiceForm: React.FC = () => {
             accept="image/*"
             onChange={async (e) => {
               if (e.target.files && e.target.files[0]) {
-                const url = await uploadServiceImage(e.target.files[0]);
-                setFeaturedImageFile(null);
+                const file = e.target.files[0];
+                setFeaturedImageFile(file);
+                const url = await uploadServiceImage(file);
                 setPreviewFeatured(url);
                 setForm(prev => ({ ...prev, featuredImage: url }));
               }

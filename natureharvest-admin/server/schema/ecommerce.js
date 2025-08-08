@@ -481,8 +481,6 @@ const ecommerceSchema = gql`
     createUser(input: UserInput!): User!
     updateUser(id: ID!, input: UserInput!): User!
     deleteUser(id: ID!): Boolean!
-    login(email: String!, password: String!): User!
-    register(input: UserInput!): User!
 
     # Category mutations
     createCategory(input: CategoryInput!): Category!

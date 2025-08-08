@@ -1,5 +1,16 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { 
+  GridIcon, 
+  PageIcon, 
+  BoxIcon, 
+  PlugInIcon, 
+  BoxCubeIcon, 
+  FolderIcon, 
+  ChatIcon,
+  ShootingStarIcon,
+  ListIcon
+} from "../icons";
 
 const AppSidebar: React.FC = () => {
   const location = useLocation();
@@ -7,84 +18,67 @@ const AppSidebar: React.FC = () => {
   const menuItems = [
     {
       title: "Dashboard",
-      icon: (
-        <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6.10322 0.956299H2.53135C1.3781 0.956299 0.453125 1.88128 0.453125 3.03453V6.6064C0.453125 7.75965 1.3781 8.68463 2.53135 8.68463H6.10322C7.25647 8.68463 8.18145 7.75965 8.18145 6.6064V3.03453C8.18145 1.88128 7.25647 0.956299 6.10322 0.956299ZM6.60947 6.6064C6.60947 6.89672 6.39362 7.11257 6.10322 7.11257H2.53135C2.24103 7.11257 2.02518 6.89672 2.02518 6.6064V3.03453C2.02518 2.74421 2.24103 2.52836 2.53135 2.52836H6.10322C6.39362 2.52836 6.60947 2.74421 6.60947 3.03453V6.6064Z" fill=""/>
-          <path d="M15.4689 0.956299H11.8971C10.7438 0.956299 9.81885 1.88128 9.81885 3.03453V6.6064C9.81885 7.75965 10.7438 8.68463 11.8971 8.68463H15.4689C16.6222 8.68463 17.5471 7.75965 17.5471 6.6064V3.03453C17.5471 1.88128 16.6222 0.956299 15.4689 0.956299ZM15.9752 6.6064C15.9752 6.89672 15.7594 7.11257 15.4689 7.11257H11.8971C11.6067 7.11257 11.3909 6.89672 11.3909 6.6064V3.03453C11.3909 2.74421 11.6067 2.52836 11.8971 2.52836H15.4689C15.7594 2.52836 15.9752 2.74421 15.9752 3.03453V6.6064Z" fill=""/>
-          <path d="M6.10322 9.31567H2.53135C1.3781 9.31567 0.453125 10.2406 0.453125 11.3939V14.9658C0.453125 16.119 1.3781 17.044 2.53135 17.044H6.10322C7.25647 17.044 8.18145 16.119 8.18145 14.9658V11.3939C8.18145 10.2406 7.25647 9.31567 6.10322 9.31567ZM6.60947 14.9658C6.60947 15.2561 6.39362 15.472 6.10322 15.472H2.53135C2.24103 15.472 2.02518 15.2561 2.02518 14.9658V11.3939C2.02518 11.1036 2.24103 10.8877 2.53135 10.8877H6.10322C6.39362 10.8877 6.60947 11.1036 6.60947 11.3939V14.9658Z" fill=""/>
-          <path d="M15.4689 9.31567H11.8971C10.7438 9.31567 9.81885 10.2406 9.81885 11.3939V14.9658C9.81885 16.119 10.7438 17.044 11.8971 17.044H15.4689C16.6222 17.044 17.5471 16.119 17.5471 14.9658V11.3939C17.5471 10.2406 16.6222 9.31567 15.4689 9.31567ZM15.9752 14.9658C15.9752 15.2561 15.7594 15.472 15.4689 15.472H11.8971C11.6067 15.472 11.3909 15.2561 11.3909 14.9658V11.3939C11.3909 11.1036 11.6067 10.8877 11.8971 10.8877H15.4689C15.7594 10.8877 15.9752 11.1036 15.9752 11.3939V14.9658Z" fill=""/>
-        </svg>
-      ),
+      icon: <GridIcon className="fill-current" width="18" height="18" />,
       path: "/",
     },
     {
       title: "Blog Posts",
-      icon: (
-        <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.0002 7.82123C11.3812 7.82123 13.2844 5.91807 13.2844 3.53707C13.2844 1.15607 11.3812 -0.74707 9.0002 -0.74707C6.6192 -0.74707 4.71605 1.15607 4.71605 3.53707C4.71605 5.91807 6.6192 7.82123 9.0002 7.82123ZM9.0002 1.82123C10.3152 1.82123 11.2844 2.79041 11.2844 4.10541C11.2844 5.42041 10.3152 6.38959 9.0002 6.38959C7.6852 6.38959 6.71605 5.42041 6.71605 4.10541C6.71605 2.79041 7.6852 1.82123 9.0002 1.82123Z" fill=""/>
-          <path d="M12.0002 9.6084H9C4.968 9.6084 1.715 12.8614 1.715 16.8934V17.8214H14.821V16.8934C14.821 13.4914 13.821 10.6084 12.0002 9.6084ZM13.821 16.8214H2.715V16.8934C2.715 13.8614 5.968 10.6084 9 10.6084H12.0002C13.821 10.6084 14.821 13.4914 14.821 16.8934V16.8214Z" fill=""/>
-        </svg>
-      ),
-    path: "/blog",
-  },
+      icon: <PageIcon className="fill-current" width="18" height="18" />,
+      path: "/blog",
+    },
   {
       title: "Products",
-      icon: (
-        <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.0002 7.82123C11.3812 7.82123 13.2844 5.91807 13.2844 3.53707C13.2844 1.15607 11.3812 -0.74707 9.0002 -0.74707C6.6192 -0.74707 4.71605 1.15607 4.71605 3.53707C4.71605 5.91807 6.6192 7.82123 9.0002 7.82123ZM9.0002 1.82123C10.3152 1.82123 11.2844 2.79041 11.2844 4.10541C11.2844 5.42041 10.3152 6.38959 9.0002 6.38959C7.6852 6.38959 6.71605 5.42041 6.71605 4.10541C6.71605 2.79041 7.6852 1.82123 9.0002 1.82123Z" fill=""/>
-          <path d="M12.0002 9.6084H9C4.968 9.6084 1.715 12.8614 1.715 16.8934V17.8214H14.821V16.8934C14.821 13.4914 13.821 10.6084 12.0002 9.6084ZM13.821 16.8214H2.715V16.8934C2.715 13.8614 5.968 10.6084 9 10.6084H12.0002C13.821 10.6084 14.821 13.4914 14.821 16.8934V16.8214Z" fill=""/>
-        </svg>
-      ),
+      icon: <BoxIcon className="fill-current" width="18" height="18" />,
       path: "/products",
     },
     {
       title: "Services",
-      icon: (
-        <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.0002 7.82123C11.3812 7.82123 13.2844 5.91807 13.2844 3.53707C13.2844 1.15607 11.3812 -0.74707 9.0002 -0.74707C6.6192 -0.74707 4.71605 1.15607 4.71605 3.53707C4.71605 5.91807 6.6192 7.82123 9.0002 7.82123ZM9.0002 1.82123C10.3152 1.82123 11.2844 2.79041 11.2844 4.10541C11.2844 5.42041 10.3152 6.38959 9.0002 6.38959C7.6852 6.38959 6.71605 5.42041 6.71605 4.10541C6.71605 2.79041 7.6852 1.82123 9.0002 1.82123Z" fill=""/>
-          <path d="M12.0002 9.6084H9C4.968 9.6084 1.715 12.8614 1.715 16.8934V17.8214H14.821V16.8934C14.821 13.4914 13.821 10.6084 12.0002 9.6084ZM13.821 16.8214H2.715V16.8934C2.715 13.8614 5.968 10.6084 9 10.6084H12.0002C13.821 10.6084 14.821 13.4914 14.821 16.8934V16.8214Z" fill=""/>
-        </svg>
-      ),
+      icon: <PlugInIcon className="fill-current" width="18" height="18" />,
       path: "/services",
     },
     {
       title: "Brands",
-      icon: (
-        <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.0002 7.82123C11.3812 7.82123 13.2844 5.91807 13.2844 3.53707C13.2844 1.15607 11.3812 -0.74707 9.0002 -0.74707C6.6192 -0.74707 4.71605 1.15607 4.71605 3.53707C4.71605 5.91807 6.6192 7.82123 9.0002 7.82123ZM9.0002 1.82123C10.3152 1.82123 11.2844 2.79041 11.2844 4.10541C11.2844 5.42041 10.3152 6.38959 9.0002 6.38959C7.6852 6.38959 6.71605 5.42041 6.71605 4.10541C6.71605 2.79041 7.6852 1.82123 9.0002 1.82123Z" fill=""/>
-          <path d="M12.0002 9.6084H9C4.968 9.6084 1.715 12.8614 1.715 16.8934V17.8214H14.821V16.8934C14.821 13.4914 13.821 10.6084 12.0002 9.6084ZM13.821 16.8214H2.715V16.8934C2.715 13.8614 5.968 10.6084 9 10.6084H12.0002C13.821 10.6084 14.821 13.4914 14.821 16.8934V16.8214Z" fill=""/>
-        </svg>
-      ),
+      icon: <BoxCubeIcon className="fill-current" width="18" height="18" />,
       path: "/brands",
     },
     {
       title: "Categories",
-      icon: (
-        <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.0002 7.82123C11.3812 7.82123 13.2844 5.91807 13.2844 3.53707C13.2844 1.15607 11.3812 -0.74707 9.0002 -0.74707C6.6192 -0.74707 4.71605 1.15607 4.71605 3.53707C4.71605 5.91807 6.6192 7.82123 9.0002 7.82123ZM9.0002 1.82123C10.3152 1.82123 11.2844 2.79041 11.2844 4.10541C11.2844 5.42041 10.3152 6.38959 9.0002 6.38959C7.6852 6.38959 6.71605 5.42041 6.71605 4.10541C6.71605 2.79041 7.6852 1.82123 9.0002 1.82123Z" fill=""/>
-          <path d="M12.0002 9.6084H9C4.968 9.6084 1.715 12.8614 1.715 16.8934V17.8214H14.821V16.8934C14.821 13.4914 13.821 10.6084 12.0002 9.6084ZM13.821 16.8214H2.715V16.8934C2.715 13.8614 5.968 10.6084 9 10.6084H12.0002C13.821 10.6084 14.821 13.4914 14.821 16.8934V16.8214Z" fill=""/>
-        </svg>
-      ),
+      icon: <FolderIcon className="fill-current" width="18" height="18" />,
       path: "/categories",
     },
     {
+      title: "Flavors",
+      icon: <ShootingStarIcon className="fill-current" width="18" height="18" />,
+      path: "/flavors",
+    },
+    {
+      title: "Sizes",
+      icon: <ListIcon className="fill-current" width="18" height="18" />,
+      path: "/sizes",
+    },
+    {
       title: "Messages",
-      icon: (
-        <svg className="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.0002 7.82123C11.3812 7.82123 13.2844 5.91807 13.2844 3.53707C13.2844 1.15607 11.3812 -0.74707 9.0002 -0.74707C6.6192 -0.74707 4.71605 1.15607 4.71605 3.53707C4.71605 5.91807 6.6192 7.82123 9.0002 7.82123ZM9.0002 1.82123C10.3152 1.82123 11.2844 2.79041 11.2844 4.10541C11.2844 5.42041 10.3152 6.38959 9.0002 6.38959C7.6852 6.38959 6.71605 5.42041 6.71605 4.10541C6.71605 2.79041 7.6852 1.82123 9.0002 1.82123Z" fill=""/>
-          <path d="M12.0002 9.6084H9C4.968 9.6084 1.715 12.8614 1.715 16.8934V17.8214H14.821V16.8934C14.821 13.4914 13.821 10.6084 12.0002 9.6084ZM13.821 16.8214H2.715V16.8934C2.715 13.8614 5.968 10.6084 9 10.6084H12.0002C13.821 10.6084 14.821 13.4914 14.821 16.8934V16.8214Z" fill=""/>
-        </svg>
-      ),
+      icon: <ChatIcon className="fill-current" width="18" height="18" />,
       path: "/messages",
     },
   ];
 
   return (
-    <aside className="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0">
+    <aside className="fixed left-0 top-0 z-9999 flex h-screen w-[280px] flex-col overflow-y-hidden bg-[#e5e7d2] duration-300 ease-linear dark:bg-[#e5e7d2] lg:static lg:translate-x-0">
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
-        <NavLink to="/">
-          <img src="/images/logo/logo.png" alt="Nature Harvest" width="176" />
+        <NavLink to="/" className="flex items-center">
+                      <img 
+              src="/images/logo/logo.png" 
+              alt="Nature Harvest" 
+              className="h-16 w-auto"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+                target.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+          <span className="ml-3 text-xl font-bold text-black hidden">Nature Harvest</span>
         </NavLink>
 
             <button
@@ -95,7 +89,7 @@ const AppSidebar: React.FC = () => {
           }}
           className="block lg:hidden"
         >
-          <svg className="fill-current" width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg className="fill-current text-black" width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M19 8.175H2.98748L9.36248 1.6875C9.69998 1.35 9.69998 0.825 9.36248 0.4875C9.02498 0.15 8.49998 0.15 8.16248 0.4875L0.399976 8.3625C0.0624756 8.7 0.0624756 9.225 0.399976 9.5625L8.16248 17.4375C8.31248 17.5875 8.53748 17.7 8.76248 17.7C8.98748 17.7 9.21248 17.625 9.36248 17.4375C9.69998 17.1 9.69998 16.575 9.36248 16.2375L3.02498 9.8625H19C19.45 9.8625 19.825 9.4875 19.825 9.0375C19.825 8.55 19.45 8.175 19 8.175Z" fill=""/>
           </svg>
             </button>
@@ -107,15 +101,15 @@ const AppSidebar: React.FC = () => {
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           {/* <!-- Menu Group --> */}
           <div>
-            <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">MENU</h3>
+            <h3 className="mb-4 ml-4 text-sm font-semibold text-black">MENU</h3>
 
             <ul className="mb-6 flex flex-col gap-2.5">
               {menuItems.map((item, index) => (
                 <li key={index}>
                   <NavLink
                     to={item.path}
-                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                      location.pathname === item.path && "bg-graydark dark:bg-meta-4"
+                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-logo-red hover:text-white ${
+                      location.pathname === item.path && "bg-logo-red text-white"
                     }`}
                   >
                     {item.icon}
