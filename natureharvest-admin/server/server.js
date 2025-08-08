@@ -262,6 +262,7 @@ app.use('/api/brands', require('./routes/brands'));
 app.use('/api/services', require('./routes/services'));
 app.use('/api/quotes', require('./routes/quotes'));
 app.use('/api/blogs', require('./routes/blogs'));
+app.use('/api/flavors', require('./routes/flavors'));
 app.use('/', require('./routes/upload'));
 
 /**

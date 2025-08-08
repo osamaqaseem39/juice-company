@@ -96,6 +96,10 @@ const options = {
         description: 'Brand management endpoints'
       },
       {
+        name: 'Flavors',
+        description: 'Flavor and size management endpoints'
+      },
+      {
         name: 'Services',
         description: 'Service management endpoints'
       },
