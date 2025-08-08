@@ -36,9 +36,18 @@ const options = {
       },
     ],
   },
-  apis: ['./routes/*.js', './models/*.js'],
+  apis: ['./routes/*.js', './models/*.js', './controllers/*.js'],
 };
 
 const specs = swaggerJsdoc(options);
+
+// Validate that specs were generated properly
+if (!specs || !specs.paths) {
+  console.error('❌ Swagger specs generation failed');
+  console.error('Specs object:', specs);
+} else {
+  console.log('✅ Swagger specs generated successfully');
+  console.log('Available paths:', Object.keys(specs.paths || {}));
+}
 
 module.exports = specs; 

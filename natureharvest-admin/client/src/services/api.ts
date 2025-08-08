@@ -66,39 +66,42 @@ export interface Product {
 }
 
 export interface CreateProductInput {
-  title: string;
+  name: string;
   description: string;
-  image?: string;
-  brand?: string;
-  category?: string;
-  subCategory?: string;
+  images?: string[];
+  brandId?: string;
+  categoryId?: string;
+  tags?: string[];
 }
 
 export interface UpdateProductInput {
-  title?: string;
+  name?: string;
   description?: string;
-  image?: string;
-  brand?: string;
-  category?: string;
-  subCategory?: string;
+  images?: string[];
+  brandId?: string;
+  categoryId?: string;
+  tags?: string[];
 }
 
 export interface Service {
   _id: string;
-  name: string;
+  title: string;
   description: string;
+  featuredImage?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateServiceInput {
-  name: string;
+  title: string;
   description: string;
+  featuredImage?: string;
 }
 
 export interface UpdateServiceInput {
-  name?: string;
+  title?: string;
   description?: string;
+  featuredImage?: string;
 }
 
 export interface Quote {

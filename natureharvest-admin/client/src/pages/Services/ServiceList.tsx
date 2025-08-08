@@ -10,7 +10,7 @@ const ServiceList: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalImg, setModalImg] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const [sortKey, setSortKey] = useState<'name' | ''>('');
+  const [sortKey, setSortKey] = useState<'title' | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
   const services = data?.services || [];
@@ -33,7 +33,7 @@ const ServiceList: React.FC = () => {
 
   // Search and sort logic
   const filtered = services.filter((s: Service) =>
-    s.name.toLowerCase().includes(search.toLowerCase())
+    s.title.toLowerCase().includes(search.toLowerCase())
   );
   const sorted = [...filtered].sort((a, b) => {
     if (!sortKey) return 0;
@@ -45,7 +45,7 @@ const ServiceList: React.FC = () => {
     return 0;
   });
 
-  const handleSort = (key: 'name') => {
+  const handleSort = (key: 'title') => {
     if (sortKey === key) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
@@ -98,9 +98,9 @@ const ServiceList: React.FC = () => {
                 <thead className="text-logo-black bg-leaf-light">
                   <tr className="border-b border-gray-200">
                     <th className="px-4 py-2 border font-poppins font-medium">Image</th>
-                    <th className="px-4 py-2 border cursor-pointer font-poppins font-medium" onClick={() => handleSort('name')}>
-                      Title {sortKey === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
-                    </th>
+                                         <th className="px-4 py-2 border cursor-pointer font-poppins font-medium" onClick={() => handleSort('title')}>
+                       Title {sortKey === 'title' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
+                     </th>
                     <th className="px-4 py-2 border font-poppins font-medium">Description</th>
                     <th className="px-4 py-2 border font-poppins font-medium">Actions</th>
                   </tr>
@@ -108,9 +108,21 @@ const ServiceList: React.FC = () => {
                 <tbody className="text-logo-black">
                   {sorted.map((service: Service) => (
                     <tr key={service._id} className="border-t hover:bg-leaf-50 transition-colors">
-                      <td className="px-4 py-2 border">
-                      </td>
-                      <td className="px-4 py-2 border font-medium font-poppins">{service.name}</td>
+                                             <td className="px-4 py-2 border">
+                         {service.featuredImage ? (
+                           <img
+                             src={service.featuredImage}
+                             alt={service.title}
+                             className="w-16 h-16 object-cover rounded cursor-pointer border border-gray-200"
+                             onClick={() => openModal(service.featuredImage!)}
+                           />
+                         ) : (
+                           <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                             <span className="text-gray-400 text-xs font-poppins">No Image</span>
+                           </div>
+                         )}
+                       </td>
+                                             <td className="px-4 py-2 border font-medium font-poppins">{service.title}</td>
                       <td className="px-4 py-2 border max-w-xs truncate font-poppins">{service.description}</td>
                       <td className="px-4 py-2 border">
                         <Link

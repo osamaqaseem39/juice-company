@@ -87,8 +87,15 @@ app.use((req, res, next) => {
 app.options('*', cors());
 
 // Swagger documentation
-if (process.env.NODE_ENV !== 'production') {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { explorer: true }));
+try {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { 
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Juice Company API Documentation'
+  }));
+  console.log('✅ Swagger documentation configured successfully');
+} catch (error) {
+  console.error('❌ Error configuring Swagger:', error);
 }
 
 // MongoDB Connection with retry logic
@@ -212,6 +219,21 @@ app.use('/api/services', require('./routes/services'));
 app.use('/api/quotes', require('./routes/quotes'));
 app.use('/api/blogs', require('./routes/blogs'));
 
+// API docs health check
+app.get('/api-docs/health', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    message: 'API documentation endpoint is available',
+    timestamp: new Date().toISOString(),
+    swaggerSpecs: !!swaggerSpecs
+  });
+});
+
+// Serve swagger JSON spec
+app.get('/api-docs.json', (req, res) => {
+  res.json(swaggerSpecs);
+});
+
 // Root route for API health check
 app.get('/', (req, res) => {
   const mongoStatus = {
@@ -311,9 +333,7 @@ const startServer = async () => {
   httpServer.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
     console.log(`🔗 GraphQL endpoint: http://localhost:${PORT}/graphql`);
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`📚 Swagger documentation available at /api-docs`);
-    }
+    console.log(`📚 Swagger documentation available at /api-docs`);
   });
 };
 
