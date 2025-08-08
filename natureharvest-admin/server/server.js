@@ -80,8 +80,19 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Set proper MIME types for JavaScript files
+app.use((req, res, next) => {
+  if (req.path.endsWith('.js')) {
+    res.setHeader('Content-Type', 'application/javascript');
+  }
+  next();
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve Swagger UI static files with proper MIME types
+app.use('/api-docs', express.static(require('swagger-ui-express').getAbsoluteFSPath()));
 
 // Check MongoDB connection middleware
 app.use((req, res, next) => {
@@ -114,11 +125,25 @@ app.options('*', cors());
 
 // Swagger documentation
 try {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { 
+  app.use('/api-docs', swaggerUi.serve);
+  app.get('/api-docs', swaggerUi.setup(swaggerSpecs, { 
     explorer: true,
     customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Juice Company API Documentation'
+    customSiteTitle: 'Juice Company API Documentation',
+    swaggerOptions: {
+      url: '/api-docs/swagger.json',
+      docExpansion: 'list',
+      filter: true,
+      showRequestHeaders: true
+    }
   }));
+  
+  // Serve the swagger spec as JSON
+  app.get('/api-docs/swagger.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpecs);
+  });
+  
   console.log('✅ Swagger documentation configured successfully');
 } catch (error) {
   console.error('❌ Error configuring Swagger:', error);
