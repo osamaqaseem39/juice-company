@@ -92,7 +92,7 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve Swagger UI static files with proper MIME types
-app.use('/api-docs', express.static(require('swagger-ui-express').getAbsoluteFSPath()));
+app.use('/api-docs', express.static(path.join(__dirname, 'node_modules/swagger-ui-dist')));
 
 // Check MongoDB connection middleware
 app.use((req, res, next) => {
@@ -125,17 +125,10 @@ app.options('*', cors());
 
 // Swagger documentation
 try {
-  app.use('/api-docs', swaggerUi.serve);
-  app.get('/api-docs', swaggerUi.setup(swaggerSpecs, { 
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { 
     explorer: true,
     customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Juice Company API Documentation',
-    swaggerOptions: {
-      url: '/api-docs/swagger.json',
-      docExpansion: 'list',
-      filter: true,
-      showRequestHeaders: true
-    }
+    customSiteTitle: 'Juice Company API Documentation'
   }));
   
   // Serve the swagger spec as JSON
