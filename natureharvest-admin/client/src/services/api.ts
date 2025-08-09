@@ -420,7 +420,7 @@ export {
 };
 
 // Default export for convenience
-export default {
+const api = {
   auth: authApi,
   blogs: blogApi,
   products: productApi,
@@ -432,3 +432,5 @@ export default {
   flavors: flavorApi,
   health: healthApi
 };
+
+export default api;

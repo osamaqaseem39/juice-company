@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { GET_ALL_SUPPLIERS, GET_SUPPLIER_BY_ID } from '../services/graphql/queries';
 
 export const useSuppliers = () => {

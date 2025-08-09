@@ -42,12 +42,7 @@ import {
   useUpdateFlavor,
   useDeleteFlavor,
   useFlavors,
-  useFlavor,
-  useLogin,
-  useRegister,
-  useCreateUser,
-  useUpdateUser,
-  useDeleteUser
+  useFlavor
 } from '../hooks';
 
 // Export all API functions
@@ -95,12 +90,7 @@ export {
   useUpdateFlavor,
   useDeleteFlavor,
   useFlavors,
-  useFlavor,
-  useLogin,
-  useRegister,
-  useCreateUser,
-  useUpdateUser,
-  useDeleteUser
+  useFlavor
 };
 
 // Re-export types
@@ -135,7 +125,7 @@ export type {
 } from './restApi';
 
 // Default export for convenience
-export default {
+const apiService = {
   auth: authApi,
   blogs: blogApi,
   products: productApi,
@@ -146,4 +136,6 @@ export default {
   quotes: quoteApi,
   flavors: flavorApi,
   health: healthApi
-}; 
+};
+
+export default apiService; 
