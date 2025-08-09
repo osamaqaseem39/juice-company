@@ -9,7 +9,9 @@ import {
   serviceApi, 
   quoteApi, 
   flavorApi, 
-  healthApi 
+  supplierApi,
+  userApi,
+  healthApi
 } from './restApi';
 
 // Import GraphQL hooks
@@ -55,6 +57,11 @@ import {
   useDeleteQuote,
   useQuotes,
   useQuote,
+  useSuppliers,
+  useSupplier,
+  useUsers,
+  useUser,
+  useRemoveUser,
   useFileUpload
 } from '../hooks';
 
@@ -118,7 +125,7 @@ export interface Product {
   subcategory?: string;
   brand?: string;
   featuredImage?: string;
-  gallery?: string[];
+  images?: string[];
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -132,7 +139,7 @@ export interface CreateProductInput {
   subcategory?: string;
   brand?: string;
   featuredImage?: string;
-  gallery?: string[];
+  images?: string[];
   isActive?: boolean;
 }
 
@@ -144,7 +151,7 @@ export interface UpdateProductInput {
   subcategory?: string;
   brand?: string;
   featuredImage?: string;
-  gallery?: string[];
+  images?: string[];
   isActive?: boolean;
 }
 
@@ -320,6 +327,31 @@ export interface UpdateFlavorInput {
   seasonality?: FlavorSeasonality;
 }
 
+// Supplier interfaces
+export interface SupplierRequest {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  companyName: string;
+  jobTitle: string;
+  address: {
+    street: string;
+    city: string;
+    zip: string;
+    country: string;
+  };
+  ingredientsSupplied: string;
+  foodSafetyAccreditations: string;
+  brochure?: string;
+  website?: string;
+  message: string;
+  newsletterSubscribed: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Export all API functions
 export {
   authApi,
@@ -331,6 +363,8 @@ export {
   serviceApi,
   quoteApi,
   flavorApi,
+  supplierApi,
+  userApi,
   healthApi
 };
 
@@ -377,6 +411,11 @@ export {
   useDeleteQuote,
   useQuotes,
   useQuote,
+  useSuppliers,
+  useSupplier,
+  useUsers,
+  useUser,
+  useRemoveUser,
   useFileUpload
 };
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { couponApi } from '../../services/api';
+// TODO: Implement couponApi or remove this component
+// import { couponApi } from '../../services/api';
 
 interface CouponFormProps {
   mode: 'add' | 'edit';
@@ -40,13 +41,14 @@ const CouponForm: React.FC<CouponFormProps> = ({ mode }) => {
     const fetchCoupon = async () => {
       if (mode === 'edit' && id) {
         try {
-          const response = await couponApi.getById(id);
-          const couponData = response.data;
-          setFormData({
-            ...couponData,
-            expiryDate: couponData.expiryDate ? new Date(couponData.expiryDate).toISOString().split('T')[0] : ''
-          });
-          setError(null);
+          // TODO: Implement couponApi.getById
+          // const response = await couponApi.getById(id);
+          // const couponData = response.data;
+          // setFormData({
+          //   ...couponData,
+          //   expiryDate: couponData.expiryDate ? new Date(couponData.expiryDate).toISOString().split('T')[0] : ''
+          // });
+          // setError(null);
         } catch (err) {
           setError('Failed to fetch coupon. Please try again later.');
           console.error('Error fetching coupon:', err);
@@ -72,11 +74,13 @@ const CouponForm: React.FC<CouponFormProps> = ({ mode }) => {
       };
 
       if (mode === 'add') {
-        await couponApi.create(payload);
-        navigate('/coupons');
+        // TODO: Implement couponApi.create
+        // await couponApi.create(payload);
+        // navigate('/coupons');
       } else if (mode === 'edit' && id) {
-        await couponApi.update(id, payload);
-        navigate('/coupons');
+        // TODO: Implement couponApi.update
+        // await couponApi.update(id, payload);
+        // navigate('/coupons');
       }
     } catch (err) {
       setError(`Failed to ${mode} coupon. Please try again.`);

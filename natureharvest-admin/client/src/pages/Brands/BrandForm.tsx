@@ -17,14 +17,14 @@ import {
 interface BrandFormData {
   name: string;
   description: string;
-  image: string | null;
+  logo: string | null;
   status: string;
 }
 
 const validationRules: Record<keyof BrandFormData, ValidationRule> = {
   name: { required: true, minLength: 2, maxLength: 50 },
   description: { required: false, maxLength: 500 },
-  image: { required: false },
+  logo: { required: false },
   status: { required: true }
 };
 
@@ -40,7 +40,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
   const [formData, setFormData] = useState<BrandFormData>({
     name: '',
     description: '',
-    image: null,
+    logo: null,
     status: 'active'
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -56,7 +56,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
       setFormData({
         name: brand.name || '',
         description: brand.description || '',
-        image: brand.image || null,
+        logo: brand.logo || null,
         status: brand.status || 'active'
       });
     }
@@ -81,7 +81,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
         setUploadProgress(progress);
       });
       
-      setFormData(prev => ({ ...prev, image: url }));
+      setFormData(prev => ({ ...prev, logo: url }));
       return url;
     } finally {
       setUploading(false);
@@ -93,7 +93,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
     if (file) {
       handleImageUpload(file);
     } else {
-      setFormData(prev => ({ ...prev, image: null }));
+      setFormData(prev => ({ ...prev, logo: null }));
     }
   };
 
@@ -117,7 +117,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
       const payload = {
         name: formData.name,
         description: formData.description,
-        image: formData.image,
+        logo: formData.logo,
         status: formData.status
       };
 
@@ -188,7 +188,7 @@ const BrandForm: React.FC<{ mode?: BrandFormMode }> = ({ mode }) => {
 
           <ImageUpload
             label="Brand Logo"
-            value={formData.image}
+            value={formData.logo}
             onChange={handleImageChange}
             onUpload={handleImageUpload}
             uploading={uploading}

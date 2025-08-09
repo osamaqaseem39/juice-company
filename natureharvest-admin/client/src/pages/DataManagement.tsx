@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useApiService, useBlogs, useProducts, useBrands, useCategories, useServices, useQuotes } from '../services/apiService';
+import { useBlogs, useProducts, useBrands, useCategories, useServices } from '../services/apiService';
+// TODO: Implement useQuotes or remove this import
+// TODO: Implement useApiService or remove this import
 import BlogForm from './Blog/BlogForm';
 import ProductForm from './Products/ProductForm';
 import BrandForm from './Brands/BrandForm';
@@ -20,7 +22,8 @@ interface DataItem {
 }
 
 const DataManagement: React.FC = () => {
-  const apiService = useApiService();
+  // TODO: Implement useApiService
+  // const apiService = useApiService();
   const [activeTab, setActiveTab] = useState<'blogs' | 'products' | 'brands' | 'categories' | 'services' | 'quotes'>('blogs');
   const [showForm, setShowForm] = useState(false);
   const [editingItem, setEditingItem] = useState<DataItem | null>(null);
@@ -33,7 +36,8 @@ const DataManagement: React.FC = () => {
   const { data: brandsData, loading: brandsLoading, error: brandsError, refetch: refetchBrands } = useBrands();
   const { data: categoriesData, loading: categoriesLoading, error: categoriesError, refetch: refetchCategories } = useCategories();
   const { data: servicesData, loading: servicesLoading, error: servicesError, refetch: refetchServices } = useServices();
-  const { data: quotesData, loading: quotesLoading, error: quotesError, refetch: refetchQuotes } = useQuotes();
+  // TODO: Implement useQuotes
+  // const { data: quotesData, loading: quotesLoading, error: quotesError, refetch: refetchQuotes } = useQuotes();
 
   const getCurrentData = () => {
     switch (activeTab) {
@@ -48,7 +52,9 @@ const DataManagement: React.FC = () => {
       case 'services':
         return servicesData?.services || [];
       case 'quotes':
-        return quotesData?.quotes || [];
+        // TODO: Implement quotes data
+        // return quotesData?.quotes || [];
+        return [];
       default:
         return [];
     }
@@ -67,7 +73,9 @@ const DataManagement: React.FC = () => {
       case 'services':
         return servicesLoading;
       case 'quotes':
-        return quotesLoading;
+        // TODO: Implement quotes loading
+        // return quotesLoading;
+        return false;
       default:
         return false;
     }
@@ -86,7 +94,9 @@ const DataManagement: React.FC = () => {
       case 'services':
         return servicesError;
       case 'quotes':
-        return quotesError;
+        // TODO: Implement quotes error
+        // return quotesError;
+        return null;
       default:
         return null;
     }
@@ -105,7 +115,9 @@ const DataManagement: React.FC = () => {
       case 'services':
         return refetchServices;
       case 'quotes':
-        return refetchQuotes;
+        // TODO: Implement quotes refetch
+        // return refetchQuotes;
+        return () => {};
       default:
         return () => {};
     }
@@ -132,22 +144,28 @@ const DataManagement: React.FC = () => {
     try {
       switch (activeTab) {
         case 'blogs':
-          await apiService.deleteBlog(id);
+          // TODO: Implement apiService.deleteBlog
+          // await apiService.deleteBlog(id);
           break;
         case 'products':
-          await apiService.deleteProduct(id);
+          // TODO: Implement apiService.deleteProduct
+          // await apiService.deleteProduct(id);
           break;
         case 'brands':
-          await apiService.deleteBrand(id);
+          // TODO: Implement apiService.deleteBrand
+          // await apiService.deleteBrand(id);
           break;
         case 'categories':
-          await apiService.deleteCategory(id);
+          // TODO: Implement apiService.deleteCategory
+          // await apiService.deleteCategory(id);
           break;
         case 'services':
-          await apiService.deleteService(id);
+          // TODO: Implement apiService.deleteService
+          // await apiService.deleteService(id);
           break;
         case 'quotes':
-          await apiService.deleteQuote(id);
+          // TODO: Implement apiService.deleteQuote
+          // await apiService.deleteQuote(id);
           break;
       }
 

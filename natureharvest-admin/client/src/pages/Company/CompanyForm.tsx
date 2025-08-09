@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { companyApi } from '../../services/api';
+// TODO: Implement companyApi or remove this component
+// import { companyApi } from '../../services/api';
 
 interface CompanyFormProps {
   mode: 'add' | 'edit';
@@ -49,8 +50,9 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ mode }) => {
     const fetchCompany = async () => {
       if (mode === 'edit' && id) {
         try {
-          const response = await companyApi.getById(id);
-          setFormData(response.data);
+          // TODO: Implement companyApi.getById
+          // const response = await companyApi.getById(id);
+          // setFormData(response.data);
           setError(null);
         } catch (err) {
           setError('Failed to fetch company. Please try again later.');
@@ -71,10 +73,12 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ mode }) => {
 
     try {
       if (mode === 'add') {
-        await companyApi.create(formData);
+        // TODO: Implement companyApi.create
+        // await companyApi.create(formData);
         navigate('/company');
       } else if (mode === 'edit' && id) {
-        await companyApi.update(id, formData);
+        // TODO: Implement companyApi.update
+        // await companyApi.update(id, formData);
         navigate('/company');
       }
     } catch (err) {

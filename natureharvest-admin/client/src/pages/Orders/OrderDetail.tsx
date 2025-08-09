@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useOrder, useUpdateOrder } from '../../services/api';
+// TODO: Implement useOrder and useUpdateOrder or remove this component
+// import { useOrder, useUpdateOrder } from '../../services/api';
 
 const OrderDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { data, loading, error, refetch } = useOrder(id!);
-  const [updateOrder] = useUpdateOrder();
+  // TODO: Implement useOrder and useUpdateOrder
+  // const { data, loading, error, refetch } = useOrder(id!);
+  // const [updateOrder] = useUpdateOrder();
   const [updating, setUpdating] = useState(false);
 
   const handleStatusUpdate = async (field: string, value: string) => {
     setUpdating(true);
     try {
-      await updateOrder({ variables: { id, [field]: value } });
-      refetch();
+      // TODO: Implement updateOrder and refetch
+      // await updateOrder({ variables: { id, [field]: value } });
+      // refetch();
     } catch (err) {
       console.error('Error updating order:', err);
     } finally {
@@ -55,25 +58,27 @@ const OrderDetail: React.FC = () => {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
-      </div>
-    );
-  }
+  // TODO: Implement loading, error, and data handling
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          Error loading order: {error.message}
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="container mx-auto px-4 py-8">
+  //       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+  //         Error loading order: {error.message}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  const order = data?.order;
+  // const order = data?.order;
+  const order: any = null; // Temporary null value
 
   if (!order) {
     return (
