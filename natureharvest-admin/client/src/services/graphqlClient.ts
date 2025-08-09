@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, createHttpLink, from } from '@apollo/clien
 import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
-  uri: 'https://juice-company-server.vercel.app/graphql',
+  uri: `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/graphql`,
 });
 
 const authLink = setContext((_, { headers }) => {
