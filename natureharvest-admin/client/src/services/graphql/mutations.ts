@@ -768,6 +768,21 @@ export const DELETE_SERVICE = gql`
   }
 `;
 
+export const CREATE_QUOTE = gql`
+  mutation CreateQuote($input: QuoteInput!) {
+    createQuote(input: $input) {
+      _id
+      name
+      email
+      phone
+      message
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const UPDATE_QUOTE = gql`
   mutation UpdateQuote($id: ID!, $input: QuoteInput!) {
     updateQuote(id: $id, input: $input) {

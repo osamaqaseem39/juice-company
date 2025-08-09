@@ -43,7 +43,19 @@ import {
   useUpdateFlavor,
   useDeleteFlavor,
   useFlavors,
-  useFlavor
+  useFlavor,
+  useCreateSubcategory,
+  useUpdateSubcategory,
+  useDeleteSubcategory,
+  useSubcategories,
+  useSubcategory,
+  useNestedSubcategories,
+  useCreateQuote,
+  useUpdateQuote,
+  useDeleteQuote,
+  useQuotes,
+  useQuote,
+  useFileUpload
 } from '../hooks';
 
 // Type definitions
@@ -353,7 +365,19 @@ export {
   useUpdateFlavor,
   useDeleteFlavor,
   useFlavors,
-  useFlavor
+  useFlavor,
+  useCreateSubcategory,
+  useUpdateSubcategory,
+  useDeleteSubcategory,
+  useSubcategories,
+  useSubcategory,
+  useNestedSubcategories,
+  useCreateQuote,
+  useUpdateQuote,
+  useDeleteQuote,
+  useQuotes,
+  useQuote,
+  useFileUpload
 };
 
 // Default export for convenience

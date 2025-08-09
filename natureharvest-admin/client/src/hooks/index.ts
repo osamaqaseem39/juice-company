@@ -6,5 +6,8 @@ export * from './useCategories';
 export * from './useBlogs';
 export * from './useServices';
 export * from './useFlavors';
+export * from './useSubcategories';
+export * from './useQuotes';
+export * from './useUpload';
 export * from './useModal';
 export * from './useGoBack'; 
