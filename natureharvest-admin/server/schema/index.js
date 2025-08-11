@@ -2,6 +2,7 @@ const { gql } = require('graphql-tag');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
 
 // Import type definitions
+const commonTypes = require('./types/common');
 const userTypes = require('./types/user');
 const blogTypes = require('./types/blog');
 const productTypes = require('./types/product');
@@ -27,6 +28,8 @@ const ecommerceResolvers = require('./resolvers/ecommerce');
 
 // Base Query and Mutation types
 const baseSchema = gql`
+  scalar Date
+
   type Query {
     _: Boolean
   }
@@ -43,6 +46,7 @@ const baseSchema = gql`
 // Combine all type definitions
 const typeDefs = [
   baseSchema,
+  commonTypes,
   userTypes,
   blogTypes,
   productTypes,
@@ -88,6 +92,22 @@ const mergedResolvers = resolvers.reduce((acc, resolver) => {
   });
   return acc;
 }, {});
+
+// Add Date scalar resolver
+mergedResolvers.Date = {
+  __serialize(value) {
+    return value.toISOString();
+  },
+  __parseValue(value) {
+    return new Date(value);
+  },
+  __parseLiteral(ast) {
+    if (ast.kind === 'StringValue') {
+      return new Date(ast.value);
+    }
+    return null;
+  }
+};
 
 const schema = makeExecutableSchema({
   typeDefs,

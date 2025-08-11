@@ -18,16 +18,7 @@ const userTypes = gql`
     user: User!
   }
 
-  input UserAddressInput {
-    fullName: String!
-    phone: String!
-    street: String!
-    city: String!
-    state: String
-    postalCode: String!
-    country: String!
-    isDefault: Boolean
-  }
+
 
   input UserInput {
     fullName: String!

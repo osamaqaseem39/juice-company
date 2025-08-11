@@ -7,8 +7,8 @@ const productResolvers = {
     products: async () => {
       try {
         const products = await Product.find()
-          .populate('category')
-          .populate('brand');
+          .populate('categoryId')
+          .populate('brandId');
         return products;
       } catch (error) {
         throw new Error('Failed to fetch products');
@@ -17,8 +17,8 @@ const productResolvers = {
     product: async (_, { id }) => {
       try {
         const product = await Product.findById(id)
-          .populate('category')
-          .populate('brand');
+          .populate('categoryId')
+          .populate('brandId');
         if (!product) {
           throw new Error('Product not found');
         }
@@ -29,9 +29,9 @@ const productResolvers = {
     },
     productsByCategory: async (_, { categoryId }) => {
       try {
-        const products = await Product.find({ category: categoryId })
-          .populate('category')
-          .populate('brand');
+        const products = await Product.find({ categoryId })
+          .populate('categoryId')
+          .populate('brandId');
         return products;
       } catch (error) {
         throw new Error('Failed to fetch products by category');
@@ -39,9 +39,9 @@ const productResolvers = {
     },
     productsByBrand: async (_, { brandId }) => {
       try {
-        const products = await Product.find({ brand: brandId })
-          .populate('category')
-          .populate('brand');
+        const products = await Product.find({ brandId })
+          .populate('categoryId')
+          .populate('brandId');
         return products;
       } catch (error) {
         throw new Error('Failed to fetch products by brand');
@@ -55,21 +55,23 @@ const productResolvers = {
           throw new Error('Not authenticated');
         }
 
-        const { name, description, price, category, brand, images, specifications, status = 'active' } = input;
+        const { name, slug, description, categoryId, brandId, images, tags, rating, seo, isActive = true } = input;
 
         const product = new Product({
           name,
+          slug,
           description,
-          price,
-          category,
-          brand,
+          categoryId,
+          brandId,
           images,
-          specifications,
-          status
+          tags,
+          rating,
+          seo,
+          isActive
         });
 
         await product.save();
-        return product.populate('category').populate('brand');
+        return product.populate('categoryId').populate('brandId');
       } catch (error) {
         throw new Error(error.message);
       }
@@ -80,23 +82,25 @@ const productResolvers = {
           throw new Error('Not authenticated');
         }
 
-        const { name, description, price, category, brand, images, specifications, status } = input;
+        const { name, slug, description, categoryId, brandId, images, tags, rating, seo, isActive } = input;
         const updateData = {};
 
-        if (name) updateData.name = name;
-        if (description) updateData.description = description;
-        if (price) updateData.price = price;
-        if (category) updateData.category = category;
-        if (brand) updateData.brand = brand;
-        if (images) updateData.images = images;
-        if (specifications) updateData.specifications = specifications;
-        if (status) updateData.status = status;
+        if (name !== undefined) updateData.name = name;
+        if (slug !== undefined) updateData.slug = slug;
+        if (description !== undefined) updateData.description = description;
+        if (categoryId !== undefined) updateData.categoryId = categoryId;
+        if (brandId !== undefined) updateData.brandId = brandId;
+        if (images !== undefined) updateData.images = images;
+        if (tags !== undefined) updateData.tags = tags;
+        if (rating !== undefined) updateData.rating = rating;
+        if (seo !== undefined) updateData.seo = seo;
+        if (isActive !== undefined) updateData.isActive = isActive;
 
         const product = await Product.findByIdAndUpdate(
           id,
           updateData,
           { new: true }
-        ).populate('category').populate('brand');
+        ).populate('categoryId').populate('brandId');
 
         if (!product) {
           throw new Error('Product not found');

@@ -332,18 +332,6 @@ export const GET_ALL_ECOMMERCE_PRODUCTS = gql`
         _id
         name
       }
-      variants {
-        _id
-        sku
-        price
-        compareAtPrice
-        quantity
-        color
-        size
-        weight
-        images
-        isActive
-      }
       images
       tags
       rating
@@ -380,18 +368,6 @@ export const GET_ECOMMERCE_PRODUCT_BY_ID = gql`
         _id
         name
       }
-      variants {
-        _id
-        sku
-        price
-        compareAtPrice
-        quantity
-        color
-        size
-        weight
-        images
-        isActive
-      }
       images
       tags
       rating
@@ -426,12 +402,6 @@ export const GET_CART = gql`
         }
         quantity
         price
-        variantId {
-          _id
-          sku
-          color
-          size
-        }
       }
       totalValue
       totalItems
@@ -458,12 +428,6 @@ export const GET_ALL_ORDERS = gql`
         }
         quantity
         price
-        variantId {
-          _id
-          sku
-          color
-          size
-        }
       }
       shippingAddress {
         fullName
@@ -515,12 +479,6 @@ export const GET_ORDER_BY_ID = gql`
         }
         quantity
         price
-        variantId {
-          _id
-          sku
-          color
-          size
-        }
       }
       shippingAddress {
         fullName

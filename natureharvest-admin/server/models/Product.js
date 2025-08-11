@@ -43,10 +43,6 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Brand'
   },
-  variants: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ProductVariant'
-  }],
   images: [{
     type: String,
     required: true,

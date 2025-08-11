@@ -253,15 +253,6 @@ export const ADD_TO_CART = gql`
           slug
           images
         }
-        variantId {
-          _id
-          sku
-          price
-          compareAtPrice
-          color
-          size
-          images
-        }
         quantity
         priceAtTime
       }
@@ -271,8 +262,8 @@ export const ADD_TO_CART = gql`
 `;
 
 export const REMOVE_FROM_CART = gql`
-  mutation RemoveFromCart($userId: ID!, $productId: ID!, $variantId: ID!) {
-    removeFromCart(userId: $userId, productId: $productId, variantId: $variantId) {
+  mutation RemoveFromCart($userId: ID!, $productId: ID!) {
+    removeFromCart(userId: $userId, productId: $productId) {
       _id
       userId
       items {
@@ -280,15 +271,6 @@ export const REMOVE_FROM_CART = gql`
           _id
           name
           slug
-          images
-        }
-        variantId {
-          _id
-          sku
-          price
-          compareAtPrice
-          color
-          size
           images
         }
         quantity
@@ -300,8 +282,8 @@ export const REMOVE_FROM_CART = gql`
 `;
 
 export const UPDATE_CART_ITEM = gql`
-  mutation UpdateCartItem($userId: ID!, $productId: ID!, $variantId: ID!, $quantity: Int!) {
-    updateCartItem(userId: $userId, productId: $productId, variantId: $variantId, quantity: $quantity) {
+  mutation UpdateCartItem($userId: ID!, $productId: ID!, $quantity: Int!) {
+    updateCartItem(userId: $userId, productId: $productId, quantity: $quantity) {
       _id
       userId
       items {
@@ -309,15 +291,6 @@ export const UPDATE_CART_ITEM = gql`
           _id
           name
           slug
-          images
-        }
-        variantId {
-          _id
-          sku
-          price
-          compareAtPrice
-          color
-          size
           images
         }
         quantity
@@ -340,13 +313,6 @@ export const CLEAR_CART = gql`
           slug
           images
         }
-        variantId {
-          _id
-          sku
-          price
-          compareAtPrice
-          color
-          size
           images
         }
         quantity

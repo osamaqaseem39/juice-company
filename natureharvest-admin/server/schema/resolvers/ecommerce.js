@@ -98,6 +98,7 @@ const resolvers = {
     shipmentsByOrder: async (_, { orderId }) => {
       return await Shipment.find({ orderId });
     },
+    
 
     // Review queries
     reviews: async () => {

@@ -20,17 +20,6 @@ const ecommerceSchema = gql`
   # ------------------------
   # User & Address
   # ------------------------
-  type UserAddress {
-    _id: ID!
-    fullName: String!
-    phone: String!
-    street: String!
-    city: String!
-    state: String
-    postalCode: String!
-    country: String!
-    isDefault: Boolean
-  }
 
 
 
@@ -191,16 +180,7 @@ const ecommerceSchema = gql`
     noFollow: Boolean
   }
 
-  input UserAddressInput {
-    fullName: String!
-    phone: String!
-    street: String!
-    city: String!
-    state: String
-    postalCode: String!
-    country: String!
-    isDefault: Boolean
-  }
+
 
   input UserInput {
     fullName: String!
