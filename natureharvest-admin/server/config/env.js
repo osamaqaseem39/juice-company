@@ -31,6 +31,7 @@ const ENV = {
     'http://127.0.0.1:5173',
     'https://natureharvest.osamaqaseem.online',
     'https://juice-company-server.vercel.app',
+    'https://juice-company-dashboard.vercel.app',
     'https://natureharvest-admin.vercel.app',
     'https://natureharvest-web.vercel.app'
   ],
@@ -93,7 +94,7 @@ if (ENV.IS_PRODUCTION && ENV.JWT_SECRET === 'your-secret-key-change-in-productio
 module.exports = {
   ...ENV,
   // Convenience exports
-  API_BASE_URL: `http://localhost:${ENV.PORT}`,
-  GRAPHQL_URL: `http://localhost:${ENV.PORT}/graphql`,
-  SWAGGER_URL: `http://localhost:${ENV.PORT}/api-docs`,
+  API_BASE_URL: ENV.IS_PRODUCTION ? 'https://juice-company-server.vercel.app' : `http://localhost:${ENV.PORT}`,
+  GRAPHQL_URL: ENV.IS_PRODUCTION ? 'https://juice-company-server.vercel.app/graphql' : `http://localhost:${ENV.PORT}/graphql`,
+  SWAGGER_URL: ENV.IS_PRODUCTION ? 'https://juice-company-server.vercel.app/api-docs' : `http://localhost:${ENV.PORT}/api-docs`,
 }; 
