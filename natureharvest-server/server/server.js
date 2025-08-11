@@ -12,6 +12,7 @@ const blogRoutes = require('./routes/blogs');
 const productRoutes = require('./routes/products');
 const quotesRouter = require('./routes/quotes');
 const supplierRoutes = require('./routes/suppliers');
+const serviceRoutes = require('./routes/services');
 const brandRoutes = require('./routes/brands');
 const categoryRoutes = require('./routes/categories');
 const subcategoryRoutes = require('./routes/subcategories');
@@ -28,8 +29,11 @@ app.use(cors({
   origin: [
     'https://natureharvest-dashbaord.vercel.app',
     'https://natureharvest-server.vercel.app',
+    'https://admin.wingzimpex.com',
+    'https://wingzimpex.osamaqaseem.online',
     'http://localhost:3000',
-    'http://localhost:3001'
+    'http://localhost:3001',
+    'http://localhost:3002'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -56,8 +60,11 @@ app.use((req, res, next) => {
   const allowedOrigins = [
     'https://natureharvest-dashbaord.vercel.app',
     'https://natureharvest-server.vercel.app',
+    'https://admin.wingzimpex.com',
+    'https://wingzimpex.osamaqaseem.online',
     'http://localhost:3000',
-    'http://localhost:3001'
+    'http://localhost:3001',
+    'http://localhost:3002'
   ];
   
   const origin = req.headers.origin;
@@ -179,6 +186,7 @@ app.use('/api/blogs', blogRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/quotes', quotesRouter);
 app.use('/api/suppliers', supplierRoutes);
+app.use('/api/services', serviceRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/subcategories', subcategoryRoutes);
