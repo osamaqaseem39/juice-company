@@ -7,7 +7,7 @@ const userTypes = gql`
     email: String!
     phone: String
     roles: [String!]!
-    addresses: [Address!]
+    addresses: [UserAddress!]
     isActive: Boolean!
     createdAt: Date
     updatedAt: Date
@@ -18,12 +18,24 @@ const userTypes = gql`
     user: User!
   }
 
+  input UserAddressInput {
+    fullName: String!
+    phone: String!
+    street: String!
+    city: String!
+    state: String
+    postalCode: String!
+    country: String!
+    isDefault: Boolean
+  }
+
   input UserInput {
     fullName: String!
     email: String!
     password: String!
     phone: String
     roles: [String!]
+    addresses: [UserAddressInput]
     isActive: Boolean
   }
 

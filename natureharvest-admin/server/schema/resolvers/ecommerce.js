@@ -233,36 +233,6 @@ const resolvers = {
       await User.findByIdAndDelete(id);
       return true;
     },
-    login: async (_, { email, password }) => {
-      const user = await User.findOne({ email });
-      if (!user) throw new Error('Invalid credentials');
-      
-      const isValidPassword = await user.comparePassword(password);
-      if (!isValidPassword) throw new Error('Invalid credentials');
-      
-      const token = jwt.sign(
-        { id: user._id, email: user.email, roles: user.roles },
-        process.env.JWT_SECRET,
-        { expiresIn: '24h' }
-      );
-      
-      return { ...user.toJSON(), token };
-    },
-    register: async (_, { input }) => {
-      const existingUser = await User.findOne({ email: input.email });
-      if (existingUser) throw new Error('User already exists');
-      
-      const user = new User(input);
-      await user.save();
-      
-      const token = jwt.sign(
-        { id: user._id, email: user.email, roles: user.roles },
-        process.env.JWT_SECRET,
-        { expiresIn: '24h' }
-      );
-      
-      return { ...user.toJSON(), token };
-    },
 
     // Category mutations
     createCategory: async (_, { input }) => {

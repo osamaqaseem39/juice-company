@@ -20,7 +20,7 @@ const ecommerceSchema = gql`
   # ------------------------
   # User & Address
   # ------------------------
-  type Address {
+  type UserAddress {
     _id: ID!
     fullName: String!
     phone: String!
@@ -32,18 +32,7 @@ const ecommerceSchema = gql`
     isDefault: Boolean
   }
 
-  type User {
-    _id: ID!
-    fullName: String!
-    email: String!
-    password: String!
-    phone: String
-    roles: [String!]!
-    addresses: [Address]
-    createdAt: Date
-    updatedAt: Date
-    isActive: Boolean
-  }
+
 
   # ------------------------
   # Category & Brand
@@ -145,8 +134,8 @@ const ecommerceSchema = gql`
     userId: ID!
     orderNumber: String!
     items: [OrderItem!]!
-    shippingAddress: Address!
-    billingAddress: Address!
+    shippingAddress: UserAddress!
+    billingAddress: UserAddress!
     totalAmount: Float!
     paymentStatus: String!
     orderStatus: String!
@@ -253,7 +242,7 @@ const ecommerceSchema = gql`
     noFollow: Boolean
   }
 
-  input AddressInput {
+  input UserAddressInput {
     fullName: String!
     phone: String!
     street: String!
@@ -270,7 +259,7 @@ const ecommerceSchema = gql`
     password: String!
     phone: String
     roles: [String!]!
-    addresses: [AddressInput]
+    addresses: [UserAddressInput]
     isActive: Boolean
   }
 
@@ -339,8 +328,8 @@ const ecommerceSchema = gql`
     userId: ID!
     orderNumber: String!
     items: [OrderItemInput!]!
-    shippingAddress: AddressInput!
-    billingAddress: AddressInput!
+    shippingAddress: UserAddressInput!
+    billingAddress: UserAddressInput!
     totalAmount: Float!
     paymentStatus: String!
     orderStatus: String!
