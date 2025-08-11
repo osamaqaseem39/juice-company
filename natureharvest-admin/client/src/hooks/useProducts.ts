@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_PRODUCT, UPDATE_PRODUCT, DELETE_PRODUCT } from '../services/graphql/mutations';
 import { GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID } from '../services/graphql/queries';
+import { useAuthGuard } from './useAuthGuard';
 
 // Product mutations
 export const useCreateProduct = () => {
@@ -23,12 +24,16 @@ export const useDeleteProduct = () => {
 
 // Product queries
 export const useProducts = () => {
-  return useQuery(GET_ALL_PRODUCTS);
+  const { skipIfNotAuthenticated } = useAuthGuard();
+  return useQuery(GET_ALL_PRODUCTS, {
+    skip: skipIfNotAuthenticated
+  });
 };
 
 export const useProduct = (id: string) => {
+  const { skipIfNotAuthenticated } = useAuthGuard();
   return useQuery(GET_PRODUCT_BY_ID, { 
     variables: { id },
-    skip: !id 
+    skip: !id || skipIfNotAuthenticated
   });
 }; 

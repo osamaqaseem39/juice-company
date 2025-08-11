@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_BRAND, UPDATE_BRAND, DELETE_BRAND } from '../services/graphql/mutations';
 import { GET_ALL_BRANDS, GET_BRAND_BY_ID } from '../services/graphql/queries';
+import { useAuthGuard } from './useAuthGuard';
 
 // Brand mutations
 export const useCreateBrand = () => {
@@ -23,12 +24,16 @@ export const useDeleteBrand = () => {
 
 // Brand queries
 export const useBrands = () => {
-  return useQuery(GET_ALL_BRANDS);
+  const { skipIfNotAuthenticated } = useAuthGuard();
+  return useQuery(GET_ALL_BRANDS, {
+    skip: skipIfNotAuthenticated
+  });
 };
 
 export const useBrand = (id: string) => {
+  const { skipIfNotAuthenticated } = useAuthGuard();
   return useQuery(GET_BRAND_BY_ID, { 
     variables: { id },
-    skip: !id 
+    skip: !id || skipIfNotAuthenticated
   });
 }; 

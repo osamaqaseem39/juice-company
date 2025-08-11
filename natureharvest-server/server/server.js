@@ -25,7 +25,12 @@ const app = express();
 
 // Middleware - CORS must be first!
 app.use(cors({
-  origin: '*',
+  origin: [
+    'https://natureharvest-dashbaord.vercel.app',
+    'https://natureharvest-server.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
@@ -48,7 +53,18 @@ app.use(cors({
 
 // Also add a pre-flight middleware to ensure headers are set
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const allowedOrigins = [
+    'https://natureharvest-dashbaord.vercel.app',
+    'https://natureharvest-server.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, x-auth-token');

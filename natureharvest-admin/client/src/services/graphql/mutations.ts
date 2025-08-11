@@ -174,10 +174,7 @@ export const CREATE_CATEGORY = gql`
       name
       image
       description
-      parent {
-        _id
-        name
-      }
+      status
       createdAt
       updatedAt
     }
@@ -191,10 +188,7 @@ export const UPDATE_CATEGORY = gql`
       name
       image
       description
-      parent {
-        _id
-        name
-      }
+      status
       createdAt
       updatedAt
     }
@@ -213,8 +207,11 @@ export const CREATE_BRAND = gql`
     createBrand(input: $input) {
       _id
       name
-      image
+      logoUrl
       description
+      tagline
+      category
+      status
       createdAt
       updatedAt
     }
@@ -226,8 +223,11 @@ export const UPDATE_BRAND = gql`
     updateBrand(id: $id, input: $input) {
       _id
       name
-      image
+      logoUrl
       description
+      tagline
+      category
+      status
       createdAt
       updatedAt
     }
@@ -391,40 +391,44 @@ export const DELETE_QUOTE = gql`
   }
 `;
 
-// Legacy subcategory mutations (using categories with parentCategoryId)
+// Subcategory mutations
 export const CREATE_SUBCATEGORY = gql`
-  mutation CreateSubcategory($input: CategoryInput!) {
-    createCategory(input: $input) {
+  mutation CreateSubcategory($input: SubCategoryInput!) {
+    createSubCategory(input: $input) {
       _id
       name
-      slug
-      parentCategoryId
       description
-      imageUrl
-      isActive
+      category {
+        _id
+        name
+      }
+      status
       createdAt
+      updatedAt
     }
   }
 `;
 
 export const UPDATE_SUBCATEGORY = gql`
-  mutation UpdateSubcategory($id: ID!, $input: CategoryInput!) {
-    updateCategory(id: $id, input: $input) {
+  mutation UpdateSubcategory($id: ID!, $input: SubCategoryUpdateInput!) {
+    updateSubCategory(id: $id, input: $input) {
       _id
       name
-      slug
-      parentCategoryId
       description
-      imageUrl
-      isActive
+      category {
+        _id
+        name
+      }
+      status
       createdAt
+      updatedAt
     }
   }
 `;
 
 export const DELETE_SUBCATEGORY = gql`
   mutation DeleteSubcategory($id: ID!) {
-    deleteCategory(id: $id)
+    deleteSubCategory(id: $id)
   }
 `;
 
@@ -498,23 +502,29 @@ export const CREATE_FLAVOR = gql`
         fat
         fiber
         sugar
-        sodium
-        vitamins
-        minerals
+        vitaminC
+        potassium
       }
       sizes {
         _id
         sizeLabel
         price
-        volume
-        availability
+        imageUrl
+        stock
+        barcode
+        weight
+        dimensions {
+          height
+          width
+          depth
+        }
+        isAvailable
       }
       seasonality {
-        isSeasonal
-        availableMonths
-        peakSeason
+        startMonth
+        endMonth
       }
-      brandId {
+      brand {
         _id
         name
       }
@@ -539,23 +549,29 @@ export const UPDATE_FLAVOR = gql`
         fat
         fiber
         sugar
-        sodium
-        vitamins
-        minerals
+        vitaminC
+        potassium
       }
       sizes {
         _id
         sizeLabel
         price
-        volume
-        availability
+        imageUrl
+        stock
+        barcode
+        weight
+        dimensions {
+          height
+          width
+          depth
+        }
+        isAvailable
       }
       seasonality {
-        isSeasonal
-        availableMonths
-        peakSeason
+        startMonth
+        endMonth
       }
-      brandId {
+      brand {
         _id
         name
       }
@@ -573,7 +589,7 @@ export const DELETE_FLAVOR = gql`
 `;
 
 export const ADD_SIZE_TO_FLAVOR = gql`
-  mutation AddSizeToFlavor($flavorId: ID!, $size: FlavorSizeInput!) {
+  mutation AddSizeToFlavor($flavorId: ID!, $size: SizeInput!) {
     addSizeToFlavor(flavorId: $flavorId, size: $size) {
       _id
       name
@@ -581,15 +597,23 @@ export const ADD_SIZE_TO_FLAVOR = gql`
         _id
         sizeLabel
         price
-        volume
-        availability
+        imageUrl
+        stock
+        barcode
+        weight
+        dimensions {
+          height
+          width
+          depth
+        }
+        isAvailable
       }
     }
   }
 `;
 
 export const UPDATE_SIZE_IN_FLAVOR = gql`
-  mutation UpdateSizeInFlavor($flavorId: ID!, $sizeId: ID!, $size: FlavorSizeInput!) {
+  mutation UpdateSizeInFlavor($flavorId: ID!, $sizeId: ID!, $size: SizeInput!) {
     updateSizeInFlavor(flavorId: $flavorId, sizeId: $sizeId, size: $size) {
       _id
       name
@@ -597,8 +621,16 @@ export const UPDATE_SIZE_IN_FLAVOR = gql`
         _id
         sizeLabel
         price
-        volume
-        availability
+        imageUrl
+        stock
+        barcode
+        weight
+        dimensions {
+          height
+          width
+          depth
+        }
+        isAvailable
       }
     }
   }
@@ -613,46 +645,20 @@ export const REMOVE_SIZE_FROM_FLAVOR = gql`
         _id
         sizeLabel
         price
-        volume
-        availability
+        imageUrl
+        stock
+        barcode
+        weight
+        dimensions {
+          height
+          width
+          depth
+        }
+        isAvailable
       }
     }
   }
 `;
 
-// Size mutations
-export const CREATE_SIZE = gql`
-  mutation CreateSize($input: SizeInput!) {
-    createSize(input: $input) {
-      _id
-      sizeLabel
-      price
-      volume
-      availability
-      status
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-export const UPDATE_SIZE = gql`
-  mutation UpdateSize($id: ID!, $input: SizeInput!) {
-    updateSize(id: $id, input: $input) {
-      _id
-      sizeLabel
-      price
-      volume
-      availability
-      status
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-export const DELETE_SIZE = gql`
-  mutation DeleteSize($id: ID!) {
-    deleteSize(id: $id)
-  }
-`; 
+// Note: Standalone size mutations don't exist in this schema
+// Sizes are managed through flavor mutations (addSizeToFlavor, updateSizeInFlavor, removeSizeFromFlavor) 

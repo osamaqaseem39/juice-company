@@ -121,8 +121,11 @@ export const GET_ALL_BRANDS = gql`
     brands {
       _id
       name
-      image
+      logoUrl
       description
+      tagline
+      category
+      status
       createdAt
       updatedAt
     }
@@ -134,8 +137,11 @@ export const GET_BRAND_BY_ID = gql`
     brand(id: $id) {
       _id
       name
-      image
+      logoUrl
       description
+      tagline
+      category
+      status
       createdAt
       updatedAt
     }
@@ -149,10 +155,7 @@ export const GET_ALL_CATEGORIES = gql`
       name
       image
       description
-      parent {
-        _id
-        name
-      }
+      status
       createdAt
       updatedAt
     }
@@ -166,10 +169,7 @@ export const GET_CATEGORY_BY_ID = gql`
       name
       image
       description
-      parent {
-        _id
-        name
-      }
+      status
       createdAt
       updatedAt
     }
@@ -181,12 +181,12 @@ export const GET_ALL_SUBCATEGORIES = gql`
     subcategories {
       _id
       name
-      image
       description
-      parent {
+      category {
         _id
         name
       }
+      status
       createdAt
       updatedAt
     }
@@ -198,29 +198,29 @@ export const GET_SUBCATEGORY_BY_ID = gql`
     subcategory(id: $id) {
       _id
       name
-      image
       description
-      parent {
+      category {
         _id
         name
       }
+      status
       createdAt
       updatedAt
     }
   }
 `;
 
-export const GET_NESTED_SUBCATEGORIES = gql`
-  query GetNestedSubcategories($parentId: ID!) {
-    nestedSubcategories(parentId: $parentId) {
+export const GET_SUBCATEGORIES_BY_CATEGORY = gql`
+  query GetSubcategoriesByCategory($categoryId: ID!) {
+    subcategoriesByCategory(categoryId: $categoryId) {
       _id
       name
-      image
       description
-      parent {
+      category {
         _id
         name
       }
+      status
       createdAt
       updatedAt
     }
@@ -493,23 +493,29 @@ export const GET_ALL_FLAVORS = gql`
         fat
         fiber
         sugar
-        sodium
-        vitamins
-        minerals
+        vitaminC
+        potassium
       }
       sizes {
         _id
         sizeLabel
         price
-        volume
-        availability
+        imageUrl
+        stock
+        barcode
+        weight
+        dimensions {
+          height
+          width
+          depth
+        }
+        isAvailable
       }
       seasonality {
-        isSeasonal
-        availableMonths
-        peakSeason
+        startMonth
+        endMonth
       }
-      brandId {
+      brand {
         _id
         name
       }
@@ -534,23 +540,29 @@ export const GET_FLAVOR_BY_ID = gql`
         fat
         fiber
         sugar
-        sodium
-        vitamins
-        minerals
+        vitaminC
+        potassium
       }
       sizes {
         _id
         sizeLabel
         price
-        volume
-        availability
+        imageUrl
+        stock
+        barcode
+        weight
+        dimensions {
+          height
+          width
+          depth
+        }
+        isAvailable
       }
       seasonality {
-        isSeasonal
-        availableMonths
-        peakSeason
+        startMonth
+        endMonth
       }
-      brandId {
+      brand {
         _id
         name
       }
@@ -562,7 +574,7 @@ export const GET_FLAVOR_BY_ID = gql`
 `;
 
 export const GET_FLAVORS_BY_BRAND = gql`
-  query GetFlavorsByBrand($brandId: ID!) {
+  query GetFlavorByBrand($brandId: ID!) {
     flavorsByBrand(brandId: $brandId) {
       _id
       name
@@ -575,23 +587,29 @@ export const GET_FLAVORS_BY_BRAND = gql`
         fat
         fiber
         sugar
-        sodium
-        vitamins
-        minerals
+        vitaminC
+        potassium
       }
       sizes {
         _id
         sizeLabel
         price
-        volume
-        availability
+        imageUrl
+        stock
+        barcode
+        weight
+        dimensions {
+          height
+          width
+          depth
+        }
+        isAvailable
       }
       seasonality {
-        isSeasonal
-        availableMonths
-        peakSeason
+        startMonth
+        endMonth
       }
-      brandId {
+      brand {
         _id
         name
       }
@@ -602,33 +620,5 @@ export const GET_FLAVORS_BY_BRAND = gql`
   }
 `;
 
-// Size queries
-export const GET_ALL_SIZES = gql`
-  query GetAllSizes {
-    sizes {
-      _id
-      sizeLabel
-      price
-      volume
-      availability
-      status
-      createdAt
-      updatedAt
-    }
-  }
-`;
-
-export const GET_SIZE_BY_ID = gql`
-  query GetSizeById($id: ID!) {
-    size(id: $id) {
-      _id
-      sizeLabel
-      price
-      volume
-      availability
-      status
-      createdAt
-      updatedAt
-    }
-  }
-`; 
+// Note: Sizes are embedded within flavors in this schema
+// Use flavor queries to access size information 

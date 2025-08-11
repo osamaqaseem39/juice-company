@@ -1,5 +1,6 @@
 // Export all custom hooks
 export * from './useAuth';
+export * from './useAuthGuard';
 export * from './useBrands';
 export * from './useProducts';
 export * from './useCategories';
