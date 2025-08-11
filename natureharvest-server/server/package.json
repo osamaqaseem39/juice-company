@@ -1,7 +1,7 @@
 {
-  "name": "punjab ac",
+  "name": "nature-harvest-server",
   "version": "1.0.0",
-  "description": "Backend for blog management application",
+  "description": "Backend for Nature Harvest application",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

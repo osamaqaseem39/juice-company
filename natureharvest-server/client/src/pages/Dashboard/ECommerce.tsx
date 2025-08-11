@@ -34,8 +34,8 @@ export default function Ecommerce() {
   return (
     <>
       <PageMeta
-        title="Dashboard"
-        description="Welcome to your dashboard."
+        title="Nature Harvest | Dashboard"
+        description="Welcome to your Nature Harvest dashboard."
       />
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Welcome to the Admin Dashboard!</h1>

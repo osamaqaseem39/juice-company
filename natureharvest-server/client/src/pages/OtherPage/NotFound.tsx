@@ -6,8 +6,8 @@ export default function NotFound() {
   return (
     <>
       <PageMeta
-        title="Wingz Impex | 404 Not Found"
-        description="This is the 404 page for Wingz Impex."
+              title="Nature Harvest | 404 Not Found"
+      description="This is the 404 page for Nature Harvest."
       />
       <div className="relative flex flex-col items-center justify-center min-h-screen p-6 overflow-hidden z-1">
         <GridShape />

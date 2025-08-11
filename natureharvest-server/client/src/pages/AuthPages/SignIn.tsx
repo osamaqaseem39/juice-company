@@ -57,7 +57,7 @@ export default function SignIn() {
   return (
     <>
       <PageMeta
-        title="React.js SignIn Dashboard | TailAdmin - Next.js Admin Dashboard Template"
+        title="Nature Harvest | Sign In"
         description="This is React.js SignIn Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
       <div className="relative flex w-full h-screen overflow-hidden bg-[#ede7de] z-1">
@@ -187,21 +187,21 @@ export default function SignIn() {
             <Link to="/" className="block mb-4">
               <img
                 src="/images/logo/logo.png"
-                alt="Wingz Impex Logo"
+                alt="Nature Harvest Logo"
                 className="dark:hidden"
               />
               <img
                 src="/images/logo/logo.png"
-                alt="Wingz Impex Logo"
+                alt="Nature Harvest Logo"
                 className="hidden dark:block"
               />
             </Link>
 
             <h2 className="mb-3 text-2xl font-semibold text-white dark:text-gray-900">
-              Welcome to Wingz Impex
+              Welcome to Nature Harvest
             </h2>
             <p className="text-base text-center text-white/70 dark:text-gray-600">
-              Empowering global trade with Wingz Impex's innovative solutions
+              Empowering healthy living with Nature Harvest's natural solutions
             </p>
           </div>
         </div>

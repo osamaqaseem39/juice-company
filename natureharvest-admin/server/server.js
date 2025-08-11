@@ -91,9 +91,15 @@ app.use((req, res, next) => {
 });
 
 // Serve static files (excluding api-docs)
-app.use(express.static(path.join(__dirname, 'public'), {
-  index: false // Don't serve index.html for all routes
-}));
+app.use((req, res, next) => {
+  // Skip static file serving for api-docs paths
+  if (req.path.startsWith('/api-docs')) {
+    return next();
+  }
+  express.static(path.join(__dirname, 'public'), {
+    index: false
+  })(req, res, next);
+});
 
 // Check MongoDB connection middleware
 app.use((req, res, next) => {
@@ -132,12 +138,49 @@ try {
     res.send(swaggerSpecs);
   });
   
-  // Then serve Swagger UI
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { 
-    explorer: true,
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Juice Company API Documentation'
-  }));
+  // Serve custom Swagger UI page
+  app.get('/api-docs', (req, res) => {
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="Juice Company API Documentation" />
+        <title>Juice Company API Documentation</title>
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" />
+        <style>
+          html { box-sizing: border-box; overflow: -moz-scrollbars-vertical; overflow-y: scroll; }
+          *, *:before, *:after { box-sizing: inherit; }
+          body { margin:0; background: #fafafa; }
+          .swagger-ui .topbar { display: none; }
+        </style>
+      </head>
+      <body>
+        <div id="swagger-ui"></div>
+        <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js" crossorigin></script>
+        <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js" crossorigin></script>
+        <script>
+          window.onload = function() {
+            const ui = SwaggerUIBundle({
+              url: '/api-docs/swagger.json',
+              dom_id: '#swagger-ui',
+              deepLinking: true,
+              presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+              ],
+              plugins: [
+                SwaggerUIBundle.plugins.DownloadUrl
+              ],
+              layout: "StandaloneLayout"
+            });
+          };
+        </script>
+      </body>
+      </html>
+    `);
+  });
   
   console.log('✅ Swagger documentation configured successfully');
 } catch (error) {

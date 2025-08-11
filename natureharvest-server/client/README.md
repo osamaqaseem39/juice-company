@@ -1,38 +1,29 @@
-# TailAdmin - React.js
+# Nature Harvest - React.js
 
-A free, open-source admin dashboard template built with React and Tailwind CSS.
+A modern admin dashboard for Nature Harvest, built with React and Tailwind CSS.
 
-![TailAdmin React.js Dashboard Preview](./banner.png)
+![Nature Harvest Dashboard Preview](./banner.png)
 
 ## Overview
 
-TailAdmin provides essential UI components and layouts for building feature-rich, data-driven admin dashboards and control panels. It's built on:
+Nature Harvest provides essential UI components and layouts for building feature-rich, data-driven admin dashboards and control panels. It's built on:
 
 - React 18 (create-react-app)
 - TypeScript
 - Tailwind CSS
 
 ### Quick Links
-- [✨ Visit Website](https://tailadmin.com)
-- [📄 Documentation](https://tailadmin.com/docs)
-- [⬇️ Download](https://tailadmin.com/download)
-- [🖌️ Figma Design File (Community Edition)](https://www.figma.com/community/file/1214477970819985778)
-- [⚡ Get PRO Version](https://tailadmin.com/pricing)
+- [✨ Visit Website](https://natureharvest.com)
+- [📄 Documentation](https://natureharvest.com/docs)
+- [⬇️ Download](https://natureharvest.com/download)
 
 ### Demos
-- [Free Version](https://free-react-demo.tailadmin.com/)
-- [Pro Version](https://react-demo.tailadmin.com)
-
-### Other Versions
-- [HTML Version](https://github.com/TailAdmin/tailadmin-free-tailwind-dashboard-template)
-- [Next.js Version](https://github.com/TailAdmin/free-nextjs-admin-dashboard)
-- [Vue.js Version](https://github.com/TailAdmin/vue-tailwind-admin-dashboard)
-
+- [Live Demo](https://demo.natureharvest.com/)
 
 ## Installation
 
 ### Prerequisites
-To get started with TailAdmin, ensure you have the following prerequisites installed and set up:
+To get started with Nature Harvest, ensure you have the following prerequisites installed and set up:
 
 - Node.js 18.x or later (recommended to use Node.js 20.x or later)
 
@@ -40,7 +31,7 @@ To get started with TailAdmin, ensure you have the following prerequisites insta
 Clone the repository using the following command:
 
 ```bash
-git clone https://github.com/TailAdmin/free-react-tailwind-admin-dashboard.git
+git clone https://github.com/natureharvest/natureharvest-server.git
 ```
 
 > Windows Users: place the repository near the root of your drive if you face issues while cloning.
@@ -63,12 +54,8 @@ git clone https://github.com/TailAdmin/free-react-tailwind-admin-dashboard.git
     ```
 
 ## Components
-76561199827960673
 
-https://steamcommunity.com/id/wendigoat1/
-https://steamcommunity.com/profiles/76561198976336992
-https://steamcommunity.com/id/Noobra1524/
-TailAdmin is a pre-designed starting point for building a web-based dashboard using React.js and Tailwind CSS. The template includes:
+Nature Harvest is a pre-designed starting point for building a web-based dashboard using React.js and Tailwind CSS. The template includes:
 
 - Sophisticated and accessible sidebar
 - Data visualization components
@@ -80,22 +67,25 @@ TailAdmin is a pre-designed starting point for building a web-based dashboard us
 
 All components are built with React and styled using Tailwind CSS for easy customization.
 
-## Feature Comparison
+## Features
 
-### Free Version
-- 1 Unique Dashboard
-- 30+ dashboard components
-- 50+ UI elements
-- Basic Figma design files
-- Community support
+### Core Features
+- Product Management
+- Blog Management
+- Service Management
+- Category Management
+- User Management
+- Quote/Message Management
+- Brand Management
+- Supplier Management
 
-### Pro Version
-- 5 Unique Dashboards: Analytics, Ecommerce, Marketing, CRM, Stocks (more coming soon)
-- 200+ dashboard components and UI elements
-- Complete Figma design file
-- Email support
-
-To learn more about pro version features and pricing, visit our [pricing page](https://tailadmin.com/pricing).
+### Technical Features
+- Modern React patterns implementation
+- Redesigned dashboards (Ecommerce, Analytics, Marketing, CRM)
+- Enhanced navigation with React Router integration
+- Advanced tables with sorting and filtering
+- Calendar with drag-and-drop support
+- New UI components and improved existing ones
 
 ## Changelog
 
@@ -120,38 +110,9 @@ A major update with comprehensive redesign and modern React patterns implementat
 - Migrated charts to ApexCharts
 - Revised authentication system
 
-[Read more](https://tailadmin.com/docs/update-logs/react) on this release.
-
-### Version 1.3.7 - [June 20, 2024]
-
-#### Enhancements
-
-1. Remove Repetition of DefaultLayout in every Pages
-2. Add ClickOutside Component for reduce repeated functionality in Header Message, Notification and User Dropdowns.
-
-### Version 1.3.6 - [Jan 31, 2024]
-
-#### Enhancements
-
-1. Integrate flatpickr in [Date Picker/Form Elements]
-2. Change color after select an option [Select Element/Form Elements].
-3. Make it functional [Multiselect Dropdown/Form Elements].
-4. Make best value editable [Pricing Table One/Pricing Table].
-5. Rearrange Folder structure.
-
-### Version 1.2.0 - [Apr 28, 2023]
-
-- Add Typescript in TailAdmin React.
-
-### Version 1.0.0 - Initial Release - [Mar 13, 2023]
-
-- Initial release of TailAdmin React.
-
-
-
 ## License
 
-TailAdmin React.js Free Version is released under the MIT License.
+Nature Harvest is released under the MIT License.
 
 ## Support
 

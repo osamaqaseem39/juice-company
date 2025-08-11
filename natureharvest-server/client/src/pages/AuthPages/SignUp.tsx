@@ -117,7 +117,7 @@ export default function SignUp() {
   return (
     <>
       <PageMeta
-        title="React.js SignUp Dashboard | TailAdmin - Next.js Admin Dashboard Template"
+        title="Nature Harvest | Sign Up"
         description="This is React.js SignUp Tables Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
       <div className="relative flex w-full h-screen overflow-hidden bg-white z-1 dark:bg-gray-900">
@@ -352,10 +352,10 @@ export default function SignUp() {
           {/* <!-- ===== Common Grid Shape End ===== --> */}
           <div className="flex flex-col items-center max-w-xs">
             <Link to="index.html" className="block mb-4">
-              <img src="/images/logo/logo.png" alt="Wingz Impex Logo" />
+              <img src="/images/logo/logo.png" alt="Nature Harvest Logo" />
             </Link>
             <p className="text-center text-gray-400 dark:text-white/60">
-              Free and Open-Source Tailwind CSS Admin Dashboard Template
+              Nature Harvest - Natural and Healthy Living Solutions
             </p>
           </div>
         </div>

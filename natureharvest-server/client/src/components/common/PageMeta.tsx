@@ -2,8 +2,8 @@ import React from "react";
 import { HelmetProvider, Helmet } from "react-helmet-async";
 
 const PageMeta = ({
-  title = "Wingz Impex",
-  description = "Wingz Impex admin dashboard"
+  title = "Nature Harvest",
+  description = "Nature Harvest admin dashboard"
 }: {
   title?: string;
   description?: string;
