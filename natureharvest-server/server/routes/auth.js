@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { body, validationResult } = require('express-validator');
 const authController = require('../controllers/authController');
 
 /**
@@ -119,7 +120,11 @@ const authController = require('../controllers/authController');
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/register', authController.register);
+router.post('/register', [
+  body('username').trim().isLength({ min: 3 }).withMessage('Username must be at least 3 characters long'),
+  body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+], authController.register);
 
 /**
  * @swagger
@@ -172,7 +177,10 @@ router.post('/register', authController.register);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/login', authController.login);
+router.post('/login', [
+  body('email').isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+  body('password').exists().withMessage('Password is required')
+], authController.login);
 
 /**
  * @swagger
