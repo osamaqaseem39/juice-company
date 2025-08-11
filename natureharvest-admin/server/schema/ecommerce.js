@@ -62,42 +62,15 @@ const ecommerceSchema = gql`
   # ------------------------
   # Product & Variants
   # ------------------------
-  type ProductVariant {
-    _id: ID!
-    sku: String!
-    price: Float!
-    compareAtPrice: Float
-    quantity: Int!
-    color: String
-    size: String
-    weight: Float
-    images: [String]
-    isActive: Boolean
-  }
 
-  type Product {
-    _id: ID!
-    name: String!
-    slug: String!
-    description: String!
-    categoryId: ID!
-    brandId: ID
-    variants: [ProductVariant!]!
-    images: [String!]!
-    tags: [String]
-    rating: Float
-    seo: SEO
-    isActive: Boolean
-    createdAt: Date
-    updatedAt: Date
-  }
+
+
 
   # ------------------------
   # Cart & Wishlist
   # ------------------------
   type CartItem {
     productId: ID!
-    variantId: ID!
     quantity: Int!
     priceAtTime: Float!
   }
@@ -121,7 +94,6 @@ const ecommerceSchema = gql`
   # ------------------------
   type OrderItem {
     productId: ID!
-    variantId: ID!
     name: String!
     sku: String!
     price: Float!
@@ -282,41 +254,16 @@ const ecommerceSchema = gql`
     isActive: Boolean
   }
 
-  input ProductVariantInput {
-    sku: String!
-    price: Float!
-    compareAtPrice: Float
-    quantity: Int!
-    color: String
-    size: String
-    weight: Float
-    images: [String]
-    isActive: Boolean
-  }
 
-  input ProductInput {
-    name: String!
-    slug: String!
-    description: String!
-    categoryId: ID!
-    brandId: ID
-    variants: [ProductVariantInput!]!
-    images: [String!]!
-    tags: [String]
-    seo: SEOInput
-    isActive: Boolean
-  }
 
   input CartItemInput {
     productId: ID!
-    variantId: ID!
     quantity: Int!
     priceAtTime: Float!
   }
 
   input OrderItemInput {
     productId: ID!
-    variantId: ID!
     name: String!
     sku: String!
     price: Float!
@@ -412,13 +359,7 @@ const ecommerceSchema = gql`
     brands: [Brand!]!
     brand(id: ID!): Brand
 
-    # Product queries
-    products: [Product!]!
-    product(id: ID!): Product
-    productBySlug(slug: String!): Product
-    productsByCategory(categoryId: ID!): [Product!]!
-    productsByBrand(brandId: ID!): [Product!]!
-    searchProducts(query: String!): [Product!]!
+
 
     # Cart queries
     cart(userId: ID!): Cart
@@ -481,15 +422,12 @@ const ecommerceSchema = gql`
     updateBrand(id: ID!, input: BrandInput!): Brand!
     deleteBrand(id: ID!): Boolean!
 
-    # Product mutations
-    createProduct(input: ProductInput!): Product!
-    updateProduct(id: ID!, input: ProductInput!): Product!
-    deleteProduct(id: ID!): Boolean!
+
 
     # Cart mutations
     addToCart(userId: ID!, item: CartItemInput!): Cart!
-    removeFromCart(userId: ID!, productId: ID!, variantId: ID!): Cart!
-    updateCartItem(userId: ID!, productId: ID!, variantId: ID!, quantity: Int!): Cart!
+    removeFromCart(userId: ID!, productId: ID!): Cart!
+    updateCartItem(userId: ID!, productId: ID!, quantity: Int!): Cart!
     clearCart(userId: ID!): Cart!
 
     # Wishlist mutations
