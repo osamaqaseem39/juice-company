@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { categoryApi, subcategoryApi, Category } from '../../services/api';
-import { useCreateSubcategory, useUpdateSubcategory, useSubcategory } from '../../services/apiService';
-import { useCategories } from '../../hooks/useCategories';
+
 import { UPLOAD_URL } from '../../config/env';
 
 const initialState = {
