@@ -2,18 +2,13 @@ const Brand = require('../../models/Brand');
 
 const brandResolvers = {
   Query: {
-    brands: async (_, { companyId, search, category, status, sort, limit = 10, offset = 0 }, { user, models }) => {
+    brands: async (_, { search, category, status, sort, limit = 10, offset = 0 }, { user, models }) => {
       try {
         if (!user) {
           throw new Error('Authentication required');
         }
 
         let query = {};
-
-        // Company filter
-        if (companyId) {
-          query.companyId = companyId;
-        }
 
         // Search functionality
         if (search) {
@@ -61,7 +56,6 @@ const brandResolvers = {
           .sort(sortObj)
           .limit(limit)
           .skip(offset)
-          .populate('company')
           .populate('flavors');
 
         return brands;
@@ -78,7 +72,6 @@ const brandResolvers = {
         }
 
         const brand = await Brand.findById(id)
-          .populate('company')
           .populate('flavors');
         
         if (!brand) {
@@ -92,22 +85,7 @@ const brandResolvers = {
       }
     },
 
-    brandsByCompany: async (_, { companyId }, { user, models }) => {
-      try {
-        if (!user) {
-          throw new Error('Authentication required');
-        }
 
-        const brands = await Brand.find({ companyId })
-          .populate('company')
-          .populate('flavors');
-        
-        return brands;
-      } catch (error) {
-        console.error('Error fetching brands by company:', error);
-        throw new Error('Failed to fetch brands by company');
-      }
-    },
 
     brandsByCategory: async (_, { category }, { user, models }) => {
       try {
@@ -116,7 +94,6 @@ const brandResolvers = {
         }
 
         const brands = await Brand.find({ category })
-          .populate('company')
           .populate('flavors');
         
         return brands;
@@ -133,7 +110,6 @@ const brandResolvers = {
         }
 
         const brands = await Brand.find({ status })
-          .populate('company')
           .populate('flavors');
         
         return brands;
@@ -154,11 +130,11 @@ const brandResolvers = {
         const brand = new Brand(input);
         await brand.save();
 
-        return brand.populate('company');
+        return brand;
       } catch (error) {
         console.error('Error creating brand:', error);
         if (error.code === 11000) {
-          throw new Error('Brand name already exists for this company');
+          throw new Error('Brand name already exists');
         }
         throw new Error('Failed to create brand');
       }
@@ -174,7 +150,7 @@ const brandResolvers = {
           id,
           { ...input },
           { new: true, runValidators: true }
-        ).populate('company');
+        );
 
         if (!brand) {
           throw new Error('Brand not found');
@@ -184,7 +160,7 @@ const brandResolvers = {
       } catch (error) {
         console.error('Error updating brand:', error);
         if (error.code === 11000) {
-          throw new Error('Brand name already exists for this company');
+          throw new Error('Brand name already exists');
         }
         throw new Error('Failed to update brand');
       }
@@ -210,16 +186,6 @@ const brandResolvers = {
   },
 
   Brand: {
-    company: async (parent, args, { user, models }) => {
-      try {
-        const Company = models.Company;
-        return await Company.findById(parent.companyId);
-      } catch (error) {
-        console.error('Error fetching brand company:', error);
-        return null;
-      }
-    },
-
     flavors: async (parent, args, { user, models }) => {
       try {
         const Flavor = models.Flavor;

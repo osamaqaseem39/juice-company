@@ -15,6 +15,9 @@ export interface FormFieldProps {
   disabled?: boolean;
   error?: string;
   className?: string;
+  step?: string;
+  min?: string;
+  max?: string;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -30,7 +33,10 @@ export const FormField: React.FC<FormFieldProps> = ({
   accept,
   disabled = false,
   error,
-  className = ''
+  className = '',
+  step,
+  min,
+  max
 }) => {
   const baseClasses = "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-logo-red transition-colors";
   const errorClasses = error ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-logo-red";
@@ -94,6 +100,9 @@ export const FormField: React.FC<FormFieldProps> = ({
             required={required}
             placeholder={placeholder}
             disabled={disabled}
+            step={step}
+            min={min}
+            max={max}
             className={`${baseClasses} ${errorClasses} ${disabledClasses} ${className}`}
           />
         );

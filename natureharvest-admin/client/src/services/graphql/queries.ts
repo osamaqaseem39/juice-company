@@ -430,53 +430,7 @@ export const GET_GLOBAL_SEO_SETTINGS = gql`
   }
 `;
 
-export const GET_ALL_COMPANIES = gql`
-  query GetAllCompanies {
-    companies {
-      _id
-      name
-      description
-      logoUrl
-      website
-      contactEmail
-      contactPhone
-      address {
-        street
-        city
-        state
-        zip
-        country
-      }
-      status
-      createdAt
-      updatedAt
-    }
-  }
-`;
 
-export const GET_COMPANY_BY_ID = gql`
-  query GetCompanyById($id: ID!) {
-    company(id: $id) {
-      _id
-      name
-      description
-      logoUrl
-      website
-      contactEmail
-      contactPhone
-      address {
-        street
-        city
-        state
-        zip
-        country
-      }
-      status
-      createdAt
-      updatedAt
-    }
-  }
-`;
 
 // Flavor queries
 export const GET_ALL_FLAVORS = gql`

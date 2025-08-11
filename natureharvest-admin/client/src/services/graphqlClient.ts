@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, createHttpLink, from } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
-import { GRAPHQL_URL, ENV } from '../config/env';
+import { GRAPHQL_URL } from '../config/env';
 import { getStoredToken, clearStoredToken } from '../utils/authUtils';
 
 const httpLink = createHttpLink({

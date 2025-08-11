@@ -10,7 +10,7 @@ const brandTypes = require('./types/brand');
 const categoryTypes = require('./types/category');
 const quoteTypes = require('./types/quote');
 const serviceTypes = require('./types/service');
-const companyTypes = require('./types/company');
+
 const flavorTypes = require('./types/flavor');
 const sizeTypes = require('./types/size');
 
@@ -23,7 +23,7 @@ const brandResolvers = require('./resolvers/brand');
 const categoryResolvers = require('./resolvers/category');
 const quoteResolvers = require('./resolvers/quote');
 const serviceResolvers = require('./resolvers/service');
-const companyResolvers = require('./resolvers/company');
+
 const flavorResolvers = require('./resolvers/flavor');
 const sizeResolvers = require('./resolvers/size');
 
@@ -56,7 +56,7 @@ const typeDefs = [
   categoryTypes,
   quoteTypes,
   serviceTypes,
-  companyTypes,
+
   flavorTypes,
   sizeTypes,
 
@@ -71,7 +71,7 @@ const resolvers = [
   categoryResolvers,
   quoteResolvers,
   serviceResolvers,
-  companyResolvers,
+
   flavorResolvers,
   sizeResolvers,
 

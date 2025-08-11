@@ -283,7 +283,6 @@ const server = new ApolloServer({
           SubCategory: require('./models/SubCategory'),
           Quote: require('./models/Quote'),
           Service: require('./models/Service'),
-          Company: require('./models/Company'),
           Flavor: require('./models/Flavor')
         }
       };
@@ -300,7 +299,6 @@ const server = new ApolloServer({
           SubCategory: require('./models/SubCategory'),
           Quote: require('./models/Quote'),
           Service: require('./models/Service'),
-          Company: require('./models/Company'),
           Flavor: require('./models/Flavor')
         }
       };
@@ -607,7 +605,6 @@ const startServer = async () => {
             SubCategory: require('./models/SubCategory'),
             Quote: require('./models/Quote'),
             Service: require('./models/Service'),
-            Company: require('./models/Company'),
             Flavor: require('./models/Flavor')
           }
         };
@@ -624,7 +621,6 @@ const startServer = async () => {
             SubCategory: require('./models/SubCategory'),
             Quote: require('./models/Quote'),
             Service: require('./models/Service'),
-            Company: require('./models/Company'),
             Flavor: require('./models/Flavor')
           }
         };

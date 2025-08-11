@@ -5,6 +5,8 @@ export interface ValidationRule {
   required?: boolean;
   minLength?: number;
   maxLength?: number;
+  minValue?: number;
+  maxValue?: number;
   pattern?: RegExp;
   custom?: (value: any) => string | undefined;
 }
@@ -24,6 +26,14 @@ export const validateField = (value: any, rules: ValidationRule): string | undef
 
   if (value && rules.maxLength && value.toString().length > rules.maxLength) {
     return `Maximum length is ${rules.maxLength} characters`;
+  }
+
+  if (value && rules.minValue !== undefined && parseFloat(value) < rules.minValue) {
+    return `Minimum value is ${rules.minValue}`;
+  }
+
+  if (value && rules.maxValue !== undefined && parseFloat(value) > rules.maxValue) {
+    return `Maximum value is ${rules.maxValue}`;
   }
 
   if (value && rules.pattern && !rules.pattern.test(value.toString())) {

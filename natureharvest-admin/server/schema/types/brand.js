@@ -3,7 +3,6 @@ const { gql } = require('graphql-tag');
 const brandTypes = gql`
   type Brand {
     _id: ID!
-    companyId: ID!
     name: String!
     description: String
     logoUrl: String
@@ -16,7 +15,6 @@ const brandTypes = gql`
     status: String!
     createdAt: Date
     updatedAt: Date
-    company: Company
     flavors: [Flavor!]
   }
 
@@ -30,7 +28,6 @@ const brandTypes = gql`
   }
 
   input BrandInput {
-    companyId: ID!
     name: String!
     description: String
     logoUrl: String
@@ -53,7 +50,6 @@ const brandTypes = gql`
   }
 
   input BrandUpdateInput {
-    companyId: ID
     name: String
     description: String
     logoUrl: String
@@ -67,9 +63,8 @@ const brandTypes = gql`
   }
 
   extend type Query {
-    brands(companyId: ID, search: String, category: String, status: String, sort: String, limit: Int, offset: Int): [Brand!]!
+    brands(search: String, category: String, status: String, sort: String, limit: Int, offset: Int): [Brand!]!
     brand(id: ID!): Brand
-    brandsByCompany(companyId: ID!): [Brand!]!
     brandsByCategory(category: String!): [Brand!]!
     brandsByStatus(status: String!): [Brand!]!
   }
