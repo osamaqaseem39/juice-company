@@ -90,8 +90,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files (excluding api-docs)
+app.use(express.static(path.join(__dirname, 'public'), {
+  index: false // Don't serve index.html for all routes
+}));
 
 // Check MongoDB connection middleware
 app.use((req, res, next) => {
@@ -141,6 +143,11 @@ try {
 } catch (error) {
   console.error('❌ Error configuring Swagger:', error);
 }
+
+// Serve index.html for root path
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // MongoDB Connection with retry logic
 const connectDB = async () => {
