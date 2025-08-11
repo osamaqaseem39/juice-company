@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { getStoredToken, clearStoredToken } from '../../utils/authUtils';
 
 interface AuthState {
   token: string | null;
@@ -8,9 +9,11 @@ interface AuthState {
   error: string | null;
 }
 
+const storedToken = getStoredToken();
+
 const initialState: AuthState = {
-  token: localStorage.getItem('auth_token'),
-  isAuthenticated: !!localStorage.getItem('auth_token'),
+  token: storedToken,
+  isAuthenticated: !!storedToken,
   user: null,
   loading: false,
   error: null,
@@ -37,14 +40,14 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.token = null;
       state.user = null;
-      localStorage.removeItem('auth_token');
+      clearStoredToken();
     },
     logout: (state) => {
       state.isAuthenticated = false;
       state.token = null;
       state.user = null;
       state.error = null;
-      localStorage.removeItem('auth_token');
+      clearStoredToken();
     },
     clearError: (state) => {
       state.error = null;

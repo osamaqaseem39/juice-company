@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Brand, useBrands, useDeleteBrand } from '../../services/api';
 import PageMeta from '../../components/common/PageMeta';
+import AuthGuard from '../../components/auth/AuthGuard';
 
 const BrandList: React.FC = () => {
   const { data, loading, error, refetch } = useBrands();
@@ -63,7 +64,7 @@ const BrandList: React.FC = () => {
   }
 
   return (
-    <>
+    <AuthGuard>
       <PageMeta
         title="Brands | Nature Harvest Admin"
         description="Manage your brand catalog"
@@ -137,7 +138,7 @@ const BrandList: React.FC = () => {
           )}
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 };
 

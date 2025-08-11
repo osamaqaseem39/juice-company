@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Category, useCategories, useDeleteCategory, useSubcategories, useDeleteSubcategory } from '../../services/api';
 import { Link } from 'react-router-dom';
 import PageMeta from '../../components/common/PageMeta';
+import AuthGuard from '../../components/auth/AuthGuard';
 
 interface CategoryListProps {
   isSubcategoryList?: boolean;
@@ -79,7 +80,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
   }
 
   return (
-    <>
+    <AuthGuard>
       <PageMeta
         title={`${isSubcategoryList ? 'Subcategories' : 'Categories'} | Nature Harvest Admin`}
         description={`Manage your ${isSubcategoryList ? 'subcategory' : 'category'} catalog`}
@@ -150,7 +151,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ isSubcategoryList }) => {
           )}
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 };
 

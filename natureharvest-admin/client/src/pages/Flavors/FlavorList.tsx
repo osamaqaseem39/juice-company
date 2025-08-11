@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   PencilIcon, 
@@ -8,43 +8,35 @@ import {
 } from '../../icons';
 import PageMeta from '../../components/common/PageMeta';
 import { LoadingSpinner } from '../../components/forms/FormComponents';
-
-interface Flavor {
-  _id: string;
-  name: string;
-  description: string;
-  imageUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { useFlavors, useDeleteFlavor } from '../../hooks';
+import AuthGuard from '../../components/auth/AuthGuard';
 
 const FlavorList: React.FC = () => {
-  const [flavors, setFlavors] = useState<Flavor[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, loading, error, refetch } = useFlavors();
+  const [deleteFlavor] = useDeleteFlavor();
   const [search, setSearch] = useState('');
-  const [sortKey, setSortKey] = useState<'name' | ''>('');
+  const [sortKey, setSortKey] = useState<'name' | 'brand' | ''>('');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
-  useEffect(() => {
-    // TODO: Implement getFlavors API call
-    // For now, using empty array
-    setFlavors([]);
-    setLoading(false);
-  }, []);
+  const flavors = data?.flavors || [];
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this flavor?')) {
-      // TODO: Implement delete flavor API call
-      setFlavors(prev => prev.filter(flavor => flavor._id !== id));
+      try {
+        await deleteFlavor({ variables: { id } });
+        refetch(); // Refetch the data after deletion
+      } catch (err) {
+        console.error('Error deleting flavor:', err);
+      }
     }
   };
 
   // Search and sort logic
-  const filtered = flavors.filter((f: Flavor) =>
+  const filtered = flavors.filter((f: any) =>
     f.name.toLowerCase().includes(search.toLowerCase()) ||
-    f.description.toLowerCase().includes(search.toLowerCase())
+    (f.description && f.description.toLowerCase().includes(search.toLowerCase()))
   );
-  const sorted = [...filtered].sort((a: Flavor, b: Flavor) => {
+  const sorted = [...filtered].sort((a: any, b: any) => {
     if (!sortKey) return 0;
     const aVal = a[sortKey] || '';
     const bVal = b[sortKey] || '';
@@ -54,7 +46,7 @@ const FlavorList: React.FC = () => {
     return 0;
   });
 
-  const handleSort = (key: 'name') => {
+  const handleSort = (key: 'name' | 'brand') => {
     if (sortKey === key) {
       setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
@@ -71,8 +63,16 @@ const FlavorList: React.FC = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-logo-red">Error: {error.message}</div>
+      </div>
+    );
+  }
+
   return (
-    <>
+    <AuthGuard>
       <PageMeta
         title="Flavors | Nature Harvest Admin"
         description="Manage your product flavors"
@@ -109,8 +109,11 @@ const FlavorList: React.FC = () => {
                     <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700 cursor-pointer" onClick={() => handleSort('name')}>
                       Name {sortKey === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
                     </th>
-                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Description</th>
-                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Created</th>
+                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700 cursor-pointer" onClick={() => handleSort('brand')}>
+                      Brand {sortKey === 'brand' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
+                    </th>
+                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Flavor Profile</th>
+                    <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Status</th>
                     <th className="px-4 py-2 border text-left text-sm font-medium text-gray-700">Actions</th>
                   </tr>
                 </thead>
@@ -132,12 +135,25 @@ const FlavorList: React.FC = () => {
                       </td>
                       <td className="px-4 py-2 border">
                         <div className="font-medium text-gray-900">{flavor.name}</div>
+                        {flavor.description && (
+                          <div className="text-sm text-gray-500 truncate max-w-xs">{flavor.description}</div>
+                        )}
                       </td>
                       <td className="px-4 py-2 border text-sm text-gray-700">
-                        <div className="truncate max-w-xs">{flavor.description}</div>
+                        {flavor.brand?.name || 'N/A'}
                       </td>
                       <td className="px-4 py-2 border text-sm text-gray-700">
-                        {new Date(flavor.createdAt).toLocaleDateString()}
+                        <span className="capitalize">{flavor.flavorProfile}</span>
+                      </td>
+                      <td className="px-4 py-2 border text-sm text-gray-700">
+                        <span className={`px-2 py-1 rounded text-xs ${
+                          flavor.status === 'active' ? 'bg-green-100 text-green-800' :
+                          flavor.status === 'inactive' ? 'bg-gray-100 text-gray-800' :
+                          flavor.status === 'discontinued' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {flavor.status}
+                        </span>
                       </td>
                       <td className="px-4 py-2 border">
                         <div className="flex items-center gap-2">
@@ -176,7 +192,7 @@ const FlavorList: React.FC = () => {
           )}
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 };
 

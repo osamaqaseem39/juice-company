@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Quote, useQuotes, useUpdateQuote } from '../../services/api';
 import PageMeta from "../../components/common/PageMeta";
+import AuthGuard from '../../components/auth/AuthGuard';
 
 const statusOptions = [
   { value: 'pending', label: 'Pending' },
@@ -46,7 +47,7 @@ const QuoteList: React.FC = () => {
   }
 
   return (
-    <>
+    <AuthGuard>
       <PageMeta
         title="Message Requests | Nature Harvest Admin"
         description="Manage customer message requests and their status."
@@ -108,7 +109,7 @@ const QuoteList: React.FC = () => {
           </div>
         )}
       </div>
-    </>
+    </AuthGuard>
   );
 };
 

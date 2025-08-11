@@ -1,12 +1,18 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { getStoredToken } from '../utils/authUtils';
 
 export const useAuthGuard = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading } = useSelector((state: RootState) => state.auth);
+  
+  // Double-check token validity on each call
+  const validToken = getStoredToken();
+  const isActuallyAuthenticated = isAuthenticated && !!validToken;
   
   return {
-    isAuthenticated,
-    // Helper function to skip queries when not authenticated
-    skipIfNotAuthenticated: !isAuthenticated
+    isAuthenticated: isActuallyAuthenticated,
+    loading,
+    // Helper function to skip queries when not authenticated or still loading
+    skipIfNotAuthenticated: !isActuallyAuthenticated || loading
   };
 }; 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Service, useServices, useDeleteService } from '../../services/api';
 import { Modal } from '../../components/ui/modal';
 import PageMeta from '../../components/common/PageMeta';
+import AuthGuard from '../../components/auth/AuthGuard';
 
 const ServiceList: React.FC = () => {
   const { data, loading, error, refetch } = useServices();
@@ -71,7 +72,7 @@ const ServiceList: React.FC = () => {
   }
 
   return (
-    <>
+    <AuthGuard>
       <PageMeta
         title="Services | Nature Harvest Admin"
         description="Manage your service offerings"
@@ -169,7 +170,7 @@ const ServiceList: React.FC = () => {
           </Modal>
         )}
       </div>
-    </>
+    </AuthGuard>
   );
 };
 

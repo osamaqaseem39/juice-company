@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useUsers, useRemoveUser } from '../../services/api';
+import AuthGuard from '../../components/auth/AuthGuard';
 
 const UserList: React.FC = () => {
   const { data, loading, error, refetch } = useUsers();
@@ -60,7 +61,8 @@ const UserList: React.FC = () => {
   const users = data?.users || [];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <AuthGuard>
+      <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Users</h1>
         <Link
@@ -162,6 +164,7 @@ const UserList: React.FC = () => {
         )}
       </div>
     </div>
+    </AuthGuard>
   );
 };
 

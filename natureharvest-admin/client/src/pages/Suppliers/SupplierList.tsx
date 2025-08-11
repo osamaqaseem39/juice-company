@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SupplierRequest, useSuppliers } from '../../services/api';
 import PageMeta from '../../components/common/PageMeta';
+import AuthGuard from '../../components/auth/AuthGuard';
 
 const SupplierList: React.FC = () => {
   const { data, loading, error } = useSuppliers();
@@ -56,7 +57,7 @@ const SupplierList: React.FC = () => {
   }
 
   return (
-    <>
+    <AuthGuard>
       <PageMeta
         title="Supplier Requests | Nature Harvest Admin"
         description="Manage supplier partnership requests"
@@ -120,7 +121,7 @@ const SupplierList: React.FC = () => {
           )}
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 };
 

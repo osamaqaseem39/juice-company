@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Blog, useBlogs, useDeleteBlog } from '../../services/api';
 import { Modal } from '../../components/ui/modal';
 import PageMeta from '../../components/common/PageMeta';
+import AuthGuard from '../../components/auth/AuthGuard';
 
 const BlogList: React.FC = () => {
   const { data, loading, error, refetch } = useBlogs();
@@ -71,7 +72,7 @@ const BlogList: React.FC = () => {
   }
 
   return (
-    <>
+    <AuthGuard>
       <PageMeta
         title="Blog Posts | Nature Harvest Admin"
         description="Manage your blog posts"
@@ -197,7 +198,7 @@ const BlogList: React.FC = () => {
           </Modal>
         )}
       </div>
-    </>
+    </AuthGuard>
   );
 };
 

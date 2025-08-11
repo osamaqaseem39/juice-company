@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Product, useProducts, useDeleteProduct, useBrands } from '../../services/api';
 import { Modal } from '../../components/ui/modal';
 import PageMeta from '../../components/common/PageMeta';
+import AuthGuard from '../../components/auth/AuthGuard';
 
 const ProductList: React.FC = () => {
   const { data, loading, error, refetch } = useProducts();
@@ -79,7 +80,7 @@ const ProductList: React.FC = () => {
   }
 
   return (
-    <>
+    <AuthGuard>
       <PageMeta
         title="Products | Nature Harvest Admin"
         description="Manage your product catalog"
@@ -193,7 +194,7 @@ const ProductList: React.FC = () => {
           </Modal>
         )}
       </div>
-    </>
+    </AuthGuard>
   );
 };
 

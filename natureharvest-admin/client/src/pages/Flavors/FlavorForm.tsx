@@ -12,17 +12,35 @@ import {
   validateForm,
   ValidationRule
 } from '../../utils/formUtils';
+import { useCreateFlavor, useUpdateFlavor, useFlavor } from '../../hooks/useFlavors';
+import { useBrands } from '../../hooks/useBrands';
 
 interface FlavorFormData {
+  brandId: string;
   name: string;
   description: string;
+  flavorProfile: string;
   imageUrl: string | null;
+  ingredients: string[];
+  allergens: string[];
+  certifications: string[];
+  tags: string[];
+  featured: boolean;
+  status: string;
 }
 
 const validationRules: Record<keyof FlavorFormData, ValidationRule> = {
+  brandId: { required: true },
   name: { required: true, minLength: 2, maxLength: 100 },
   description: { required: false, maxLength: 1000 },
-  imageUrl: { required: false }
+  flavorProfile: { required: true, minLength: 2, maxLength: 200 },
+  imageUrl: { required: false },
+  ingredients: { required: false },
+  allergens: { required: false },
+  certifications: { required: false },
+  tags: { required: false },
+  featured: { required: false },
+  status: { required: true }
 };
 
 type FlavorFormMode = 'add' | 'edit';
@@ -31,33 +49,69 @@ const FlavorForm: React.FC<{ mode?: FlavorFormMode }> = ({ mode }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FlavorFormData>({
+    brandId: '',
     name: '',
     description: '',
-    imageUrl: null
+    flavorProfile: '',
+    imageUrl: null,
+    ingredients: [],
+    allergens: [],
+    certifications: [],
+    tags: [],
+    featured: false,
+    status: 'active'
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  // GraphQL hooks
+  const [createFlavor, { loading: createLoading, error: createError }] = useCreateFlavor();
+  const [updateFlavor, { loading: updateLoading, error: updateError }] = useUpdateFlavor();
+  const { data: flavorData, loading: fetchLoading } = useFlavor(id || '');
+  const { data: brandsData, loading: brandsLoading } = useBrands();
+
   const isEdit = mode === 'edit' || !!id;
 
   useEffect(() => {
-    if (isEdit && id) {
-      setLoading(true);
-      // TODO: Implement getFlavorById hook
-      setLoading(false);
+    if (isEdit && flavorData?.flavor) {
+      const flavor = flavorData.flavor;
+      setFormData({
+        brandId: flavor.brand?._id || '',
+        name: flavor.name || '',
+        description: flavor.description || '',
+        flavorProfile: flavor.flavorProfile || '',
+        imageUrl: flavor.imageUrl || null,
+        ingredients: flavor.ingredients || [],
+        allergens: flavor.allergens || [],
+        certifications: flavor.certifications || [],
+        tags: flavor.tags || [],
+        featured: flavor.featured || false,
+        status: flavor.status || 'active'
+      });
     }
-  }, [isEdit, id]);
+  }, [isEdit, flavorData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
     
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
+  };
+
+  const handleArrayFieldChange = (field: keyof FlavorFormData, value: string) => {
+    const newArray = value.split(',').map(item => item.trim()).filter(item => item.length > 0);
+    setFormData(prev => ({ ...prev, [field]: newArray }));
   };
 
   const handleImageUpload = async (file: File): Promise<string> => {
@@ -101,8 +155,30 @@ const FlavorForm: React.FC<{ mode?: FlavorFormMode }> = ({ mode }) => {
     setLoading(true);
 
     try {
-      // TODO: Implement createFlavor and updateFlavor mutations
-      console.log('Submitting flavor data:', formData);
+      const input = {
+        brandId: formData.brandId,
+        name: formData.name,
+        description: formData.description,
+        flavorProfile: formData.flavorProfile,
+        imageUrl: formData.imageUrl,
+        ingredients: formData.ingredients,
+        allergens: formData.allergens,
+        certifications: formData.certifications,
+        tags: formData.tags,
+        featured: formData.featured,
+        status: formData.status
+      };
+
+      if (isEdit && id) {
+        await updateFlavor({
+          variables: { id, input }
+        });
+      } else {
+        await createFlavor({
+          variables: { input }
+        });
+      }
+      
       navigate('/flavors');
     } catch (error) {
       console.error('Error saving flavor:', error);
@@ -116,7 +192,7 @@ const FlavorForm: React.FC<{ mode?: FlavorFormMode }> = ({ mode }) => {
     navigate('/flavors');
   };
 
-  if (loading) {
+  if (fetchLoading || brandsLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <LoadingSpinner size="lg" />
@@ -124,15 +200,32 @@ const FlavorForm: React.FC<{ mode?: FlavorFormMode }> = ({ mode }) => {
     );
   }
 
+  const submitError = createError?.message || updateError?.message || errors.submit;
+  const isSubmitting = createLoading || updateLoading || loading || uploading;
+
   return (
     <FormLayout
       title={isEdit ? 'Edit Flavor' : 'Add New Flavor'}
       description={`${isEdit ? 'Edit' : 'Add'} a new flavor variant`}
       backPath="/flavors"
       backText="Back to Flavors"
-      error={errors.submit}
+      error={submitError}
     >
       <form onSubmit={handleSubmit} className="space-y-6">
+        <FormField
+          label="Brand"
+          name="brandId"
+          value={formData.brandId}
+          onChange={handleChange}
+          type="select"
+          required
+          error={errors.brandId}
+          options={brandsData?.brands?.map((brand: any) => ({
+            value: brand._id,
+            label: brand.name
+          })) || []}
+        />
+
         <FormField
           label="Flavor Name"
           name="name"
@@ -141,6 +234,16 @@ const FlavorForm: React.FC<{ mode?: FlavorFormMode }> = ({ mode }) => {
           required
           placeholder="Enter flavor name"
           error={errors.name}
+        />
+
+        <FormField
+          label="Flavor Profile"
+          name="flavorProfile"
+          value={formData.flavorProfile}
+          onChange={handleChange}
+          required
+          placeholder="e.g., Sweet and tangy with citrus notes"
+          error={errors.flavorProfile}
         />
 
         <FormField
@@ -153,6 +256,71 @@ const FlavorForm: React.FC<{ mode?: FlavorFormMode }> = ({ mode }) => {
           rows={4}
           error={errors.description}
         />
+
+        <FormField
+          label="Ingredients (comma-separated)"
+          name="ingredients"
+          value={formData.ingredients.join(', ')}
+          onChange={(e) => handleArrayFieldChange('ingredients', e.target.value)}
+          placeholder="e.g., Orange juice, sugar, natural flavors"
+          error={errors.ingredients}
+        />
+
+        <FormField
+          label="Allergens (comma-separated)"
+          name="allergens"
+          value={formData.allergens.join(', ')}
+          onChange={(e) => handleArrayFieldChange('allergens', e.target.value)}
+          placeholder="e.g., None, or list allergens"
+          error={errors.allergens}
+        />
+
+        <FormField
+          label="Certifications (comma-separated)"
+          name="certifications"
+          value={formData.certifications.join(', ')}
+          onChange={(e) => handleArrayFieldChange('certifications', e.target.value)}
+          placeholder="e.g., Organic, Non-GMO"
+          error={errors.certifications}
+        />
+
+        <FormField
+          label="Tags (comma-separated)"
+          name="tags"
+          value={formData.tags.join(', ')}
+          onChange={(e) => handleArrayFieldChange('tags', e.target.value)}
+          placeholder="e.g., popular, seasonal, new"
+          error={errors.tags}
+        />
+
+        <FormField
+          label="Status"
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          type="select"
+          required
+          error={errors.status}
+          options={[
+            { value: 'active', label: 'Active' },
+            { value: 'inactive', label: 'Inactive' },
+            { value: 'draft', label: 'Draft' }
+          ]}
+        />
+
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="featured"
+            name="featured"
+            checked={formData.featured}
+            onChange={handleChange}
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+          />
+          <label htmlFor="featured" className="ml-2 block text-sm text-gray-900">
+            Featured Flavor
+          </label>
+        </div>
 
         <ImageUpload
           label="Flavor Image"
@@ -168,7 +336,7 @@ const FlavorForm: React.FC<{ mode?: FlavorFormMode }> = ({ mode }) => {
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           submitText={isEdit ? 'Update Flavor' : 'Create Flavor'}
-          loading={loading || uploading}
+          loading={isSubmitting}
           disabled={uploading}
         />
       </form>

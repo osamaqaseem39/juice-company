@@ -622,3 +622,68 @@ export const GET_FLAVORS_BY_BRAND = gql`
 
 // Note: Sizes are embedded within flavors in this schema
 // Use flavor queries to access size information 
+
+// Size queries
+export const GET_ALL_SIZES = gql`
+  query GetAllSizes($search: String, $status: String, $isAvailable: Boolean, $sort: String, $limit: Int, $offset: Int) {
+    sizes(search: $search, status: $status, isAvailable: $isAvailable, sort: $sort, limit: $limit, offset: $offset) {
+      _id
+      name
+      description
+      imageUrl
+      price
+      weight
+      dimensions {
+        height
+        width
+        depth
+      }
+      isAvailable
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_SIZE_BY_ID = gql`
+  query GetSizeById($id: ID!) {
+    size(id: $id) {
+      _id
+      name
+      description
+      imageUrl
+      price
+      weight
+      dimensions {
+        height
+        width
+        depth
+      }
+      isAvailable
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const GET_AVAILABLE_SIZES = gql`
+  query GetAvailableSizes {
+    availableSizes {
+      _id
+      name
+      description
+      imageUrl
+      price
+      weight
+      dimensions {
+        height
+        width
+        depth
+      }
+      isAvailable
+      status
+    }
+  }
+`;

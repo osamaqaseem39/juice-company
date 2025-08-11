@@ -536,7 +536,7 @@ export const CREATE_FLAVOR = gql`
 `;
 
 export const UPDATE_FLAVOR = gql`
-  mutation UpdateFlavor($id: ID!, $input: FlavorInput!) {
+  mutation UpdateFlavor($id: ID!, $input: FlavorUpdateInput!) {
     updateFlavor(id: $id, input: $input) {
       _id
       name
@@ -660,5 +660,53 @@ export const REMOVE_SIZE_FROM_FLAVOR = gql`
   }
 `;
 
-// Note: Standalone size mutations don't exist in this schema
-// Sizes are managed through flavor mutations (addSizeToFlavor, updateSizeInFlavor, removeSizeFromFlavor) 
+// Size mutations
+export const CREATE_SIZE = gql`
+  mutation CreateSize($input: SizeInput!) {
+    createSize(input: $input) {
+      _id
+      name
+      description
+      imageUrl
+      price
+      weight
+      dimensions {
+        height
+        width
+        depth
+      }
+      isAvailable
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const UPDATE_SIZE = gql`
+  mutation UpdateSize($id: ID!, $input: SizeUpdateInput!) {
+    updateSize(id: $id, input: $input) {
+      _id
+      name
+      description
+      imageUrl
+      price
+      weight
+      dimensions {
+        height
+        width
+        depth
+      }
+      isAvailable
+      status
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DELETE_SIZE = gql`
+  mutation DeleteSize($id: ID!) {
+    deleteSize(id: $id)
+  }
+`;
