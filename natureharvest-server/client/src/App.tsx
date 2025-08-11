@@ -25,6 +25,10 @@ import BrandForm from './pages/Brands/BrandForm';
 import CategoryList from './pages/Categories/CategoryList';
 import CategoryForm from './pages/Categories/CategoryForm';
 import SubCategoryForm from './pages/Categories/SubCategoryForm';
+import FlavorList from './pages/Products/FlavorList';
+import FlavorForm from './pages/Products/FlavorForm';
+import SizeList from './pages/Products/SizeList';
+import SizeForm from './pages/Products/SizeForm';
 
 
 export default function App() {
@@ -79,6 +83,16 @@ export default function App() {
             <Route path="/subcategories" element={<CategoryList isSubcategoryList={true} />} />
             <Route path="/subcategories/add" element={<SubCategoryForm mode='add' />} />
             <Route path="/subcategories/:id/edit" element={<SubCategoryForm mode='edit' />} />
+
+            {/* Flavor Routes */}
+            <Route path="/flavors" element={<FlavorList />} />
+            <Route path="/flavors/add" element={<FlavorForm />} />
+            <Route path="/flavors/edit/:id" element={<FlavorForm />} />
+
+            {/* Size Routes */}
+            <Route path="/sizes" element={<SizeList />} />
+            <Route path="/sizes/add" element={<SizeForm />} />
+            <Route path="/sizes/edit/:id" element={<SizeForm />} />
 
             <Route path="/messages" element={<MessageList/>}/>
           </Route>

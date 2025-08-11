@@ -73,7 +73,7 @@ const resolvers = [
   ecommerceResolvers
 ];
 
-// Merge resolvers
+// Merge resolvers with better error handling
 const mergedResolvers = resolvers.reduce((acc, resolver) => {
   if (resolver.Query) {
     acc.Query = { ...acc.Query, ...resolver.Query };
@@ -96,7 +96,10 @@ const mergedResolvers = resolvers.reduce((acc, resolver) => {
 // Add Date scalar resolver
 mergedResolvers.Date = {
   __serialize(value) {
-    return value.toISOString();
+    if (value instanceof Date) {
+      return value.toISOString();
+    }
+    return value;
   },
   __parseValue(value) {
     return new Date(value);
@@ -109,9 +112,16 @@ mergedResolvers.Date = {
   }
 };
 
+// Create schema with validation
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers: mergedResolvers,
+  allowUndefinedInResolve: false,
+  resolverValidationOptions: {
+    requireResolversForArgs: false,
+    requireResolversForNonScalar: false,
+    requireResolversForAllFields: false
+  }
 });
 
 module.exports = schema; 

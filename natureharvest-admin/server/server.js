@@ -270,31 +270,86 @@ const server = new ApolloServer({
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   introspection: true, // Enable introspection for development and production
   context: async ({ req }) => {
-    const auth = await graphqlAuth(req);
-    return {
-      user: auth.user,
-      models: {
-        User: require('./models/User'),
-        Blog: require('./models/Blog'),
-        Product: require('./models/Product'),
-        Brand: require('./models/Brand'),
-        Category: require('./models/Category'),
-        SubCategory: require('./models/SubCategory'),
-        Quote: require('./models/Quote'),
-        Service: require('./models/Service'),
-        Company: require('./models/Company'),
-        Flavor: require('./models/Flavor')
-      }
-    };
+    try {
+      const auth = await graphqlAuth(req);
+      return {
+        user: auth.user,
+        models: {
+          User: require('./models/User'),
+          Blog: require('./models/Blog'),
+          Product: require('./models/Product'),
+          Brand: require('./models/Brand'),
+          Category: require('./models/Category'),
+          SubCategory: require('./models/SubCategory'),
+          Quote: require('./models/Quote'),
+          Service: require('./models/Service'),
+          Company: require('./models/Company'),
+          Flavor: require('./models/Flavor')
+        }
+      };
+    } catch (error) {
+      console.error('GraphQL Context Error:', error);
+      return {
+        user: null,
+        models: {
+          User: require('./models/User'),
+          Blog: require('./models/Blog'),
+          Product: require('./models/Product'),
+          Brand: require('./models/Brand'),
+          Category: require('./models/Category'),
+          SubCategory: require('./models/SubCategory'),
+          Quote: require('./models/Quote'),
+          Service: require('./models/Service'),
+          Company: require('./models/Company'),
+          Flavor: require('./models/Flavor')
+        }
+      };
+    }
   },
   formatError: (error) => {
-    console.error('GraphQL Error:', error);
+    console.error('GraphQL Error:', {
+      message: error.message,
+      path: error.path,
+      extensions: error.extensions,
+      originalError: error.originalError
+    });
+    
+    // Return sanitized error in production
+    if (ENV.IS_PRODUCTION) {
+      return {
+        message: 'An error occurred while processing your request',
+        path: error.path
+      };
+    }
+    
     return {
       message: error.message,
       path: error.path,
       extensions: error.extensions
     };
-  }
+  },
+  // Add request logging
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    {
+      requestDidStart: async (requestContext) => {
+        console.log('GraphQL Request:', {
+          operationName: requestContext.request.operationName,
+          query: requestContext.request.query?.substring(0, 100) + '...',
+          variables: requestContext.request.variables
+        });
+        
+        return {
+          willSendResponse: async (requestContext) => {
+            console.log('GraphQL Response:', {
+              operationName: requestContext.request.operationName,
+              errors: requestContext.response.errors?.length || 0
+            });
+          }
+        };
+      }
+    }
+  ]
 });
 
 // Static file routes
@@ -423,8 +478,44 @@ app.get('/', (req, res) => {
     message: mongoStatus.isConnected ? 'Server is running' : 'Server is running but database is not connected',
     timestamp: new Date().toISOString(),
     mongodb: mongoStatus,
-    server: serverStatus
+    server: serverStatus,
+    graphql: {
+      endpoint: '/graphql',
+      introspection: true,
+      playground: ENV.IS_DEVELOPMENT ? '/graphql' : false
+    }
   });
+});
+
+// GraphQL health check endpoint
+app.get('/graphql-health', (req, res) => {
+  try {
+    // Test if schema is valid
+    const schemaValid = schema && typeof schema.getTypeMap === 'function';
+    
+    res.json({
+      status: schemaValid ? 'healthy' : 'unhealthy',
+      message: schemaValid ? 'GraphQL schema is valid' : 'GraphQL schema is invalid',
+      timestamp: new Date().toISOString(),
+      schema: {
+        valid: schemaValid,
+        types: schemaValid ? Object.keys(schema.getTypeMap()).filter(key => !key.startsWith('__')) : [],
+        queries: schemaValid ? Object.keys(schema.getQueryType()?.getFields() || {}) : [],
+        mutations: schemaValid ? Object.keys(schema.getMutationType()?.getFields() || {}) : []
+      },
+      server: {
+        apolloServer: !!server,
+        introspection: true
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'GraphQL health check failed',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // Error handling middleware
@@ -503,24 +594,52 @@ const startServer = async () => {
     ]
   }), expressMiddleware(server, {
     context: async ({ req }) => {
-      const auth = await graphqlAuth(req);
-      return {
-        user: auth.user,
-        models: {
-          User: require('./models/User'),
-          Blog: require('./models/Blog'),
-          Product: require('./models/Product'),
-          Brand: require('./models/Brand'),
-          Category: require('./models/Category'),
-          SubCategory: require('./models/SubCategory'),
-          Quote: require('./models/Quote'),
-          Service: require('./models/Service'),
-          Company: require('./models/Company'),
-          Flavor: require('./models/Flavor')
-        }
-      };
+      try {
+        const auth = await graphqlAuth(req);
+        return {
+          user: auth.user,
+          models: {
+            User: require('./models/User'),
+            Blog: require('./models/Blog'),
+            Product: require('./models/Product'),
+            Brand: require('./models/Brand'),
+            Category: require('./models/Category'),
+            SubCategory: require('./models/SubCategory'),
+            Quote: require('./models/Quote'),
+            Service: require('./models/Service'),
+            Company: require('./models/Company'),
+            Flavor: require('./models/Flavor')
+          }
+        };
+      } catch (error) {
+        console.error('GraphQL Middleware Context Error:', error);
+        return {
+          user: null,
+          models: {
+            User: require('./models/User'),
+            Blog: require('./models/Blog'),
+            Product: require('./models/Product'),
+            Brand: require('./models/Brand'),
+            Category: require('./models/Category'),
+            SubCategory: require('./models/SubCategory'),
+            Quote: require('./models/Quote'),
+            Service: require('./models/Service'),
+            Company: require('./models/Company'),
+            Flavor: require('./models/Flavor')
+          }
+        };
+      }
     }
   }));
+
+  // Add error handling for GraphQL endpoint
+  app.use('/graphql', (err, req, res, next) => {
+    console.error('GraphQL Endpoint Error:', err);
+    res.status(500).json({
+      error: 'GraphQL Server Error',
+      message: ENV.IS_DEVELOPMENT ? err.message : 'An error occurred while processing your GraphQL request'
+    });
+  });
 
   const PORT = ENV.PORT;
   httpServer.listen(PORT, () => {

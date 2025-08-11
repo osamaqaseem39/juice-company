@@ -292,8 +292,40 @@ export interface SubCategory extends Category {}
 export const subcategoryApi = {
   getAll: () => axios.get<SubCategory[]>(`${BASE_URL}/subcategories`),
   getById: (id: string) => axios.get<SubCategory>(`${BASE_URL}/subcategories/${id}`),
-  create: (data: any) => axios.post<SubCategory>(`${BASE_URL}/subcategories`, data),
-  update: (id: string, data: any) => axios.put<SubCategory>(`${BASE_URL}/subcategories/${id}`, data),
+  create: (data: Partial<SubCategory>) => axios.post<SubCategory>(`${BASE_URL}/subcategories`, data),
+  update: (id: string, data: Partial<SubCategory>) => axios.put<SubCategory>(`${BASE_URL}/subcategories/${id}`, data),
   delete: (id: string) => axios.delete(`${BASE_URL}/subcategories/${id}`),
   getNested: (parentId: string) => axios.get<SubCategory[]>(`${BASE_URL}/subcategories/nested?parentId=${parentId}`),
+};
+
+export const flavorApi = {
+  getAll: () => axios.get<Flavor[]>(`${BASE_URL}/flavors`),
+  getById: (id: string) => axios.get<Flavor>(`${BASE_URL}/flavors/${id}`),
+  create: (data: FormData) => axios.post<Flavor>(`${BASE_URL}/flavors`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  update: (id: string, data: FormData) => axios.put<Flavor>(`${BASE_URL}/flavors/${id}`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  delete: (id: string) => axios.delete(`${BASE_URL}/flavors/${id}`),
+};
+
+export const sizeApi = {
+  getAll: () => axios.get<Size[]>(`${BASE_URL}/sizes`),
+  getById: (id: string) => axios.get<Size>(`${BASE_URL}/sizes/${id}`),
+  create: (data: FormData) => axios.post<Size>(`${BASE_URL}/sizes`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  update: (id: string, data: FormData) => axios.put<Size>(`${BASE_URL}/sizes/${id}`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  }),
+  delete: (id: string) => axios.delete(`${BASE_URL}/sizes/${id}`),
 };

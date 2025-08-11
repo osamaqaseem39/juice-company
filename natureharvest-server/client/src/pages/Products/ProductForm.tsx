@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { productApi, Product, brandApi, Brand, categoryApi, Category, subcategoryApi, SubCategory, Flavor, Size } from '../../services/api';
+import { productApi, Product, brandApi, Brand, categoryApi, Category, subcategoryApi, SubCategory, Flavor, Size, flavorApi, sizeApi } from '../../services/api';
 
 
 
@@ -64,6 +64,8 @@ const ProductForm: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [subcategories, setSubcategories] = useState<SubCategory[]>([]);
+  const [availableFlavors, setAvailableFlavors] = useState<Flavor[]>([]);
+  const [availableSizes, setAvailableSizes] = useState<Size[]>([]);
 
   const descriptionTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [descriptionPreview, setDescriptionPreview] = useState('');
@@ -101,6 +103,8 @@ const ProductForm: React.FC = () => {
     categoryApi.getAll().then(res => setCategories(res.data)).catch(() => setCategories([]));
     productApi.getAll().then(res => setAllProducts(res.data)).catch(() => setAllProducts([]));
     subcategoryApi.getAll().then(res => setSubcategories(res.data)).catch(() => setSubcategories([]));
+    flavorApi.getAll().then(res => setAvailableFlavors(res.data)).catch(() => setAvailableFlavors([]));
+    sizeApi.getAll().then(res => setAvailableSizes(res.data)).catch(() => setAvailableSizes([]));
   }, []);
 
   useEffect(() => {
@@ -216,6 +220,7 @@ const ProductForm: React.FC = () => {
   // Flavor management functions
   const addFlavor = () => {
     const newFlavor: Flavor = {
+      _id: '',
       name: '',
       description: '',
       image: ''
@@ -254,6 +259,7 @@ const ProductForm: React.FC = () => {
   // Size management functions
   const addSize = () => {
     const newSize: Size = {
+      _id: '',
       name: '',
       description: '',
       image: ''
@@ -608,13 +614,21 @@ const ProductForm: React.FC = () => {
           <div className="border-t pt-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Flavors</h2>
-              <button
-                type="button"
-                onClick={addFlavor}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-              >
-                Add Flavor
-              </button>
+              <div className="flex gap-2">
+                <Link
+                  to="/flavors"
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
+                >
+                  Manage Flavors
+                </Link>
+                <button
+                  type="button"
+                  onClick={addFlavor}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                >
+                  Add Flavor
+                </button>
+              </div>
             </div>
             {product.flavors && product.flavors.length > 0 ? (
               <div className="space-y-4">
@@ -632,30 +646,32 @@ const ProductForm: React.FC = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
-                        <input
-                          type="text"
-                          value={flavor.name}
-                          onChange={(e) => updateFlavor(index, 'name', e.target.value)}
-                          className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image</label>
-                        <input
-                          type="file"
-                          accept="image/*"
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Flavor</label>
+                        <select
+                          value={flavor._id || ''}
                           onChange={(e) => {
-                            if (e.target.files && e.target.files[0]) {
-                              handleFlavorImageUpload(index, e.target.files[0]);
+                            const selectedFlavor = availableFlavors.find(f => f._id === e.target.value);
+                            if (selectedFlavor) {
+                              updateFlavor(index, '_id', selectedFlavor._id!);
+                              updateFlavor(index, 'name', selectedFlavor.name);
+                              updateFlavor(index, 'description', selectedFlavor.description);
+                              updateFlavor(index, 'image', selectedFlavor.image || '');
                             }
                           }}
-                          className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition"
-                        />
+                          className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
+                          required
+                        >
+                          <option value="">Select a flavor</option>
+                          {availableFlavors.map(f => (
+                            <option key={f._id} value={f._id}>{f.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Preview</label>
                         {flavor.image && (
                           <div className="mt-2">
-                            <img src={flavor.image} alt="Flavor preview" className="h-20 w-20 object-cover rounded border" />
+                            <img src={flavor.image.replace('server/', '')} alt="Flavor preview" className="h-20 w-20 object-cover rounded border" />
                           </div>
                         )}
                       </div>
@@ -668,6 +684,7 @@ const ProductForm: React.FC = () => {
                         rows={3}
                         className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
                         required
+                        readOnly
                       />
                     </div>
                   </div>
@@ -682,13 +699,21 @@ const ProductForm: React.FC = () => {
           <div className="border-t pt-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Sizes</h2>
-              <button
-                type="button"
-                onClick={addSize}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-              >
-                Add Size
-              </button>
+              <div className="flex gap-2">
+                <Link
+                  to="/sizes"
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
+                >
+                  Manage Sizes
+                </Link>
+                <button
+                  type="button"
+                  onClick={addSize}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                >
+                  Add Size
+                </button>
+              </div>
             </div>
             {product.sizes && product.sizes.length > 0 ? (
               <div className="space-y-4">
@@ -706,30 +731,32 @@ const ProductForm: React.FC = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
-                        <input
-                          type="text"
-                          value={size.name}
-                          onChange={(e) => updateSize(index, 'name', e.target.value)}
-                          className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image</label>
-                        <input
-                          type="file"
-                          accept="image/*"
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Size</label>
+                        <select
+                          value={size._id || ''}
                           onChange={(e) => {
-                            if (e.target.files && e.target.files[0]) {
-                              handleSizeImageUpload(index, e.target.files[0]);
+                            const selectedSize = availableSizes.find(s => s._id === e.target.value);
+                            if (selectedSize) {
+                              updateSize(index, '_id', selectedSize._id!);
+                              updateSize(index, 'name', selectedSize.name);
+                              updateSize(index, 'description', selectedSize.description);
+                              updateSize(index, 'image', selectedSize.image || '');
                             }
                           }}
-                          className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition"
-                        />
+                          className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
+                          required
+                        >
+                          <option value="">Select a size</option>
+                          {availableSizes.map(s => (
+                            <option key={s._id} value={s._id}>{s.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Preview</label>
                         {size.image && (
                           <div className="mt-2">
-                            <img src={size.image} alt="Size preview" className="h-20 w-20 object-cover rounded border" />
+                            <img src={size.image.replace('server/', '')} alt="Size preview" className="h-20 w-20 object-cover rounded border" />
                           </div>
                         )}
                       </div>
@@ -742,6 +769,7 @@ const ProductForm: React.FC = () => {
                         rows={3}
                         className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
                         required
+                        readOnly
                       />
                     </div>
                   </div>

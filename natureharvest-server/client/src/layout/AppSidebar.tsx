@@ -30,6 +30,8 @@ const navItems: NavItem[] = [
     subItems: [
       { name: "All Products", path: "/products" },
       { name: "Add Product", path: "/products/add" },
+      { name: "Flavors", path: "/flavors" },
+      { name: "Sizes", path: "/sizes" },
     ],
   },
   {

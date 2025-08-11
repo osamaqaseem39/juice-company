@@ -4,8 +4,15 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   fullName: {
     type: String,
-    required: true,
-    trim: true
+    required: [true, 'Full name is required'],
+    trim: true,
+    minlength: [2, 'Full name must be at least 2 characters long'],
+    validate: {
+      validator: function(v) {
+        return v && v.trim().length > 0;
+      },
+      message: 'Full name cannot be empty'
+    }
   },
   email: {
     type: String,
@@ -51,6 +58,14 @@ userSchema.pre('save', async function(next) {
   } catch (error) {
     next(error);
   }
+});
+
+// Ensure fullName is always set
+userSchema.pre('save', function(next) {
+  if (!this.fullName || this.fullName.trim().length === 0) {
+    this.fullName = 'Unknown User';
+  }
+  next();
 });
 
 // Compare password method

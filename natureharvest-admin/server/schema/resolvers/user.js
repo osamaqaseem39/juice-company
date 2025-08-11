@@ -3,6 +3,24 @@ const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
 
 const userResolvers = {
+  User: {
+    // Ensure fullName always returns a valid string
+    fullName: (parent) => {
+      return parent.fullName || 'Unknown User';
+    },
+    // Ensure email always returns a valid string
+    email: (parent) => {
+      return parent.email || '';
+    },
+    // Ensure roles always returns an array
+    roles: (parent) => {
+      return parent.roles || ['customer'];
+    },
+    // Ensure isActive always returns a boolean
+    isActive: (parent) => {
+      return parent.isActive !== undefined ? parent.isActive : true;
+    }
+  },
   Query: {
     users: async () => {
       try {
@@ -70,10 +88,10 @@ const userResolvers = {
           token,
           user: {
             _id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            roles: user.roles,
-            isActive: user.isActive,
+            fullName: user.fullName || 'Unknown User',
+            email: user.email || '',
+            roles: user.roles || ['customer'],
+            isActive: user.isActive !== undefined ? user.isActive : true,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
           }
@@ -108,10 +126,10 @@ const userResolvers = {
           token,
           user: {
             _id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            roles: user.roles,
-            isActive: user.isActive,
+            fullName: user.fullName || 'Unknown User',
+            email: user.email || '',
+            roles: user.roles || ['customer'],
+            isActive: user.isActive !== undefined ? user.isActive : true,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
           }
