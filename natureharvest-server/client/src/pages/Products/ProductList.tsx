@@ -104,6 +104,8 @@ const ProductList: React.FC = () => {
                     <th className="px-4 py-2 border cursor-pointer" onClick={() => handleSort('brand')}>
                       Brand {sortKey === 'brand' ? (sortDir === 'asc' ? '↑' : '↓') : '↕'}
                     </th>
+                    <th className="px-4 py-2 border">Flavors</th>
+                    <th className="px-4 py-2 border">Sizes</th>
                     <th className="px-4 py-2 border">Description</th>
                     <th className="px-4 py-2 border">Actions</th>
                   </tr>
@@ -123,6 +125,42 @@ const ProductList: React.FC = () => {
                       </td>
                       <td className="px-4 py-2 border font-medium">{product.title}</td>
                       <td className="px-4 py-2 border">{brandMap[product.brand as string] || '-'}</td>
+                      <td className="px-4 py-2 border">
+                        {product.flavors && product.flavors.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {product.flavors.slice(0, 3).map((flavor, index) => (
+                              <span key={index} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                                {flavor.name}
+                              </span>
+                            ))}
+                            {product.flavors.length > 3 && (
+                              <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                                +{product.flavors.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 text-sm">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2 border">
+                        {product.sizes && product.sizes.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {product.sizes.slice(0, 3).map((size, index) => (
+                              <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                                {size.name}
+                              </span>
+                            ))}
+                            {product.sizes.length > 3 && (
+                              <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                                +{product.sizes.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 text-sm">-</span>
+                        )}
+                      </td>
                       <td className="px-4 py-2 border max-w-xs truncate">{product.description}</td>
                       <td className="px-4 py-2 border">
                         <Link to={`/products/${product._id}`} className="px-3 py-1 rounded font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition mr-2">View</Link>

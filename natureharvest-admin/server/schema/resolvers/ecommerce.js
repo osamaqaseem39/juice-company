@@ -2,8 +2,7 @@ const User = require('../../models/User');
 const Address = require('../../models/Address');
 const Category = require('../../models/Category');
 const Brand = require('../../models/Brand');
-const Product = require('../../models/Product');
-const ProductVariant = require('../../models/ProductVariant');
+
 const Cart = require('../../models/Cart');
 const Wishlist = require('../../models/Wishlist');
 const Order = require('../../models/Order');
@@ -49,60 +48,12 @@ const resolvers = {
       return await Brand.findById(id);
     },
 
-    // Product queries
-    products: async () => {
-      return await Product.find({ isActive: true })
-        .populate('categoryId')
-        .populate('brandId')
-        .populate('variants');
-    },
-    product: async (_, { id }) => {
-      return await Product.findById(id)
-        .populate('categoryId')
-        .populate('brandId')
-        .populate('variants');
-    },
-    productBySlug: async (_, { slug }) => {
-      return await Product.findOne({ slug, isActive: true })
-        .populate('categoryId')
-        .populate('brandId')
-        .populate('variants');
-    },
-    productsByCategory: async (_, { categoryId }) => {
-      return await Product.find({ categoryId, isActive: true })
-        .populate('categoryId')
-        .populate('brandId')
-        .populate('variants');
-    },
-    productsByBrand: async (_, { brandId }) => {
-      return await Product.find({ brandId, isActive: true })
-        .populate('categoryId')
-        .populate('brandId')
-        .populate('variants');
-    },
-    searchProducts: async (_, { query }) => {
-      return await Product.find({
-        $and: [
-          { isActive: true },
-          {
-            $or: [
-              { name: { $regex: query, $options: 'i' } },
-              { description: { $regex: query, $options: 'i' } },
-              { tags: { $in: [new RegExp(query, 'i')] } }
-            ]
-          }
-        ]
-      })
-        .populate('categoryId')
-        .populate('brandId')
-        .populate('variants');
-    },
+
 
     // Cart queries
     cart: async (_, { userId }) => {
       return await Cart.findOne({ userId })
-        .populate('items.productId')
-        .populate('items.variantId');
+        .populate('items.productId');
     },
 
     // Wishlist queries
@@ -116,31 +67,27 @@ const resolvers = {
         .populate('userId')
         .populate('shippingAddress')
         .populate('billingAddress')
-        .populate('items.productId')
-        .populate('items.variantId');
+        .populate('items.productId');
     },
     order: async (_, { id }) => {
       return await Order.findById(id)
         .populate('userId')
         .populate('shippingAddress')
         .populate('billingAddress')
-        .populate('items.productId')
-        .populate('items.variantId');
+        .populate('items.productId');
     },
     ordersByUser: async (_, { userId }) => {
       return await Order.find({ userId })
         .populate('shippingAddress')
         .populate('billingAddress')
-        .populate('items.productId')
-        .populate('items.variantId');
+        .populate('items.productId');
     },
     orderByNumber: async (_, { orderNumber }) => {
       return await Order.findOne({ orderNumber })
         .populate('userId')
         .populate('shippingAddress')
         .populate('billingAddress')
-        .populate('items.productId')
-        .populate('items.variantId');
+        .populate('items.productId');
     },
 
     // Payment queries
@@ -260,18 +207,7 @@ const resolvers = {
       return true;
     },
 
-    // Product mutations
-    createProduct: async (_, { input }) => {
-      const product = new Product(input);
-      return await product.save();
-    },
-    updateProduct: async (_, { id, input }) => {
-      return await Product.findByIdAndUpdate(id, input, { new: true });
-    },
-    deleteProduct: async (_, { id }) => {
-      await Product.findByIdAndDelete(id);
-      return true;
-    },
+
 
     // Cart mutations
     addToCart: async (_, { userId, item }) => {
@@ -281,8 +217,7 @@ const resolvers = {
       }
       
       const existingItemIndex = cart.items.findIndex(
-        cartItem => cartItem.productId.toString() === item.productId && 
-                   cartItem.variantId.toString() === item.variantId
+        cartItem => cartItem.productId.toString() === item.productId
       );
       
       if (existingItemIndex > -1) {
@@ -293,24 +228,22 @@ const resolvers = {
       
       return await cart.save();
     },
-    removeFromCart: async (_, { userId, productId, variantId }) => {
+    removeFromCart: async (_, { userId, productId }) => {
       const cart = await Cart.findOne({ userId });
       if (!cart) throw new Error('Cart not found');
       
       cart.items = cart.items.filter(
-        item => !(item.productId.toString() === productId && 
-                 item.variantId.toString() === variantId)
+        item => item.productId.toString() !== productId
       );
       
       return await cart.save();
     },
-    updateCartItem: async (_, { userId, productId, variantId, quantity }) => {
+    updateCartItem: async (_, { userId, productId, quantity }) => {
       const cart = await Cart.findOne({ userId });
       if (!cart) throw new Error('Cart not found');
       
       const item = cart.items.find(
-        item => item.productId.toString() === productId && 
-               item.variantId.toString() === variantId
+        item => item.productId.toString() === productId
       );
       
       if (!item) throw new Error('Item not found in cart');

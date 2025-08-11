@@ -95,6 +95,20 @@ export const authApi = {
     }),
 }; 
 
+export interface Flavor {
+  _id?: string;
+  name: string;
+  description: string;
+  image?: string;
+}
+
+export interface Size {
+  _id?: string;
+  name: string;
+  description: string;
+  image?: string;
+}
+
 export interface Product {
   _id: string;
   title: string;
@@ -104,6 +118,8 @@ export interface Product {
   brand?: string;
   category?: string;
   subCategory?: string;
+  flavors?: Flavor[];
+  sizes?: Size[];
 }
 
 export interface CreateProductInput {
@@ -114,6 +130,8 @@ export interface CreateProductInput {
   brand?: string;
   category?: string;
   subCategory?: string;
+  flavors?: Flavor[];
+  sizes?: Size[];
 }
 
 export interface UpdateProductInput {
@@ -124,6 +142,8 @@ export interface UpdateProductInput {
   brand?: string;
   category?: string;
   subCategory?: string;
+  flavors?: Flavor[];
+  sizes?: Size[];
 }
 
 export const productApi = {

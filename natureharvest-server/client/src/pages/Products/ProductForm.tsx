@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { productApi, Product, brandApi, Brand, categoryApi, Category, subcategoryApi, SubCategory } from '../../services/api';
+import { productApi, Product, brandApi, Brand, categoryApi, Category, subcategoryApi, SubCategory, Flavor, Size } from '../../services/api';
 
 
 
@@ -46,7 +46,14 @@ function formatText(text: string) {
 const ProductForm: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [product, setProduct] = useState<Partial<Product>>({ title: '', description: '', featuredImage: '', gallery: [] });
+  const [product, setProduct] = useState<Partial<Product>>({ 
+    title: '', 
+    description: '', 
+    featuredImage: '', 
+    gallery: [],
+    flavors: [],
+    sizes: []
+  });
   const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [previewFeatured, setPreviewFeatured] = useState<string | null>(null);
@@ -73,7 +80,14 @@ const ProductForm: React.FC = () => {
         })
         .finally(() => setLoading(false));
     } else {
-      setProduct({ title: '', description: '', featuredImage: '', gallery: [] });
+      setProduct({ 
+        title: '', 
+        description: '', 
+        featuredImage: '', 
+        gallery: [],
+        flavors: [],
+        sizes: []
+      });
       setFeaturedImageFile(null);
       setGalleryFiles([]);
       setPreviewFeatured(null);
@@ -168,6 +182,8 @@ const ProductForm: React.FC = () => {
         featuredImage: featuredImageUrl || '',
         gallery: galleryUrls.length > 0 ? galleryUrls : [],
         subCategory: product.subCategory || '',
+        flavors: product.flavors || [],
+        sizes: product.sizes || []
       };
       // Debug log
       console.log('Submitting product:', payload);
@@ -175,7 +191,14 @@ const ProductForm: React.FC = () => {
         await productApi.update(id, payload as any);
       } else {
         await productApi.create(payload as any);
-        setProduct({ title: '', description: '', featuredImage: '', gallery: [] });
+        setProduct({ 
+          title: '', 
+          description: '', 
+          featuredImage: '', 
+          gallery: [],
+          flavors: [],
+          sizes: []
+        });
         setFeaturedImageFile(null);
         setGalleryFiles([]);
         setPreviewFeatured(null);
@@ -190,8 +213,84 @@ const ProductForm: React.FC = () => {
     }
   };
 
+  // Flavor management functions
+  const addFlavor = () => {
+    const newFlavor: Flavor = {
+      name: '',
+      description: '',
+      image: ''
+    };
+    setProduct(prev => ({
+      ...prev,
+      flavors: [...(prev.flavors || []), newFlavor]
+    }));
+  };
+
+  const updateFlavor = (index: number, field: keyof Flavor, value: string) => {
+    setProduct(prev => ({
+      ...prev,
+      flavors: prev.flavors?.map((flavor, i) => 
+        i === index ? { ...flavor, [field]: value } : flavor
+      ) || []
+    }));
+  };
+
+  const removeFlavor = (index: number) => {
+    setProduct(prev => ({
+      ...prev,
+      flavors: prev.flavors?.filter((_, i) => i !== index) || []
+    }));
+  };
+
+  const handleFlavorImageUpload = async (index: number, file: File) => {
+    try {
+      const url = await uploadProductImage(file);
+      updateFlavor(index, 'image', url);
+    } catch (error) {
+      alert('Error uploading flavor image');
+    }
+  };
+
+  // Size management functions
+  const addSize = () => {
+    const newSize: Size = {
+      name: '',
+      description: '',
+      image: ''
+    };
+    setProduct(prev => ({
+      ...prev,
+      sizes: [...(prev.sizes || []), newSize]
+    }));
+  };
+
+  const updateSize = (index: number, field: keyof Size, value: string) => {
+    setProduct(prev => ({
+      ...prev,
+      sizes: prev.sizes?.map((size, i) => 
+        i === index ? { ...size, [field]: value } : size
+      ) || []
+    }));
+  };
+
+  const removeSize = (index: number) => {
+    setProduct(prev => ({
+      ...prev,
+      sizes: prev.sizes?.filter((_, i) => i !== index) || []
+    }));
+  };
+
+  const handleSizeImageUpload = async (index: number, file: File) => {
+    try {
+      const url = await uploadProductImage(file);
+      updateSize(index, 'image', url);
+    } catch (error) {
+      alert('Error uploading size image');
+    }
+  };
+
   return (
-    <div className="max-w-xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto p-4">
       <div className="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-8 border border-gray-200 dark:border-gray-800">
         <Link to="/products" className="inline-block mb-2 px-4 py-1 bg-indigo-100 text-indigo-700 rounded hover:bg-indigo-200 transition">← Back</Link>
         <h1 className="text-3xl font-extrabold mb-6 text-center text-brand-700 dark:text-brand-400">{id ? 'Edit Product' : 'Add Product'}</h1>
@@ -352,6 +451,307 @@ const ProductForm: React.FC = () => {
               </div>
             )}
           </div>
+          <div>
+            <label className="block font-semibold mb-1">Description</label>
+            <div className="mt-1 flex flex-wrap gap-2 mb-2">
+              <div className="flex gap-2 border-r pr-2 mr-2">
+                <button type="button" onClick={() => insertFormatting('bold')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Bold">B</button>
+                <button type="button" onClick={() => insertFormatting('italic')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Italic">I</button>
+              </div>
+              <div className="flex gap-2 border-r pr-2 mr-2">
+                <button type="button" onClick={() => insertFormatting('h1')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Heading 1">H1</button>
+                <button type="button" onClick={() => insertFormatting('h2')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Heading 2">H2</button>
+                <button type="button" onClick={() => insertFormatting('h3')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Heading 3">H3</button>
+              </div>
+              <div className="flex gap-2 border-r pr-2 mr-2">
+                <button type="button" onClick={() => insertFormatting('ul')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Bullet List">•</button>
+                <button type="button" onClick={() => insertFormatting('ol')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Numbered List">1.</button>
+              </div>
+              <div className="flex gap-2 border-r pr-2 mr-2">
+                <button type="button" onClick={() => insertFormatting('code')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Code">{'</>'}</button>
+                <button type="button" onClick={() => insertFormatting('quote')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Quote">"</button>
+              </div>
+              <div className="flex gap-2 border-r pr-2 mr-2">
+                <button type="button" onClick={() => insertFormatting('link')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Link">🔗</button>
+                <button type="button" onClick={() => insertFormatting('image')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Image">🖼️</button>
+              </div>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => insertFormatting('center')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Center Align">≡</button>
+                <button type="button" onClick={() => insertFormatting('right')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Right Align">≫</button>
+                <button type="button" onClick={() => insertFormatting('left')} className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600" title="Left Align">≪</button>
+              </div>
+            </div>
+            <textarea
+              ref={descriptionTextareaRef}
+              name="description"
+              value={product.description as string}
+              onChange={handleChange}
+              required
+              rows={8}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-500 focus:ring-brand-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            />
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 mt-4">Preview</label>
+            <div
+              className="mt-1 p-4 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+              dangerouslySetInnerHTML={{ __html: descriptionPreview }}
+            />
+          </div>
+          <div>
+            <label className="block font-semibold mb-1">Brand</label>
+            <select name="brand" value={product.brand || ''} onChange={handleSelectChange} className="w-full border px-3 py-2 rounded" required>
+              <option value="">Select a brand</option>
+              {brands.map(b => (
+                <option key={b._id} value={b._id}>{b.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block font-semibold mb-1">Category</label>
+            <select name="category" value={product.category || ''} onChange={handleSelectChange} className="w-full border px-3 py-2 rounded" required>
+              <option value="">Select a category</option>
+              {categories.filter(c => !c.parent).map(c => (
+                <option key={c._id} value={c._id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+          {product.category && (
+            <div>
+              <label className="block font-semibold mb-1">Subcategory</label>
+              <select name="subCategory" value={product.subCategory || ''} onChange={handleSelectChange} className="w-full border px-3 py-2 rounded">
+                <option value="">Select a subcategory</option>
+                {subcategories.filter(sc => {
+                  if (!sc.parent) return false;
+                  if (typeof sc.parent === 'string') return sc.parent === product.category;
+                  if (typeof sc.parent === 'object' && sc.parent._id) return sc.parent._id === product.category;
+                  return false;
+                }).map(sc => (
+                  <option key={sc._id} value={sc._id}>{sc.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div>
+            <label className="block font-semibold mb-1">Featured Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={async (e) => {
+                if (e.target.files && e.target.files[0]) {
+                  const url = await uploadProductImage(e.target.files[0]);
+                  setFeaturedImageFile(null);
+                  setPreviewFeatured(url);
+                  setProduct(prev => ({ ...prev, featuredImage: url }));
+                }
+              }}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition"
+            />
+            {previewFeatured && (
+              <div className="relative inline-block mt-2">
+                <img src={previewFeatured} alt="Preview" className="h-32 w-32 object-cover rounded border" />
+                <button
+                  type="button"
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition"
+                  onClick={() => {
+                    setPreviewFeatured('');
+                    setProduct(prev => ({ ...prev, featuredImage: '' }));
+                  }}
+                  title="Remove image"
+                >
+                  ×
+                </button>
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block font-semibold mb-1">Gallery Images</label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={async (e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  const urls: string[] = [];
+                  for (let i = 0; i < e.target.files.length; i++) {
+                    const url = await uploadProductImage(e.target.files[i]);
+                    urls.push(url);
+                  }
+                  setPreviewGallery(urls);
+                  setProduct(prev => ({ ...prev, gallery: urls }));
+                }
+              }}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition"
+            />
+            {previewGallery && previewGallery.length > 0 && (
+              <div className="flex gap-2 flex-wrap mt-2">
+                {previewGallery.map((img, idx) => (
+                  <div key={idx} className="relative inline-block">
+                    <img src={img} alt={`Gallery ${idx}`} className="h-20 w-20 object-cover rounded border" />
+                    <button
+                      type="button"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition"
+                      onClick={() => {
+                        const newGallery = previewGallery.filter((_, i) => i !== idx);
+                        setPreviewGallery(newGallery);
+                        setProduct(prev => ({ ...prev, gallery: newGallery }));
+                      }}
+                      title="Remove image"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {/* Flavors Section */}
+          <div className="border-t pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Flavors</h2>
+              <button
+                type="button"
+                onClick={addFlavor}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+              >
+                Add Flavor
+              </button>
+            </div>
+            {product.flavors && product.flavors.length > 0 ? (
+              <div className="space-y-4">
+                {product.flavors.map((flavor, index) => (
+                  <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="font-medium text-gray-900 dark:text-white">Flavor {index + 1}</h3>
+                      <button
+                        type="button"
+                        onClick={() => removeFlavor(index)}
+                        className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                        <input
+                          type="text"
+                          value={flavor.name}
+                          onChange={(e) => updateFlavor(index, 'name', e.target.value)}
+                          className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              handleFlavorImageUpload(index, e.target.files[0]);
+                            }
+                          }}
+                          className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition"
+                        />
+                        {flavor.image && (
+                          <div className="mt-2">
+                            <img src={flavor.image} alt="Flavor preview" className="h-20 w-20 object-cover rounded border" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                      <textarea
+                        value={flavor.description}
+                        onChange={(e) => updateFlavor(index, 'description', e.target.value)}
+                        rows={3}
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
+                        required
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400 text-center py-4">No flavors added yet. Click "Add Flavor" to get started.</p>
+            )}
+          </div>
+
+          {/* Sizes Section */}
+          <div className="border-t pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Sizes</h2>
+              <button
+                type="button"
+                onClick={addSize}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                Add Size
+              </button>
+            </div>
+            {product.sizes && product.sizes.length > 0 ? (
+              <div className="space-y-4">
+                {product.sizes.map((size, index) => (
+                  <div key={index} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800">
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="font-medium text-gray-900 dark:text-white">Size {index + 1}</h3>
+                      <button
+                        type="button"
+                        onClick={() => removeSize(index)}
+                        className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+                        <input
+                          type="text"
+                          value={size.name}
+                          onChange={(e) => updateSize(index, 'name', e.target.value)}
+                          className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              handleSizeImageUpload(index, e.target.files[0]);
+                            }
+                          }}
+                          className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 transition"
+                        />
+                        {size.image && (
+                          <div className="mt-2">
+                            <img src={size.image} alt="Size preview" className="h-20 w-20 object-cover rounded border" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                      <textarea
+                        value={size.description}
+                        onChange={(e) => updateSize(index, 'description', e.target.value)}
+                        rows={3}
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 dark:bg-gray-700 dark:text-white"
+                        required
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400 text-center py-4">No sizes added yet. Click "Add Size" to get started.</p>
+            )}
+          </div>
+
           <button type="submit" className="w-full bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-lg font-bold text-lg shadow transition disabled:opacity-60 disabled:cursor-not-allowed" disabled={loading}>{loading ? (id ? 'Updating...' : 'Saving...') : (id ? 'Update Product' : 'Save Product')}</button>
         </form>
       </div>

@@ -4,7 +4,7 @@ const Category = require('../models/Category');
 // Add a new product
 exports.addProduct = async (req, res) => {
   try {
-    const { title, description, featuredImage, gallery, brand, category, subCategory } = req.body;
+    const { title, description, featuredImage, gallery, brand, category, subCategory, flavors, sizes } = req.body;
     let mainCategory = category;
     let subCat = subCategory || '';
     // If subCategory is provided, set mainCategory to its parent
@@ -14,7 +14,17 @@ exports.addProduct = async (req, res) => {
         mainCategory = subCatDoc.parent.toString();
       }
     }
-    const product = new Product({ title, description, featuredImage: featuredImage || '', gallery: gallery || [], brand: brand || '', category: mainCategory || '', subCategory: subCat });
+    const product = new Product({ 
+      title, 
+      description, 
+      featuredImage: featuredImage || '', 
+      gallery: gallery || [], 
+      brand: brand || '', 
+      category: mainCategory || '', 
+      subCategory: subCat,
+      flavors: flavors || [],
+      sizes: sizes || []
+    });
     await product.save();
     res.status(201).json(product);
   } catch (err) {
@@ -26,7 +36,7 @@ exports.addProduct = async (req, res) => {
 // Edit an existing product
 exports.editProduct = async (req, res) => {
   try {
-    const { title, description, featuredImage, gallery, brand, category, subCategory } = req.body;
+    const { title, description, featuredImage, gallery, brand, category, subCategory, flavors, sizes } = req.body;
     let mainCategory = category;
     let subCat = subCategory || '';
     if (subCategory) {
@@ -35,7 +45,17 @@ exports.editProduct = async (req, res) => {
         mainCategory = subCatDoc.parent.toString();
       }
     }
-    const updateData = { title, description, featuredImage: featuredImage || '', gallery: gallery || [], brand: brand || '', category: mainCategory || '', subCategory: subCat };
+    const updateData = { 
+      title, 
+      description, 
+      featuredImage: featuredImage || '', 
+      gallery: gallery || [], 
+      brand: brand || '', 
+      category: mainCategory || '', 
+      subCategory: subCat,
+      flavors: flavors || [],
+      sizes: sizes || []
+    };
     const product = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!product) return res.status(404).json({ error: 'Product not found' });
     res.json(product);
