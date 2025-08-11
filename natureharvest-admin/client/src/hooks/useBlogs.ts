@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_BLOG, UPDATE_BLOG, DELETE_BLOG } from '../services/graphql/mutations';
 import { GET_ALL_BLOGS, GET_BLOG_BY_ID } from '../services/graphql/queries';
+import { useAuthGuard } from './useAuthGuard';
 
 // Blog mutations
 export const useCreateBlog = () => {
@@ -23,12 +24,16 @@ export const useDeleteBlog = () => {
 
 // Blog queries
 export const useBlogs = () => {
-  return useQuery(GET_ALL_BLOGS);
+  const { skipIfNotAuthenticated } = useAuthGuard();
+  return useQuery(GET_ALL_BLOGS, {
+    skip: skipIfNotAuthenticated
+  });
 };
 
 export const useBlog = (id: string) => {
+  const { skipIfNotAuthenticated } = useAuthGuard();
   return useQuery(GET_BLOG_BY_ID, { 
     variables: { id },
-    skip: !id 
+    skip: !id || skipIfNotAuthenticated
   });
 }; 

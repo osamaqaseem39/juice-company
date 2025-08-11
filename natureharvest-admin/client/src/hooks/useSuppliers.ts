@@ -1,8 +1,12 @@
 import { useQuery } from '@apollo/client';
 import { GET_ALL_SUPPLIERS, GET_SUPPLIER_BY_ID } from '../services/graphql/queries';
+import { useAuthGuard } from './useAuthGuard';
 
 export const useSuppliers = () => {
-  const { data, loading, error, refetch } = useQuery(GET_ALL_SUPPLIERS);
+  const { skipIfNotAuthenticated } = useAuthGuard();
+  const { data, loading, error, refetch } = useQuery(GET_ALL_SUPPLIERS, {
+    skip: skipIfNotAuthenticated
+  });
   
   return {
     data: data?.suppliers || [],
@@ -13,9 +17,10 @@ export const useSuppliers = () => {
 };
 
 export const useSupplier = (id: string) => {
+  const { skipIfNotAuthenticated } = useAuthGuard();
   const { data, loading, error, refetch } = useQuery(GET_SUPPLIER_BY_ID, {
     variables: { id },
-    skip: !id
+    skip: !id || skipIfNotAuthenticated
   });
   
   return {

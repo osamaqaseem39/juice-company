@@ -6,6 +6,7 @@ import {
   GET_ALL_QUOTES,
   GET_QUOTE_BY_ID
 } from '../services/graphql';
+import { useAuthGuard } from './useAuthGuard';
 
 // Create quote mutation
 export const useCreateQuote = () => {
@@ -30,15 +31,18 @@ export const useDeleteQuote = () => {
 
 // Get all quotes query
 export const useQuotes = () => {
+  const { skipIfNotAuthenticated } = useAuthGuard();
   return useQuery(GET_ALL_QUOTES, {
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
+    skip: skipIfNotAuthenticated
   });
 };
 
 // Get single quote query
 export const useQuote = (id: string) => {
+  const { skipIfNotAuthenticated } = useAuthGuard();
   return useQuery(GET_QUOTE_BY_ID, {
     variables: { id },
-    skip: !id
+    skip: !id || skipIfNotAuthenticated
   });
 }; 
