@@ -6,7 +6,7 @@ import Label from "../../components/form/Label";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Checkbox from "../../components/form/input/Checkbox";
 import PageMeta from "../../components/common/PageMeta";
-import { useRegister } from "../../services/api";
+import { useRegister } from "../../hooks/useAuth";
 
 interface FormData {
   firstName: string;

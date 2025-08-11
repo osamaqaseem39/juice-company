@@ -9,24 +9,21 @@ const serviceController = require('../controllers/serviceController');
  *     Service:
  *       type: object
  *       required:
- *         - name
+ *         - title
  *         - description
  *       properties:
  *         _id:
  *           type: string
  *           description: The auto-generated ID of the service
- *         name:
+ *         title:
  *           type: string
- *           description: Service name
+ *           description: The service title
  *         description:
  *           type: string
- *           description: Service description
- *         price:
- *           type: number
- *           description: Service price
- *         isActive:
- *           type: boolean
- *           description: Whether the service is active
+ *           description: The service description
+ *         featuredImage:
+ *           type: string
+ *           description: URL of the service featured image
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -40,6 +37,18 @@ const serviceController = require('../controllers/serviceController');
 /**
  * @swagger
  * /api/services:
+ *   get:
+ *     summary: Get all services
+ *     tags: [Services]
+ *     responses:
+ *       200:
+ *         description: List of all services
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Service'
  *   post:
  *     summary: Create a new service
  *     tags: [Services]
@@ -52,21 +61,18 @@ const serviceController = require('../controllers/serviceController');
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - title
  *               - description
  *             properties:
- *               name:
+ *               title:
  *                 type: string
- *                 description: Service name
+ *                 description: Service title
  *               description:
  *                 type: string
  *                 description: Service description
- *               price:
- *                 type: number
- *                 description: Service price
- *               isActive:
- *                 type: boolean
- *                 description: Whether the service is active
+ *               featuredImage:
+ *                 type: string
+ *                 description: URL of the service image
  *     responses:
  *       201:
  *         description: Service created successfully
@@ -98,6 +104,25 @@ router.post('/', serviceController.addService);
 /**
  * @swagger
  * /api/services/{id}:
+ *   get:
+ *     summary: Get a service by ID
+ *     tags: [Services]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Service ID
+ *     responses:
+ *       200:
+ *         description: Service details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Service'
+ *       404:
+ *         description: Service not found
  *   put:
  *     summary: Update a service
  *     tags: [Services]
@@ -117,18 +142,15 @@ router.post('/', serviceController.addService);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               title:
  *                 type: string
- *                 description: Service name
+ *                 description: Service title
  *               description:
  *                 type: string
  *                 description: Service description
- *               price:
- *                 type: number
- *                 description: Service price
- *               isActive:
- *                 type: boolean
- *                 description: Whether the service is active
+ *               featuredImage:
+ *                 type: string
+ *                 description: URL of the service image
  *     responses:
  *       200:
  *         description: Service updated successfully

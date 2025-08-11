@@ -101,9 +101,9 @@ const BrandList: React.FC = () => {
                   {sorted.map((b: Brand) => (
                     <tr key={b._id} className="border-t hover:bg-gray-50">
                       <td className="px-4 py-2 border">
-                        {b.image && (
+                        {b.logo && (
                           <img 
-                            src={`${b.image.replace('uploads', 'uploads')}`} 
+                            src={`${b.logo.replace('uploads', 'uploads')}`} 
                             alt={b.name} 
                             className="w-16 h-16 object-cover rounded" 
                           />

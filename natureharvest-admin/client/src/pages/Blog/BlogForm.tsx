@@ -13,7 +13,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
   const { id } = useParams<{ id: string }>();
   const [createBlog] = useCreateBlog();
   const [updateBlog] = useUpdateBlog();
-  const { data: blogData, loading: blogLoading } = useBlog(id || '');
+  const { data: blogData } = useBlog(id || '');
   
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -30,12 +30,21 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
       .replace(/-{2,}/g, '-');
   };
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    content: string;
+    status: string;
+    featuredImage: string;
+    tags: string[];
+  }>({
     title: '',
     content: '',
     status: 'draft',
-    featuredImage: ''
+    featuredImage: '',
+    tags: []
   });
+
+
 
 
 
@@ -90,7 +99,8 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
         title: blog.title || '',
         content: blog.content || '',
         status: blog.status || 'draft',
-        featuredImage: blog.featuredImage || ''
+        featuredImage: blog.featuredImage || '',
+        tags: blog.tags || []
       });
       setPreviewFeatured(blog.featuredImage || null);
     }
@@ -256,6 +266,24 @@ const BlogForm: React.FC<BlogFormProps> = ({ mode }) => {
             <option value="draft">Draft</option>
             <option value="published">Published</option>
           </select>
+        </div>
+
+        <div>
+          <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Tags
+          </label>
+          <input
+            type="text"
+            id="tags"
+            name="tags"
+            value={formData.tags.join(', ')}
+            onChange={(e) => {
+              const tagsArray = e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+              setFormData(prev => ({ ...prev, tags: tagsArray }));
+            }}
+            placeholder="Enter tags separated by commas"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-logo-red focus:ring-logo-red dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          />
         </div>
 
         <div>

@@ -9,7 +9,7 @@ import Label from "../../components/form/Label";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Button from "../../components/ui/button/Button";
 import PageMeta from "../../components/common/PageMeta";
-import { useLogin } from "../../services/api";
+import { useLogin } from "../../hooks";
 
 interface LocationState {
   from?: {

@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
-const BASE_URL = 'https://trading-company-bcyf.vercel.app';
+import { API_BASE_URL, ENV } from '../../config/env';
 
 interface AuthState {
   user: any;
@@ -13,7 +12,7 @@ interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem(ENV.AUTH_TOKEN_KEY),
   isAuthenticated: false,
   loading: false,
   error: null,
@@ -23,8 +22,8 @@ export const register = createAsyncThunk(
   'auth/register',
   async (userData: { username: string; email: string; password: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/register`, userData);
-      localStorage.setItem('token', response.data.token);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/register`, userData);
+      localStorage.setItem(ENV.AUTH_TOKEN_KEY, response.data.token);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Registration failed');
@@ -36,8 +35,8 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/login`, credentials);
-      localStorage.setItem('token', response.data.token);
+      const response = await axios.post(`${API_BASE_URL}/api/auth/login`, credentials);
+      localStorage.setItem(ENV.AUTH_TOKEN_KEY, response.data.token);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Login failed');
@@ -50,7 +49,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      localStorage.removeItem('token');
+      localStorage.removeItem(ENV.AUTH_TOKEN_KEY);
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;

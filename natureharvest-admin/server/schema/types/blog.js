@@ -19,6 +19,7 @@ const blogTypes = gql`
     content: String!
     author: String
     featuredImage: String
+    slug: String
     tags: [String!]
     status: String
   }
@@ -28,6 +29,7 @@ const blogTypes = gql`
     content: String
     author: String
     featuredImage: String
+    slug: String
     tags: [String!]
     status: String
   }

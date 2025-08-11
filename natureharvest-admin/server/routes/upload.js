@@ -40,7 +40,7 @@ const upload = multer({
 });
 
 // Upload endpoint
-router.post('/api/upload', upload.single('file'), (req, res) => {
+router.post('/upload', upload.single('file'), (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ 

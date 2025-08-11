@@ -27,7 +27,7 @@ interface ProductFormData {
   description: string;
   brandId: string;
   categoryId: string;
-  images: string[];
+  gallery: string[];
   status: string;
 }
 
@@ -36,7 +36,7 @@ const validationRules: Record<keyof ProductFormData, ValidationRule> = {
   description: { required: true, minLength: 10 },
   brandId: { required: false },
   categoryId: { required: false },
-  images: { required: false },
+  gallery: { required: false },
   status: { required: true }
 };
 
@@ -45,7 +45,7 @@ const ProductForm: React.FC = () => {
   const navigate = useNavigate();
   const [createProduct] = useCreateProduct();
   const [updateProduct] = useUpdateProduct();
-  const { data: productData, loading: productLoading } = useProduct(id || '');
+  const { data: productData } = useProduct(id || '');
   const { data: brandsData } = useBrands();
   const { data: categoriesData } = useCategories();
 
@@ -54,7 +54,7 @@ const ProductForm: React.FC = () => {
     description: '',
     brandId: '',
     categoryId: '',
-    images: [],
+    gallery: [],
     status: 'active'
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -76,7 +76,7 @@ const ProductForm: React.FC = () => {
         description: product.description || '',
         brandId: product.brandId?._id || '',
         categoryId: product.categoryId?._id || '',
-        images: product.images || [],
+        gallery: product.gallery || [],
         status: product.status || 'active'
       });
     }
@@ -107,7 +107,7 @@ const ProductForm: React.FC = () => {
       
       setFormData(prev => ({ 
         ...prev, 
-        images: [...prev.images, url] 
+        gallery: [...prev.gallery, url] 
       }));
       
       return url;
@@ -295,9 +295,9 @@ const ProductForm: React.FC = () => {
                 uploadProgress={uploadProgress}
               />
               
-              {formData.images.length > 0 && (
+              {formData.gallery.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {formData.images.map((image, index) => (
+                  {formData.gallery.map((image, index) => (
                     <div key={index} className="relative">
                       <img 
                         src={image} 
@@ -309,7 +309,7 @@ const ProductForm: React.FC = () => {
                         className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition"
                         onClick={() => setFormData(prev => ({
                           ...prev,
-                          images: prev.images.filter((_, i) => i !== index)
+                          gallery: prev.gallery.filter((_, i) => i !== index)
                         }))}
                         title="Remove image"
                       >

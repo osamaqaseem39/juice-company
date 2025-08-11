@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useCreateCategory, useUpdateCategory, useCategory, useCategories } from '../../services/apiService';
+import { useCreateCategory, useUpdateCategory, useCategory } from '../../services/apiService';
 import { 
   FormField, 
   ImageUpload, 
@@ -38,7 +38,7 @@ const CategoryForm: React.FC<{ mode?: CategoryFormMode }> = ({ mode }) => {
   const [createCategory] = useCreateCategory();
   const [updateCategory] = useUpdateCategory();
   const { data: categoryData } = useCategory(id || '');
-  const { data: categoriesData } = useCategories();
+  // const { data: categoriesData } = useCategories();
   
   const [formData, setFormData] = useState<CategoryFormData>({
     name: '',

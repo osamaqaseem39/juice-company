@@ -24,7 +24,10 @@ const blogSchema = new mongoose.Schema({
     enum: ['draft', 'published'],
     default: 'draft'
   },
-  
+  tags: {
+    type: [String],
+    default: []
+  },
   slug: {
     type: String,
     unique: true

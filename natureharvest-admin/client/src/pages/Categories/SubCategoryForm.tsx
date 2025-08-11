@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { categoryApi, subcategoryApi, Category } from '../../services/api';
+import { useCreateSubcategory, useUpdateSubcategory, useSubcategory } from '../../services/apiService';
+import { useCategories } from '../../hooks/useCategories';
+import { UPLOAD_URL } from '../../config/env';
 
 const initialState = {
   name: '',
@@ -97,7 +100,7 @@ const SubCategoryForm: React.FC<{ mode?: SubCategoryFormMode }> = ({ mode }) => 
       const uniqueName = `${Date.now()}-subcategory-${Math.random().toString(36).substring(2, 8)}.${ext}`;
       formData.append('file', file, uniqueName);
       const xhr = new XMLHttpRequest();
-              xhr.open('POST', 'https://natureharvest.osamaqaseem.online/upload.php');
+      xhr.open('POST', UPLOAD_URL);
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable) {
           setUploadProgress(Math.round((event.loaded / event.total) * 100));

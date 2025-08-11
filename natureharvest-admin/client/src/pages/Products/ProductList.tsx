@@ -125,12 +125,12 @@ const ProductList: React.FC = () => {
                   {sorted.map((product) => (
                     <tr key={product._id} className="border-t hover:bg-gray-50">
                       <td className="px-4 py-2 border">
-                        {product.images && product.images.length > 0 && (
+                        {product.gallery && product.gallery.length > 0 && (
                           <img
-                            src={product.images[0].replace('server/', '')}
+                            src={product.gallery[0].replace('server/', '')}
                             alt={product.name}
                             className="w-12 h-12 object-cover rounded cursor-pointer"
-                            onClick={() => openModal(product.images![0]!)}
+                            onClick={() => openModal(product.gallery![0]!)}
                           />
                         )}
                       </td>

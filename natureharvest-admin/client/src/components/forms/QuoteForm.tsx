@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useUpdateQuote } from '../../services/apiService';
+import { useUpdateQuote } from '../../hooks';
 
 interface QuoteFormData {
   name: string;

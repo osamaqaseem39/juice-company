@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useCreateService, useUpdateService, useService } from '../../services/apiService';
+import { UPLOAD_URL } from '../../config/env';
 
 // Service-specific image upload
 async function uploadServiceImage(file: File): Promise<string> {
@@ -8,7 +9,7 @@ async function uploadServiceImage(file: File): Promise<string> {
   const ext = file.name.split('.').pop();
   const uniqueName = `${Date.now()}-service-${Math.random().toString(36).substring(2, 8)}.${ext}`;
   formData.append('file', file, uniqueName);
-  const response = await fetch('https://natureharvest.osamaqaseem.online/upload.php', {
+  const response = await fetch(UPLOAD_URL, {
     method: 'POST',
     body: formData,
   });
@@ -32,7 +33,7 @@ const ServiceForm: React.FC = () => {
   const navigate = useNavigate();
   const [createService] = useCreateService();
   const [updateService] = useUpdateService();
-  const { data: serviceData, loading: serviceLoading } = useService(id || '');
+  const { data: serviceData } = useService(id || '');
   
   const isEdit = Boolean(id);
 
@@ -67,8 +68,6 @@ const ServiceForm: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

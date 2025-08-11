@@ -19,29 +19,31 @@ const graphqlAuth = require('./middleware/graphqlAuth');
 // Load environment variables
 dotenv.config();
 
+// Import environment configuration
+const ENV = require('./config/env');
+
 const app = express();
 
 // Middleware - CORS must be first!
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://localhost:5173',
-  'http://localhost:4173',
-  'https://natureharvest.osamaqaseem.online',
-  'https://juice-company-server.vercel.app',
-  'https://natureharvest-admin.vercel.app',
-  'https://natureharvest-web.vercel.app'
-];
+const allowedOrigins = ENV.ALLOWED_ORIGINS;
 
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
+    // In development, allow all origins
+    if (ENV.IS_DEVELOPMENT) {
+      return callback(null, true);
+    }
+    
+    // In production, check against allowed origins
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log(`CORS blocked origin: ${origin}`);
+      console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
+      callback(null, false); // Don't throw error, just return false
     }
   },
   credentials: true,
@@ -80,6 +82,14 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Set proper MIME types for JavaScript files
+app.use((req, res, next) => {
+  if (req.path.endsWith('.js')) {
+    res.setHeader('Content-Type', 'application/javascript');
+  }
+  next();
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -113,14 +123,29 @@ app.use((req, res, next) => {
 app.options('*', cors());
 
 // Swagger documentation
-if (process.env.NODE_ENV !== 'production') {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { explorer: true }));
+try {
+  // Serve the swagger spec as JSON FIRST (before Swagger UI)
+  app.get('/api-docs/swagger.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpecs);
+  });
+  
+  // Then serve Swagger UI
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, { 
+    explorer: true,
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Juice Company API Documentation'
+  }));
+  
+  console.log('✅ Swagger documentation configured successfully');
+} catch (error) {
+  console.error('❌ Error configuring Swagger:', error);
 }
 
 // MongoDB Connection with retry logic
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGODB_URI;
+    const mongoURI = ENV.MONGODB_URI;
     
     if (!mongoURI) {
       console.error('❌ MONGODB_URI environment variable is not set');
@@ -193,6 +218,7 @@ const httpServer = http.createServer(app);
 const server = new ApolloServer({
   schema,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  introspection: true, // Enable introspection for development and production
   context: async ({ req }) => {
     const auth = await graphqlAuth(req);
     return {
@@ -204,7 +230,6 @@ const server = new ApolloServer({
         Brand: require('./models/Brand'),
         Category: require('./models/Category'),
         SubCategory: require('./models/SubCategory'),
-        Supplier: require('./models/SupplierRequest'),
         Quote: require('./models/Quote'),
         Service: require('./models/Service'),
         Company: require('./models/Company'),
@@ -237,7 +262,8 @@ app.use('/api/brands', require('./routes/brands'));
 app.use('/api/services', require('./routes/services'));
 app.use('/api/quotes', require('./routes/quotes'));
 app.use('/api/blogs', require('./routes/blogs'));
-app.use('/', require('./routes/upload'));
+app.use('/api/flavors', require('./routes/flavors'));
+app.use('/api', require('./routes/upload'));
 
 /**
  * @swagger
@@ -383,7 +409,7 @@ const startServer = async () => {
     console.error('For Vercel deployment, set MONGODB_URI in your project settings');
     
     // In production, we might want to start the server anyway for health checks
-    if (process.env.NODE_ENV === 'production') {
+    if (ENV.IS_PRODUCTION) {
       console.log('Starting server in degraded mode (no database connection)');
     } else {
       process.exit(1);
@@ -399,10 +425,18 @@ const startServer = async () => {
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       
+      // In development, allow all origins
+      if (ENV.IS_DEVELOPMENT) {
+        return callback(null, true);
+      }
+      
+      // In production, check against allowed origins
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        console.log(`GraphQL CORS blocked origin: ${origin}`);
+        console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
+        callback(null, false); // Don't throw error, just return false
       }
     },
     credentials: true,
@@ -429,7 +463,6 @@ const startServer = async () => {
           Brand: require('./models/Brand'),
           Category: require('./models/Category'),
           SubCategory: require('./models/SubCategory'),
-
           Quote: require('./models/Quote'),
           Service: require('./models/Service'),
           Company: require('./models/Company'),
@@ -439,13 +472,11 @@ const startServer = async () => {
     }
   }));
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = ENV.PORT;
   httpServer.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
-    console.log(`🔗 GraphQL endpoint: http://localhost:${PORT}/graphql`);
-    if (process.env.NODE_ENV !== 'production') {
-      console.log(`📚 Swagger documentation available at /api-docs`);
-    }
+    console.log(`🔗 GraphQL endpoint: ${ENV.GRAPHQL_URL}`);
+    console.log(`📚 Swagger documentation available at ${ENV.SWAGGER_URL}`);
   });
 };
 

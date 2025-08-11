@@ -40,7 +40,7 @@ const blogResolvers = {
         console.log('Creating blog with input:', input);
         console.log('User context:', context.user);
 
-        const { title, content, author, featuredImage, tags, status = 'draft' } = input;
+        const { title, content, author, featuredImage, tags, status = 'draft', slug } = input;
 
         const blog = new Blog({
           title,
@@ -48,7 +48,8 @@ const blogResolvers = {
           author: author || context.user.userId,
           featuredImage,
           status,
-          tags
+          tags,
+          slug
         });
 
         console.log('Blog object before save:', blog);
@@ -69,7 +70,7 @@ const blogResolvers = {
         console.log('Updating blog with id:', id);
         console.log('Update input:', input);
 
-        const { title, content, author, featuredImage, tags, status } = input;
+        const { title, content, author, featuredImage, tags, status, slug } = input;
         const updateData = {};
 
         if (title) updateData.title = title;
@@ -78,6 +79,7 @@ const blogResolvers = {
         if (featuredImage !== undefined) updateData.featuredImage = featuredImage;
         if (tags) updateData.tags = tags;
         if (status) updateData.status = status;
+        if (slug) updateData.slug = slug;
 
         console.log('Update data:', updateData);
 

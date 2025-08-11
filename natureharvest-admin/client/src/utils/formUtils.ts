@@ -1,4 +1,6 @@
 // Form validation utilities
+import { UPLOAD_URL } from '../config/env';
+
 export interface ValidationRule {
   required?: boolean;
   minLength?: number;
@@ -55,8 +57,8 @@ export const uploadImage = async (file: File, type: string = 'general'): Promise
   const uniqueName = `${Date.now()}-${type}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
   formData.append('file', file, uniqueName);
 
-  // Use external upload server
-  const response = await fetch('https://natureharvest.osamaqaseem.online/upload.php', {
+  // Use environment-specific upload URL
+  const response = await fetch(UPLOAD_URL, {
     method: 'POST',
     body: formData,
   });
@@ -81,8 +83,8 @@ export const uploadImageWithProgress = (
     formData.append('file', file, uniqueName);
 
     const xhr = new XMLHttpRequest();
-    // Use external upload server
-    xhr.open('POST', 'https://natureharvest.osamaqaseem.online/upload.php');
+    // Use environment-specific upload URL
+    xhr.open('POST', UPLOAD_URL);
 
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable && onProgress) {

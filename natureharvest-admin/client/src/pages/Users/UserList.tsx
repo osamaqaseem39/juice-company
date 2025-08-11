@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useUsers, useDeleteUser } from '../../services/api';
+import { useUsers, useRemoveUser } from '../../services/api';
 
 const UserList: React.FC = () => {
   const { data, loading, error, refetch } = useUsers();
-  const [deleteUser] = useDeleteUser();
+  const deleteUser = useRemoveUser();
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {

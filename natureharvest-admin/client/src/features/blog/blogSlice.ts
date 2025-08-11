@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { API_BASE_URL, ENV } from '../../config/env';
 
 interface Blog {
   _id: string;
@@ -27,7 +28,7 @@ const initialState: BlogState = {
 
 export const fetchBlogs = createAsyncThunk('blogs/fetchAll', async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.get('http://localhost:3000/api/blogs');
+    const response = await axios.get(`${API_BASE_URL}/api/blogs`);
     return response.data;
   } catch (error: any) {
     return rejectWithValue(error.response.data.message);
@@ -38,7 +39,7 @@ export const fetchBlogById = createAsyncThunk(
   'blogs/fetchById',
   async (_id: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/blogs/id/${_id}`);
+      const response = await axios.get(`${API_BASE_URL}/api/blogs/id/${_id}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data.message);
@@ -50,7 +51,7 @@ export const fetchBlogBySlug = createAsyncThunk(
   'blogs/fetchBySlug',
   async (slug: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/blogs/${slug}`);
+      const response = await axios.get(`${API_BASE_URL}/api/blogs/${slug}`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data.message);
@@ -63,7 +64,7 @@ export const createBlog = createAsyncThunk(
   async (blogData: Omit<Blog, '_id' | 'slug'>, { rejectWithValue, getState }: any) => {
     try {
       const token = getState().auth.token;
-      const response = await axios.post('http://localhost:3000/api/blogs', blogData, {
+      const response = await axios.post(`${API_BASE_URL}/api/blogs`, blogData, {
         headers: { 'x-auth-token': token },
       });
       return response.data;
@@ -81,7 +82,7 @@ export const updateBlog = createAsyncThunk(
   ) => {
     try {
       const token = getState().auth.token;
-      const response = await axios.put(`http://localhost:3000/api/blogs/${_id}`, blogData, {
+      const response = await axios.put(`${API_BASE_URL}/api/blogs/${_id}`, blogData, {
         headers: { 'x-auth-token': token },
       });
       return response.data;
@@ -96,7 +97,7 @@ export const deleteBlog = createAsyncThunk(
   async (_id: string, { rejectWithValue, getState }: any) => {
     try {
       const token = getState().auth.token;
-      await axios.delete(`http://localhost:3000/api/blogs/${_id}`, {
+      await axios.delete(`${API_BASE_URL}/api/blogs/${_id}`, {
         headers: { 'x-auth-token': token },
       });
       return _id;

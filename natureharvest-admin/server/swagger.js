@@ -23,7 +23,7 @@ const options = {
         description: 'Production Server',
       },
       {
-        url: 'http://localhost:3000',
+        url: 'http://localhost:3002',
         description: 'Development Server',
       },
     ],
@@ -96,6 +96,10 @@ const options = {
         description: 'Brand management endpoints'
       },
       {
+        name: 'Flavors',
+        description: 'Flavor and size management endpoints'
+      },
+      {
         name: 'Services',
         description: 'Service management endpoints'
       },
@@ -109,9 +113,18 @@ const options = {
       }
     ]
   },
-  apis: ['./routes/*.js', './models/*.js'],
+  apis: ['./routes/*.js', './models/*.js', './controllers/*.js'],
 };
 
 const specs = swaggerJsdoc(options);
+
+// Validate that specs were generated properly
+if (!specs || !specs.paths) {
+  console.error('❌ Swagger specs generation failed');
+  console.error('Specs object:', specs);
+} else {
+  console.log('✅ Swagger specs generated successfully');
+  console.log('Available paths:', Object.keys(specs.paths || {}));
+}
 
 module.exports = specs; 

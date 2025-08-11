@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCoupons, useDeleteCoupon } from '../../services/api';
+// TODO: Implement useCoupons and useDeleteCoupon or remove this component
+// import { useCoupons, useDeleteCoupon } from '../../services/api';
 
 const CouponList: React.FC = () => {
-  const { data, loading, error, refetch } = useCoupons();
-  const [deleteCoupon] = useDeleteCoupon();
+  // TODO: Implement useCoupons and useDeleteCoupon
+  // const { data, loading, error, refetch } = useCoupons();
+  // const [deleteCoupon] = useDeleteCoupon();
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this coupon?')) {
       setDeletingId(id);
-      try {
-        await deleteCoupon({ variables: { id } });
-        refetch();
-      } catch (err) {
+              try {
+          // TODO: Implement deleteCoupon and refetch
+          // await deleteCoupon({ variables: { id } });
+          // refetch();
+        } catch (err) {
         console.error('Error deleting coupon:', err);
       } finally {
         setDeletingId(null);
@@ -53,25 +56,27 @@ const CouponList: React.FC = () => {
     return type === 'percentage' ? `${value}%` : `$${value.toFixed(2)}`;
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
-      </div>
-    );
-  }
+  // TODO: Implement loading, error, and data handling
+  // if (loading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
+  //     </div>
+  //   );
+  // }
 
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          Error loading coupons: {error.message}
-        </div>
-      </div>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     <div className="container mx-auto px-4 py-8">
+  //       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+  //         Error loading coupons: {error.message}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  const coupons = data?.coupons || [];
+  // const coupons = data?.coupons || [];
+  const coupons: any[] = []; // Temporary empty array
 
   return (
     <div className="container mx-auto px-4 py-8">

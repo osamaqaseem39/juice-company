@@ -6,6 +6,7 @@ import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
 
 const LayoutContent: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
 
   return (
