@@ -188,6 +188,98 @@ app.use('/uploads/products', express.static(path.join(__dirname, '../uploads/pro
 app.use('/uploads/brochures', express.static(path.join(__dirname, '../uploads/brochures')));
 app.use('/uploads/brand-category', express.static(path.join(__dirname, '../uploads/brand-category')));
 
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: API Health Check
+ *     description: Check the health status of the API and database connection
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Health check successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   enum: [healthy, unhealthy]
+ *                   description: Overall API health status
+ *                 message:
+ *                   type: string
+ *                   description: Health status message
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ *                   description: Current timestamp
+ *                 mongodb:
+ *                   type: object
+ *                   properties:
+ *                     isConnected:
+ *                       type: boolean
+ *                       description: MongoDB connection status
+ *                     state:
+ *                       type: string
+ *                       description: MongoDB connection state
+ *                     database:
+ *                       type: string
+ *                       description: Database name
+ *                     host:
+ *                       type: string
+ *                       description: Database host
+ *                     port:
+ *                       type: string
+ *                       description: Database port
+ *                     models:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       description: Available models
+ *                     collections:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       description: Available collections
+ *                 server:
+ *                   type: object
+ *                   properties:
+ *                     uptime:
+ *                       type: number
+ *                       description: Server uptime in seconds
+ *                     memory:
+ *                       type: object
+ *                       description: Memory usage statistics
+ *                     cpu:
+ *                       type: object
+ *                       description: CPU usage statistics
+ *                     env:
+ *                       type: string
+ *                       description: Environment name
+ *                     nodeVersion:
+ *                       type: string
+ *                       description: Node.js version
+ *                     platform:
+ *                       type: string
+ *                       description: Platform information
+ *       503:
+ *         description: Service unavailable - database not connected
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Database connection not ready"
+ *                 state:
+ *                   type: string
+ *                   description: Database connection state
+ *                 details:
+ *                   type: object
+ *                   description: Connection details
+ */
 // Root route for API health check
 app.get('/', (req, res) => {
   const mongoStatus = {

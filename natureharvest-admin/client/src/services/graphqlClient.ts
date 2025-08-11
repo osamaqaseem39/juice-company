@@ -18,27 +18,45 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
+const errorLink = onError(({ graphQLErrors, networkError, operation }) => {
+  console.log('GraphQL error link triggered:', { 
+    hasGraphQLErrors: !!graphQLErrors?.length, 
+    hasNetworkError: !!networkError,
+    operation: operation?.operationName 
+  });
+  
   if (graphQLErrors) {
     graphQLErrors.forEach(({ message, locations, path }) => {
       console.error(
         `GraphQL error: Message: ${message}, Location: ${locations}, Path: ${path}`
       );
-      // If it's an authentication error, redirect to login
-      if (message.includes('Authentication required') || message.includes('An error occurred while processing your request')) {
-        // Clear any stored auth token
+      
+      // Only redirect on specific authentication errors, not all errors
+      if (message.includes('Authentication required') || 
+          message.includes('Unauthorized') ||
+          message.includes('Token expired') ||
+          message.includes('Invalid token')) {
+        console.log('Authentication error detected, redirecting to login');
         clearStoredToken();
-        // Redirect to login page
-        window.location.href = '/signin';
+        // Only redirect if not already on login page
+        if (window.location.pathname !== '/signin') {
+          window.location.href = '/signin';
+        }
       }
     });
   }
+  
   if (networkError) {
     console.error('Network error:', networkError);
-    // Handle 400 errors as authentication issues
-    if ('statusCode' in networkError && networkError.statusCode === 400) {
+    
+    // Only handle 401 (Unauthorized) errors as authentication issues
+    if ('statusCode' in networkError && networkError.statusCode === 401) {
+      console.log('401 Unauthorized error detected, redirecting to login');
       clearStoredToken();
-      window.location.href = '/signin';
+      // Only redirect if not already on login page
+      if (window.location.pathname !== '/signin') {
+        window.location.href = '/signin';
+      }
     }
   }
 });

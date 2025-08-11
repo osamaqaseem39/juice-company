@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
-const User = require('../models/User');
-const { registerUser } = require('../controllers/authController');
+const authController = require('../controllers/authController');
 
 /**
  * @swagger
@@ -85,54 +82,50 @@ const { registerUser } = require('../controllers/authController');
  *             properties:
  *               username:
  *                 type: string
- *                 minLength: 3
- *                 description: User's username
+ *                 description: Username for the new account
+ *                 example: "john_doe"
  *               email:
  *                 type: string
  *                 format: email
- *                 description: User's email
+ *                 description: Email address for the new account
+ *                 example: "john@example.com"
  *               password:
  *                 type: string
- *                 format: password
- *                 minLength: 6
- *                 description: User's password
+ *                 description: Password for the new account
+ *                 example: "password123"
  *     responses:
  *       201:
  *         description: User registered successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/AuthResponse'
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT authentication token
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
  *       400:
- *         description: Invalid input or user already exists
+ *         description: Bad request - validation error
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 errors:
- *                   type: array
- *                   items:
- *                     type: object
- *       500:
- *         description: Server error
+ *               $ref: '#/components/schemas/Error'
+ *       409:
+ *         description: Conflict - user already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
-router.post('/register',
-  [
-    body('username').trim().isLength({ min: 3 }),
-    body('email').isEmail().normalizeEmail(),
-    body('password').isLength({ min: 6 })
-  ],
-  registerUser
-);
+router.post('/register', authController.register);
 
 /**
  * @swagger
  * /api/auth/login:
  *   post:
- *     summary: Login a user
+ *     summary: Login user
  *     tags: [Authentication]
  *     requestBody:
  *       required: true
@@ -147,81 +140,62 @@ router.post('/register',
  *               email:
  *                 type: string
  *                 format: email
- *                 description: User's email
+ *                 description: Email address
+ *                 example: "john@example.com"
  *               password:
  *                 type: string
- *                 format: password
- *                 description: User's password
+ *                 description: Password
+ *                 example: "password123"
  *     responses:
  *       200:
  *         description: Login successful
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/AuthResponse'
- *       400:
- *         description: Invalid credentials
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   description: JWT authentication token
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized - invalid credentials
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *       500:
- *         description: Server error
+ *               $ref: '#/components/schemas/Error'
+ *       400:
+ *         description: Bad request - validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
-router.post('/login',
-  [
-    body('email').isEmail().normalizeEmail(),
-    body('password').exists()
-  ],
-  async (req, res) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
+router.post('/login', authController.login);
 
-      const { email, password } = req.body;
-
-      // Check if user exists
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(400).json({ message: 'Invalid credentials' });
-      }
-
-      // Verify password
-      const isMatch = await user.comparePassword(password);
-      if (!isMatch) {
-        return res.status(400).json({ message: 'Invalid credentials' });
-      }
-
-      // Create JWT token
-      const token = jwt.sign(
-        { userId: user._id },
-        process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '24h' }
-      );
-
-      res.json({
-        token,
-        user: {
-          id: user._id,
-          username: user.username,
-          email: user.email,
-          role: user.role
-        }
-      });
-    } catch (error) {
-      console.error('Login error:', error);
-      console.error('Request body:', req.body);
-      res.status(500).json({ 
-        message: 'Server error during login',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
-      });
-    }
-  }
-);
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get current user profile
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user profile retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized - token required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.get('/me', authController.getMe);
 
 module.exports = router; 

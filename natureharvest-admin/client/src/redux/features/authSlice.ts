@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getStoredToken, clearStoredToken } from '../../utils/authUtils';
+import { ENV } from '../../config/env';
 
 interface AuthState {
   token: string | null;
@@ -32,7 +33,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.token = action.payload.token;
       state.user = action.payload.user;
-      localStorage.setItem('auth_token', action.payload.token);
+      localStorage.setItem(ENV.AUTH_TOKEN_KEY, action.payload.token);
     },
     loginFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
