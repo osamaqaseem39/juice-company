@@ -34,30 +34,7 @@ const ecommerceSchema = gql`
 
 
 
-  # ------------------------
-  # Category & Brand
-  # ------------------------
-  type Category {
-    _id: ID!
-    name: String!
-    slug: String!
-    parentCategoryId: ID
-    description: String
-    imageUrl: String
-    seo: SEO
-    isActive: Boolean
-    createdAt: Date
-  }
 
-  type Brand {
-    _id: ID!
-    name: String!
-    description: String
-    logoUrl: String
-    website: String
-    seo: SEO
-    isActive: Boolean
-  }
 
   # ------------------------
   # Product & Variants
@@ -235,24 +212,7 @@ const ecommerceSchema = gql`
     isActive: Boolean
   }
 
-  input CategoryInput {
-    name: String!
-    slug: String!
-    parentCategoryId: ID
-    description: String
-    imageUrl: String
-    seo: SEOInput
-    isActive: Boolean
-  }
 
-  input BrandInput {
-    name: String!
-    description: String
-    logoUrl: String
-    website: String
-    seo: SEOInput
-    isActive: Boolean
-  }
 
 
 
@@ -350,14 +310,7 @@ const ecommerceSchema = gql`
     user(id: ID!): User
     me: User
 
-    # Category queries
-    categories: [Category!]!
-    category(id: ID!): Category
-    categoryBySlug(slug: String!): Category
 
-    # Brand queries
-    brands: [Brand!]!
-    brand(id: ID!): Brand
 
 
 
@@ -412,15 +365,7 @@ const ecommerceSchema = gql`
     updateUser(id: ID!, input: UserInput!): User!
     deleteUser(id: ID!): Boolean!
 
-    # Category mutations
-    createCategory(input: CategoryInput!): Category!
-    updateCategory(id: ID!, input: CategoryInput!): Category!
-    deleteCategory(id: ID!): Boolean!
 
-    # Brand mutations
-    createBrand(input: BrandInput!): Brand!
-    updateBrand(id: ID!, input: BrandInput!): Brand!
-    deleteBrand(id: ID!): Boolean!
 
 
 

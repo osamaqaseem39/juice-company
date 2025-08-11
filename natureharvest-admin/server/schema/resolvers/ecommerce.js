@@ -1,7 +1,6 @@
 const User = require('../../models/User');
 const Address = require('../../models/Address');
-const Category = require('../../models/Category');
-const Brand = require('../../models/Brand');
+
 
 const Cart = require('../../models/Cart');
 const Wishlist = require('../../models/Wishlist');
@@ -29,24 +28,7 @@ const resolvers = {
       return await User.findById(user.id).populate('addresses');
     },
 
-    // Category queries
-    categories: async () => {
-      return await Category.find({ isActive: true });
-    },
-    category: async (_, { id }) => {
-      return await Category.findById(id);
-    },
-    categoryBySlug: async (_, { slug }) => {
-      return await Category.findOne({ slug, isActive: true });
-    },
 
-    // Brand queries
-    brands: async () => {
-      return await Brand.find({ isActive: true });
-    },
-    brand: async (_, { id }) => {
-      return await Brand.findById(id);
-    },
 
 
 
@@ -181,31 +163,7 @@ const resolvers = {
       return true;
     },
 
-    // Category mutations
-    createCategory: async (_, { input }) => {
-      const category = new Category(input);
-      return await category.save();
-    },
-    updateCategory: async (_, { id, input }) => {
-      return await Category.findByIdAndUpdate(id, input, { new: true });
-    },
-    deleteCategory: async (_, { id }) => {
-      await Category.findByIdAndDelete(id);
-      return true;
-    },
 
-    // Brand mutations
-    createBrand: async (_, { input }) => {
-      const brand = new Brand(input);
-      return await brand.save();
-    },
-    updateBrand: async (_, { id, input }) => {
-      return await Brand.findByIdAndUpdate(id, input, { new: true });
-    },
-    deleteBrand: async (_, { id }) => {
-      await Brand.findByIdAndDelete(id);
-      return true;
-    },
 
 
 
