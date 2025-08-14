@@ -43,27 +43,27 @@ export default function Ecommerce() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-indigo-600">{products.length}</span>
+          <span className="text-4xl font-bold text-brand-500">{products.length}</span>
           <span className="mt-2 text-lg font-semibold">Products</span>
         </div>
         <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-green-600">{blogs.length}</span>
+          <span className="text-4xl font-bold text-nature-500">{blogs.length}</span>
           <span className="mt-2 text-lg font-semibold">Blogs</span>
         </div>
         <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-purple-600">{services.length}</span>
+          <span className="text-4xl font-bold text-success-500">{services.length}</span>
           <span className="mt-2 text-lg font-semibold">Services</span>
         </div>
         <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-orange-600">{quotes.filter(q => q.status === 'pending').length}</span>
+          <span className="text-4xl font-bold text-earth-500">{quotes.filter(q => q.status === 'pending').length}</span>
           <span className="mt-2 text-lg font-semibold">Pending Messages</span>
         </div>
         <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-blue-600">{categories.length}</span>
+          <span className="text-4xl font-bold text-brand-600">{categories.length}</span>
           <span className="mt-2 text-lg font-semibold">Categories</span>
         </div>
         <div className="bg-white dark:bg-gray-900 shadow rounded-xl p-6 flex flex-col items-center">
-          <span className="text-4xl font-bold text-pink-600">{subcategories.length}</span>
+          <span className="text-4xl font-bold text-nature-600">{subcategories.length}</span>
           <span className="mt-2 text-lg font-semibold">Subcategories</span>
         </div>
       </div>
@@ -75,7 +75,7 @@ export default function Ecommerce() {
           <div className="mb-8">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-xl font-bold">Recent Products</h2>
-              <Link to="/products" className="text-indigo-600 hover:underline">View All</Link>
+              <Link to="/products" className="text-brand-500 hover:underline">View All</Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {products.slice(0, 3).map(product => (
@@ -85,7 +85,7 @@ export default function Ecommerce() {
                   )}
                   <h3 className="font-semibold text-lg mb-1">{product.title}</h3>
                   <p className="text-gray-600 text-sm line-clamp-2 mb-2">{product.description}</p>
-                  <Link to={`/products/${product._id}`} className="text-indigo-600 text-sm hover:underline mt-auto">View</Link>
+                  <Link to={`/products/${product._id}`} className="text-brand-500 text-sm hover:underline mt-auto">View</Link>
                 </div>
               ))}
               {products.length === 0 && <div className="col-span-3 text-gray-500">No products found.</div>}
@@ -95,7 +95,7 @@ export default function Ecommerce() {
           <div className="mb-8">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-xl font-bold">Recent Blogs</h2>
-              <Link to="/blog" className="text-indigo-600 hover:underline">View All</Link>
+              <Link to="/blog" className="text-brand-500 hover:underline">View All</Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {blogs.slice(0, 3).map(blog => (
